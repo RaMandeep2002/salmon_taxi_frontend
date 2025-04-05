@@ -3,6 +3,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 interface LoginResponse {
   token: string;
   // Add other response fields if they exist
@@ -36,7 +38,7 @@ export const loginAdmin = createAsyncThunk(
   ) => {
     try {
       const response = await axios.post<LoginResponse>(
-        "http://localhost:5000/api/auth/login",
+        `${API_URL}/api/auth/login`,
         { email, password }
       );
 
