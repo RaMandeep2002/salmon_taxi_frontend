@@ -1,6 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
+const API_URL = process.env.API_URL;
+
+
 interface Driver {
   drivername: string;
   email: string;
@@ -41,7 +45,7 @@ export const addDriver = createAsyncThunk(
       }
 
       const response = await axios.post<Driver>(
-        "http://localhost:5000/admin/add-driver",
+        `${API_URL}/admin/add-driver`,
         driverData,
         {
           headers: {
