@@ -1,9 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
 const API_URL = process.env.API_URL;
-
 
 interface Driver {
   drivername: string;
@@ -57,6 +55,7 @@ export const addDriver = createAsyncThunk(
 
       return response.data;
     } catch (error) {
+      console.log(API_URL);
       console.error(error);
       return rejectWithValue("An unexpected error occurred");
     }
