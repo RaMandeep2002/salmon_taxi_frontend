@@ -1,0 +1,15 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/admin/DashboardPages/Bookings/BookingHistorys/page": "app/admin/DashboardPages/Bookings/BookingHistorys/page.js",
+  "/admin/DashboardPages/DriverPage/AddDriver/page": "app/admin/DashboardPages/DriverPage/AddDriver/page.js",
+  "/admin/DashboardPages/DriverPage/DriverList/page": "app/admin/DashboardPages/DriverPage/DriverList/page.js",
+  "/admin/DashboardPages/DriverPage/DriverwithVechicle/page": "app/admin/DashboardPages/DriverPage/DriverwithVechicle/page.js",
+  "/admin/DashboardPages/DriverPage/page": "app/admin/DashboardPages/DriverPage/page.js",
+  "/admin/DashboardPages/DriverPage/RegisterVehcile/[driverId]/page": "app/admin/DashboardPages/DriverPage/RegisterVehcile/[driverId]/page.js",
+  "/admin/DashboardPages/Reports/page": "app/admin/DashboardPages/Reports/page.js",
+  "/admin/DashboardPages/Settings/page": "app/admin/DashboardPages/Settings/page.js",
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/page": "app/page.js"
+}
