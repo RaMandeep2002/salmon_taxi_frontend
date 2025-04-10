@@ -2,6 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { Vehicle, VehicleState } from "@/app/types/VehicleData";
 
+// const API_URL = process.env.NEXT_PUBLIC_API_LOCAL_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const initialState: VehicleState = {
     vehicles: [],
     isloading: false,
@@ -10,11 +13,11 @@ const initialState: VehicleState = {
 
 export const registerVehicle = createAsyncThunk<
   Vehicle, // Return type
-  { driverId: string; vehicle: Vehicle }, // Argument type
+  { vehicle: Vehicle }, // Argument type
   { rejectValue: string } // Error type
 >(
   "admin/registerVehicle",
-  async ({ driverId, vehicle }, { rejectWithValue }) => {
+  async ({ vehicle }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
 
@@ -23,7 +26,7 @@ export const registerVehicle = createAsyncThunk<
       }
 
       const response = await axios.post<Vehicle>(
-        `http://localhost:5000/admin/register-vehicle/${driverId}`,
+        `${API_URL}/admin/register-vehicle`,
         vehicle,
         {
           headers: { Authorization: `Bearer ${token}` },

@@ -1,7 +1,7 @@
 export interface Vehicle {
     id?: string; // Optional for newly created vehicles
-    driverId?: string; // If linked to a driver
-    make: string;
+    driverId: string | undefined; // If linked to a driver
+    company: string;
     vehicleModel: string;
     year: number;
     status: "active" | "free";

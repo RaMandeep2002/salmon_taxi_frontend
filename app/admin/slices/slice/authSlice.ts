@@ -37,6 +37,7 @@ export const loginAdmin = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
+      console.log("api ---> ", API_URL);
       const response = await axios.post<LoginResponse>(
         `${API_URL}/api/auth/login`,
         { email, password }

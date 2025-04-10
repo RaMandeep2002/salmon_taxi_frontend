@@ -24,18 +24,23 @@ const initialState: DriverState = {
   error: null,
 };
 
-export const addDriver = createAsyncThunk(
-  "driver/addDriver",
-  async (
+export const updateDriver = createAsyncThunk(
+  "driver/update-driver",
+  async (  {
+    driverId,
+    driverData,
+  }: {
+    driverId: string;
     driverData: {
       drivername: string;
       email: string;
       driversLicenseNumber: string;
       phoneNumber: string;
       password: string;
-    },
+    };
+  },
     { rejectWithValue }
-  ) => {
+  ) => {    
     try {
       const token = localStorage.getItem("token");
 
@@ -44,7 +49,7 @@ export const addDriver = createAsyncThunk(
       }
 
       const response = await axios.post<Driver>(
-        `${API_URL}/admin/add-driver`,
+        `${API_URL}/admin/update-driver/${driverId}`,
         driverData,
         {
           headers: {
@@ -63,7 +68,7 @@ export const addDriver = createAsyncThunk(
   }
 );
 
-const driverSlice = createSlice({
+const updatedriverSlice = createSlice({
   name: "driver",
   initialState,
   reducers: {
@@ -74,20 +79,20 @@ const driverSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addDriver.pending, (state) => {
+      .addCase(updateDriver.pending, (state) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(addDriver.fulfilled, (state, action: PayloadAction<Driver>) => {
+      .addCase(updateDriver.fulfilled, (state, action: PayloadAction<Driver>) => {
         state.isLoading = false;
         state.driver = action.payload;
       })
-      .addCase(addDriver.rejected, (state, action) => {
+      .addCase(updateDriver.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
   },
 });
 
-export const { clearDriverState } = driverSlice.actions;
-export default driverSlice.reducer;
+export const { clearDriverState } = updatedriverSlice.actions;
+export default updatedriverSlice.reducer;

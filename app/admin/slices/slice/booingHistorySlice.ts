@@ -2,6 +2,9 @@ import { BookingHistory, BookingState } from "@/app/types/BookingHistoryData";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export const initialState: BookingState = {
     bookings: [],
     loading: false,
@@ -12,7 +15,7 @@ export const fetchBookingHistory = createAsyncThunk<BookingHistory[], void, { re
     "booking/fetchHistory",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get<{ bookings: BookingHistory[] }>("http://localhost:5000/customer/bookingHistory");
+            const response = await axios.get<{ bookings: BookingHistory[] }>(`${API_URL}/customer/bookingHistory`);
             console.log("Data: - ",response.data.bookings)
             return response.data.bookings;
         } catch (error) {

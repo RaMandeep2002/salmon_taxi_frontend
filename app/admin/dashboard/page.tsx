@@ -44,7 +44,7 @@ export default function DashboardPage() {
           </h1>
         )}
 
-        <h1 className="font-bold p-4 text-2xl text-[#F5EF1B]">Gross Earning</h1>
+        {/* <h1 className="font-bold p-4 text-2xl text-[#F5EF1B]">Gross Earning</h1> */}
 
         <div>
           <div className="border border-[#F5EF1B] rounded-lg overflow-hidden">

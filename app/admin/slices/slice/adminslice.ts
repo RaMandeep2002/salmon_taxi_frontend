@@ -2,6 +2,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 interface Admin {
   name: string;
   email: string;
@@ -35,7 +37,7 @@ export const fetchAdminInfo = createAsyncThunk(
       }
 
       const response = await axios.get<ApiResponse>(
-        "http://localhost:5000/admin/adminInfo",
+        `${API_URL}/admin/adminInfo`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

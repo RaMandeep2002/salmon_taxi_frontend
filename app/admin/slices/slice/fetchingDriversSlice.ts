@@ -1,5 +1,9 @@
 import { Drivers, DriversResponse } from "@/app/types/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+// const API_URL = process.env.NEXT_PUBLIC_API_LOCAL_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 import axios from "axios";
 
 interface DriverState {
@@ -25,7 +29,7 @@ export const fetchdriverdetails = createAsyncThunk(
       }
 
       const response = await axios.get<DriversResponse>(
-        "http://localhost:5000/admin/driver-details",
+        `${API_URL}/admin/driver-details`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

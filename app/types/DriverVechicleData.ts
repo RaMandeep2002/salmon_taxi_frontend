@@ -1,7 +1,7 @@
 export interface Vehicle {
     _id: string;
     registrationNumber: string;
-    make: string;
+    company: string;
     vehicleModel: string;
     year: number;
     status: string;

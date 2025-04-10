@@ -131,9 +131,9 @@ export default function DriverList() {
           <Table>
             <TableHeader>
               <TableRow className="text-center border border-[#F5EF1B] ">
-                <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
+                {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Driver ID
-                </TableHead>
+                </TableHead> */}
                 <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Driver Name
                 </TableHead>
@@ -141,7 +141,7 @@ export default function DriverList() {
                   Registration Number
                 </TableHead>
                 <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
-                  Make
+                  Company
                 </TableHead>
                 <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
                   Vehicle Model
@@ -184,9 +184,9 @@ export default function DriverList() {
                         className="border border-[#F5EF1B]"
                         key={vehicle.registrationNumber}
                       >
-                        <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
+                        {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                           {driver.driverId}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                           {driver.drivername}
                         </TableCell>
@@ -194,7 +194,7 @@ export default function DriverList() {
                           {vehicle.registrationNumber}
                         </TableCell>
                         <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
-                          {vehicle?.make}
+                          {vehicle?.company}
                         </TableCell>
                         <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                           {vehicle?.vehicleModel}
@@ -222,56 +222,56 @@ export default function DriverList() {
                                 <Eye className="h-4 w-4" />
                               </Button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
+                            <DialogContent className="bg-[#F5EF1B] border-none">
                               <DialogHeader>
                                 <DialogTitle>Driver Details</DialogTitle>
                               </DialogHeader>
                               <div className="grid gap-4 py-4">
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label className="text-right font-bold">
+                                  <Label className="text-right text-lg font-medium text-zinc-800">
                                     Driver ID
                                   </Label>
-                                  <div className="col-span-3">
+                                 <div className="col-span-3 text-lg font-medium text-zinc-800">
                                     {driver.driverId}
                                   </div>
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label className="text-right font-bold">
+                                  <Label className="text-right text-lg font-medium text-zinc-800">
                                     Registration Number
                                   </Label>
-                                  <div className="col-span-3">
+                                 <div className="col-span-3 text-lg font-medium text-zinc-800">
                                     {vehicle.registrationNumber}
                                   </div>
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label className="text-right font-bold">
-                                    Make
+                                  <Label className="text-right text-lg font-medium text-zinc-800">
+                                  Company
                                   </Label>
-                                  <div className="col-span-3">
-                                    {vehicle.make}
+                                 <div className="col-span-3 text-lg font-medium text-zinc-800">
+                                    {vehicle.company}
                                   </div>
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label className="text-right font-bold">
+                                  <Label className="text-right text-lg font-medium text-zinc-800">
                                     Vehicle Model
                                   </Label>
-                                  <div className="col-span-3">
+                                 <div className="col-span-3 text-lg font-medium text-zinc-800">
                                     {vehicle.vehicleModel}
                                   </div>
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label className="text-right font-bold">
+                                  <Label className="text-right text-lg font-medium text-zinc-800">
                                     Year
                                   </Label>
-                                  <div className="col-span-3">
+                                 <div className="col-span-3 text-lg font-medium text-zinc-800">
                                     {vehicle.year}
                                   </div>
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label className="text-right font-bold">
+                                  <Label className="text-right text-lg font-medium text-zinc-800">
                                     Status
                                   </Label>
-                                  <div className="col-span-3">
+                                 <div className="col-span-3 text-lg font-medium text-zinc-800">
                                     <span
                                       className={`px-2 py-1 rounded-full text-xs font-semibold ${
                                         vehicle.status === "active"
@@ -294,68 +294,68 @@ export default function DriverList() {
                                 <Pencil className="h-4 w-4" />
                               </Button>
                             </DialogTrigger>
-                            <DialogContent>
+                            <DialogContent className="bg-[#F5EF1B] border-none">
                               <DialogHeader>
-                                <DialogTitle>Edit Driver</DialogTitle>
+                                <DialogTitle className="text-lg text-zinc-800">Edit Vehicle</DialogTitle>
                               </DialogHeader>
                               <div className="grid gap-4 py-4">
                                 <div className="grid grid-cols-4 items-center gap-4">
                                   <Label
                                     htmlFor="driverId"
-                                    className="text-right"
+                                    className="text-right text-lg font-medium text-zinc-800"
                                   >
                                     Driver ID
                                   </Label>
                                   <Input
                                     id="driverId"
                                     defaultValue={driver.driverId}
-                                    className="col-span-3"
+                                      className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
                                   />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                   <Label
                                     htmlFor="driverName"
-                                    className="text-right"
+                                    className="text-right text-lg font-medium text-zinc-800"
                                   >
                                     Driver Name
                                   </Label>
                                   <Input
                                     id="driverName"
                                     defaultValue={driver.drivername}
-                                    className="col-span-3"
+                                      className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
                                   />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label htmlFor="make" className="text-right">
-                                    Make
+                                  <Label htmlFor="company" className="text-right text-lg font-medium text-zinc-800">
+                                  Company
                                   </Label>
                                   <Input
-                                    id="make"
-                                    defaultValue={vehicle.make}
-                                    className="col-span-3"
+                                    id="company"
+                                    defaultValue={vehicle.company}
+                                      className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
                                   />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                   <Label
                                     htmlFor="vehicleModel"
-                                    className="text-right"
+                                    className="text-right text-lg font-medium text-zinc-800"
                                   >
                                     Vehicle Model
                                   </Label>
                                   <Input
                                     id="vehicleModel"
                                     defaultValue={vehicle.vehicleModel}
-                                    className="col-span-3"
+                                      className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
                                   />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label htmlFor="year" className="text-right">
+                                  <Label htmlFor="year" className="text-right text-lg font-medium text-zinc-800">
                                     Year
                                   </Label>
                                   <Input
                                     id="year"
                                     defaultValue={vehicle.year}
-                                    className="col-span-3"
+                                      className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
                                   />
                                 </div>
                               </div>
@@ -365,42 +365,39 @@ export default function DriverList() {
                             </DialogContent>
                           </Dialog>
                           <AlertDialog>
-                            <AlertDialogTrigger
-                              asChild
-                              className="text-[#F5EF1B]"
+                        <AlertDialogTrigger asChild className="text-white">
+                          <Button variant="ghost" size="icon">
+                            <Trash2 className="h-4 w-4 text-[#F5EF1B]" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-[#F5EF1B] border-none">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Delete this Vehicle <span className="font-bold">{vehicle.company}</span>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                            // onClick={() => handleDeleteDriver(driver._id)}
                             >
-                              <Button variant="ghost" size="icon">
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. This will
-                                  permanently delete the drivers account and
-                                  remove their data from our servers.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction>Delete</AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                         </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow className="text-center" key={driver.driverId}>
-                      <TableCell
+                      {/* <TableCell
                         colSpan={8}
                         className="text-center text-white text-lg"
-                      >
-                        {driver.drivername} has no registered vehicles
-                      </TableCell>
+                      > */}
+                        {/* {driver.drivername} has no registered vehicles */}
+                      {/* </TableCell> */}
                     </TableRow>
                   )
                 )

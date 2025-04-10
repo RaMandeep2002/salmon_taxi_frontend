@@ -2,10 +2,14 @@ import { RootState } from "@/app/store/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// const API_URL = process.env.NEXT_PUBLIC_API_LOCAL_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 interface Setting {
     _id: string;
-    basePrice: number;
-    pricePerKm: number;
+    flag_price:number;
+    distance_price_per_meter: number;
+    waiting_time_price_per_seconds: number;
 }
 
 interface SettingState {
@@ -22,6 +26,7 @@ const initialState: SettingState = {
 
 export const fetchSettings = createAsyncThunk("settings/fetchingsetting", async (_, { rejectWithValue }) => {
     try {
+        console.log("api url ----> ", API_URL)
         const token = localStorage.getItem("token");
 
         if (!token) {
@@ -29,7 +34,7 @@ export const fetchSettings = createAsyncThunk("settings/fetchingsetting", async 
         }
 
         const response = await axios.get<{ settings: Setting[] }>(
-            "http://localhost:5000/admin/settings",
+            `${API_URL}/admin/settings`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,

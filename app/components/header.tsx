@@ -13,6 +13,10 @@ export default function HeaderDashboard() {
   const dispatch = useDispatch<AppDispatch>();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State for mobile menu
 
+  const handleNavigation = (path: string) => {
+    router.push(path);
+  };
+
   const handleLogout = () => {
     dispatch(logout());
     toast({
@@ -34,7 +38,8 @@ export default function HeaderDashboard() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4">
-          <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-500 transition">
+          <button className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-500 transition"
+           onClick={() => handleNavigation("/admin/DashboardPages/Reports/")}>
             + Report
           </button>
           <button

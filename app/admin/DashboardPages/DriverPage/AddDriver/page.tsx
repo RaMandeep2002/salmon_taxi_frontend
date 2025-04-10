@@ -76,11 +76,11 @@ export default function AddDriver() {
       <h2 className="text-2xl font-bold text-center mb-6 text-[#F5EF1B]">
         Add New Driver
       </h2>
-      <div className="max-w-2xl mx-auto bg-zinc-800 p-8 mt-12">
+      <div className="max-w-2xl mx-auto bg-[#F5EF1B] p-8 mt-12 border border-slate-500 rounded-2xl">
         {error && <p className="text-red-500 text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-lg font-medium text-white">
+            <label className="block text-lg font-medium text-[#F5EF1B]">
               Driver name
             </label>
             <input
@@ -90,11 +90,11 @@ export default function AddDriver() {
               value={drivername}
               onChange={(e) => setDrivername(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 text-zinc-800 text-lg bg-zinc-200"
+              className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-white">
+            <label className="block text-lg font-medium text-[#F5EF1B]">
               Email
             </label>
             <input
@@ -104,11 +104,11 @@ export default function AddDriver() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 text-zinc-800 text-lg bg-zinc-200"
+             className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-white">
+            <label className="block text-lg font-medium text-[#F5EF1B]">
               Drivers License Number
             </label>
             <input
@@ -118,11 +118,11 @@ export default function AddDriver() {
               value={driversLicenseNumber}
               onChange={(e) => setDriversLicenseNumber(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 text-zinc-800 text-lg bg-zinc-200"
+             className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
             />
           </div>
           <div>
-            <label className="block text-lg font-medium text-white">
+            <label className="block text-lg font-medium text-[#F5EF1B]">
               Phone Number
             </label>
             <div className="relative">
@@ -135,12 +135,12 @@ export default function AddDriver() {
                 value={phoneNumber ?? ""}
                 onChange={handlePhoneNumberChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 text-zinc-800 text-lg bg-zinc-200"
+               className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
               />
             </div>
           </div>
           <div>
-            <label className="block text-lg font-medium text-white">
+            <label className="block text-lg font-medium text-[#F5EF1B]">
               Password
             </label>
             <div className="flex items-center gap-2">
@@ -154,7 +154,7 @@ export default function AddDriver() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 text-zinc-800 text-lg bg-zinc-200"
+                 className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
                 />
                 <button
                   type="button"
@@ -167,7 +167,7 @@ export default function AddDriver() {
               <button
                 type="button"
                 onClick={generatePassword}
-                className=" bg-yellow-600 text-white  hover:bg-yellow-500 py-3 px-4 text-lg font-semibold rounded-lg  transition duration-300"
+                className=" bg-yellow-600 text-white hover:bg-yellow-500 py-3 px-4 text-lg font-semibold rounded-lg  transition duration-300"
               >
                 Generate Password
               </button>
