@@ -7,9 +7,9 @@ const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface Setting {
     _id: string;
-    flag_price:number;
-    distance_price_per_meter: number;
-    waiting_time_price_per_seconds: number;
+    base_price:number;
+    km_price: number;
+    waiting_time_price_per_minutes: number;
 }
 
 interface SettingState {

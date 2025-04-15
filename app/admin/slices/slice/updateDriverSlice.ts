@@ -9,19 +9,18 @@ interface Driver {
   email: string;
   driversLicenseNumber: string;
   phoneNumber: string;
-  password: string;
 }
 
 interface DriverState {
   driver: Driver | null;
-  isLoading: boolean;
-  error: string | null;
+  isProcessing: boolean;
+  iserror: string | null;
 }
 
 const initialState: DriverState = {
   driver: null,
-  isLoading: false,
-  error: null,
+  isProcessing: false,
+  iserror: null,
 };
 
 export const updateDriver = createAsyncThunk(
@@ -48,7 +47,7 @@ export const updateDriver = createAsyncThunk(
         throw new Error("No authentication token found.");
       }
 
-      const response = await axios.post<Driver>(
+      const response = await axios.put<Driver>(
         `${API_URL}/admin/update-driver/${driverId}`,
         driverData,
         {
@@ -74,22 +73,22 @@ const updatedriverSlice = createSlice({
   reducers: {
     clearDriverState: (state) => {
       state.driver = null;
-      state.error = null;
+      state.iserror = null;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(updateDriver.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
+        state.isProcessing = true;
+        state.iserror = null;
       })
       .addCase(updateDriver.fulfilled, (state, action: PayloadAction<Driver>) => {
-        state.isLoading = false;
+        state.isProcessing = false;
         state.driver = action.payload;
       })
       .addCase(updateDriver.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload as string;
+        state.isProcessing = false;
+        state.iserror = action.payload as string;
       });
   },
 });

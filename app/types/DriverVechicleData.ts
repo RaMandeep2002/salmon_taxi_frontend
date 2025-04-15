@@ -1,23 +1,17 @@
+// types/DriverVehicleData.ts
+
 export interface Vehicle {
-    _id: string;
-    registrationNumber: string;
-    company: string;
-    vehicleModel: string;
-    year: number;
-    status: string;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-  }
-  
-  export interface Drivers {
-    driverId: string;
-    drivername:string;
-    vehicle: Vehicle[];
-  }
-  
-  export interface DriversResponse {
-    message: string;
-    formattedDrivers: Drivers[]; // Add this line to match the API response
-  }
-  
+  _id: string;
+  registrationNumber: string;
+  company: string;
+  vehicleModel: string;
+  year: number;
+  vehicle_plate_number:string;
+  status: string;
+  isAssigned: boolean;
+}
+
+export interface VehicleResponse {
+  message: string;
+  vehicles: Vehicle[];
+}

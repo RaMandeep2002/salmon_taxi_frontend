@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { fetchBookingHistory } from "../slices/slice/booingHistorySlice";
 
+
 // import CardLineChart from "../comman/Charts/page";
 
 export default function DashboardPage() {
@@ -58,7 +59,7 @@ export default function DashboardPage() {
                     Customer Name
                   </TableHead>
                   <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                    Booking Date
+                    Booking Date and Time
                   </TableHead>
                   <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                     Assign Driver
@@ -72,9 +73,9 @@ export default function DashboardPage() {
                   <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                     Drop Off
                   </TableHead>
-                  <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                  {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                     Payment Status
-                  </TableHead>
+                  </TableHead> */}
                   {/* <TableHead className="w-[100px] text-center">
                   Payment Method
                 </TableHead> */}
@@ -110,7 +111,7 @@ export default function DashboardPage() {
                         {booking.customerName}
                       </TableCell>
                       <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                        {booking.pickupDate}
+                        {`${booking.pickupDate} , ${booking.pickuptime}`}
                       </TableCell>
                       <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                         {!booking.driver?.drivername
@@ -126,12 +127,12 @@ export default function DashboardPage() {
                       </TableCell>
                       <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                         {/* {`${booking.dropOff.latitude}, ${booking.dropOff.longitude}`} */}
-                        {`${booking.dropOff.address}`}
+                        {booking.dropOff.address == null ? "Not Reached": `${booking.dropOff.address}`}
                       </TableCell>
 
-                      <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                      {/* <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                         {booking.paymentStatus}
-                      </TableCell>
+                      </TableCell> */}
                       {/* <TableCell className="text-center">{booking.totalFare}</TableCell> */}
                       {/* "pending", "accepted", "ongoing", "completed", "cancelled" */}
                       <TableCell className="text-center text-white">

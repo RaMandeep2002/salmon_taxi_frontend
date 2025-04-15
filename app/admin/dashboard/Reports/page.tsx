@@ -11,13 +11,16 @@ import { AppDispatch, RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
 import { fetchBookingHistory } from "../../slices/slice/booingHistorySlice";
 
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export default function Reports() {
   // const [fromDate, setFromDate] = useState("");
   // const [toDate, setToDate] = useState("");
+  
 
   const handleDownload = () => {
     // Example API call to download CSV
-    window.location.href = "http://localhost:5000/admin/report-csv";
+    window.location.href = `${API_URL}/admin/report-csv`;
   };
 
   const dispatch = useDispatch<AppDispatch>();

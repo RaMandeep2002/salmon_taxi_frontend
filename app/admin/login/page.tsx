@@ -16,22 +16,17 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-
 import { loginAdmin } from "../slices/slice/authSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
   const dispatch = useDispatch<AppDispatch>();
-
-  const { token, isLoading } = useSelector(
-    (state: RootState) => state.auth,
-  );
+  const { token, isLoading } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (token) {
@@ -42,9 +37,9 @@ export default function Login() {
       router.push("/admin/dashboard");
     }
   }, [token, router, toast]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       await dispatch(loginAdmin({ email, password })).unwrap();
       toast({
@@ -54,7 +49,6 @@ export default function Login() {
       router.push("/admin/dashboard");
     } catch (error) {
       console.log("Error ==> ", error);
-      // setIsLoading(false);
       toast({
         title: "Login Failed",
         description: "Invalid email or password",
@@ -64,13 +58,14 @@ export default function Login() {
   };
 
   return (
-<div  className="min-h-screen flex items-center justify-center bg-cover bg-center"
-  style={{
-    backgroundImage: "url('https://i.postimg.cc/JnTcbvg9/bg-1.png')",
-  }}> 
-
-      <div>
-        <Card className="w-[450px]">
+    <div
+      className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-cover bg-center"
+      style={{
+        backgroundImage: "url('https://i.postimg.cc/JnTcbvg9/bg-1.png')",
+      }}
+    >
+      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-[450px]">
+        <Card className="w-full shadow-lg">
           <CardHeader>
             <CardTitle>Admin Login</CardTitle>
             <CardDescription>
@@ -104,7 +99,7 @@ export default function Login() {
               </div>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex justify-end">
             <Button type="submit" onClick={handleSubmit} disabled={isLoading}>
               {isLoading ? (
                 <>

@@ -13,6 +13,7 @@ export interface BookingHistory {
     bookingId: string;
     customerName: string;
     pickupDate: string;
+    pickuptime: string;
     totalFare: number;
     paymentStatus: string;
     status: string;

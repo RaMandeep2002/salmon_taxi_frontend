@@ -1,14 +1,8 @@
 "use client";
-import DashboardLayout from "../../../DashBoardLayout";
+import DashboardLayout from "../../DashBoardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronDown, Search } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -17,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
@@ -36,7 +30,7 @@ export default function BookingHistory() {
     dispatch(fetchBookingHistory());
   }, [dispatch]);
 
-  const [filterStatus, setFilterStatus] = useState("All");
+  // const [filterStatus, setFilterStatus] = useState("All");
   return (
     <DashboardLayout>
       <div className="p-8">
@@ -60,7 +54,7 @@ export default function BookingHistory() {
             </Button>
           </div>
 
-          <DropdownMenu>
+          {/* <DropdownMenu>
           <DropdownMenuTrigger asChild className="text-white bg-zinc-800 border border-[#F5EF1B]">
               <Button
                 variant="outline"
@@ -84,7 +78,7 @@ export default function BookingHistory() {
                 </DropdownMenuCheckboxItem>
               ))}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
 
         <div className="border border-[#F5EF1B] rounded-lg overflow-hidden">

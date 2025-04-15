@@ -1,15 +1,17 @@
 export interface Vehicle {
-    id?: string; // Optional for newly created vehicles
-    driverId: string | undefined; // If linked to a driver
+    id?: string; // optional for frontend
+    registrationNumber?: string; // generated on backend
     company: string;
     vehicleModel: string;
     year: number;
-    status: "active" | "free";
-}
+    vehicle_plate_number:string;
+    status: string;
+    isAssigned?: boolean;
+  }
   
-export interface VehicleState {
+  export interface VehicleState {
     vehicles: Vehicle[];
     isloading: boolean;
     iserror: string | null;
-}
+  }
   

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const API_URL = process.env.NEXT_PUBLIC_API_LOCAL_URL;
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface Driver {
@@ -16,34 +15,37 @@ interface DriverState {
   driver: Driver | null;
   isLoading: boolean;
   error: string | null;
+  successMessage: string | null;
+}
+
+interface DriverResponse {
+  message: string;
+  driver: Driver;
 }
 
 const initialState: DriverState = {
   driver: null,
   isLoading: false,
   error: null,
+  successMessage: null,
 };
 
-export const addDriver = createAsyncThunk(
+// ✅ Async thunk to add a driver
+export const addDriver = createAsyncThunk<
+  DriverResponse,                      // ✅ Return type on success
+  Driver,                              // ✅ Argument type passed to the thunk
+  { rejectValue: string }              // ✅ Custom reject type
+>(
   "driver/addDriver",
-  async (
-    driverData: {
-      drivername: string;
-      email: string;
-      driversLicenseNumber: string;
-      phoneNumber: string;
-      password: string;
-    },
-    { rejectWithValue }
-  ) => {
+  async (driverData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        throw new Error("No authentication token found.");
+        return rejectWithValue("No authentication token found.");
       }
 
-      const response = await axios.post<Driver>(
+      const response = await axios.post<DriverResponse>(
         `${API_URL}/admin/add-driver`,
         driverData,
         {
@@ -55,10 +57,12 @@ export const addDriver = createAsyncThunk(
       );
 
       return response.data;
-    } catch (error) {
-      console.log(API_URL);
-      console.error(error);
-      return rejectWithValue("An unexpected error occurred");
+    } catch (error:unknown) {
+     
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+    }
+    return rejectWithValue('An unknown error occurred');
     }
   }
 );
@@ -70,6 +74,7 @@ const driverSlice = createSlice({
     clearDriverState: (state) => {
       state.driver = null;
       state.error = null;
+      state.successMessage = "";
     },
   },
   extraReducers: (builder) => {
@@ -77,14 +82,19 @@ const driverSlice = createSlice({
       .addCase(addDriver.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.successMessage = null;
       })
-      .addCase(addDriver.fulfilled, (state, action: PayloadAction<Driver>) => {
-        state.isLoading = false;
-        state.driver = action.payload;
-      })
+      .addCase(
+        addDriver.fulfilled,
+        (state, action: PayloadAction<DriverResponse>) => {
+          state.isLoading = false;
+          state.driver = action.payload.driver;
+          state.successMessage = action.payload.message;
+        }
+      )
       .addCase(addDriver.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload || "Unknown error occurred.";
       });
   },
 });

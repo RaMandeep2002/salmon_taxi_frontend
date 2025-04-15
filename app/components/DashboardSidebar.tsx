@@ -2,13 +2,13 @@
 import {
   Home,
   ChevronLeft,
-  ChevronRight,
   Plus,
   List,
   Users2,
   ListChecksIcon,
   Settings,
   LogOut,
+  Menu,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -42,24 +42,24 @@ export default function DashboardSidebar() {
 
   return (
     <aside
-    className={`bg-[#F5EF1B] text-white flex flex-col transition-all duration-300 ${
+    className={`bg-[#F5EF1B] text-white h-screen hidden md:flex flex-col transition-all duration-300 ${
       isCollapsed ? "w-20" : "w-70"
     }`}
     >
-      {/* Sidebar Header with Toggle */}
+      {/* Sidebar Header with Toggle */}  
       <div className="px-6 py-4 flex justify-between items-center">
-        {!isCollapsed && (
-          <h2
-            className="text-2xl font-bold cursor-pointer text-gray-800"
-            onClick={() => handleNavigation("/admin/dashboard")}
-          >
-            Salmon Arm Taxi
-          </h2>
-        )}
-        <button onClick={toggleSidebar} className="p-2 text-gray-800">
-          {isCollapsed ? <ChevronRight /> : <ChevronLeft />}
-        </button>
-      </div>
+    {!isCollapsed && (
+      <h2
+        className="text-2xl font-bold cursor-pointer text-gray-800"
+        onClick={() => handleNavigation("/admin/dashboard")}
+      >
+        Salmon Arm Taxi
+      </h2>
+    )}
+    <button onClick={toggleSidebar} className="p-2 text-gray-800">
+      {isCollapsed ? <Menu /> : <ChevronLeft />}
+    </button>
+  </div>
 
       {/* Sidebar Navigation */}
       <nav className="flex-1 px-4 pt-5 space-y-4">
@@ -72,53 +72,79 @@ export default function DashboardSidebar() {
           icon={List}
           label={isCollapsed ? "" : "Booking History"}
           onClick={() =>
-            handleNavigation("/admin/DashboardPages/Bookings/BookingHistorys")
+            handleNavigation("/admin/dashboard/Bookings")
           }
         />
         <MenuItem
           icon={Plus}
           label={isCollapsed ? "" : "Add Driver"}
           onClick={() =>
-            handleNavigation("/admin/DashboardPages/DriverPage/AddDriver")
+            handleNavigation("/admin/dashboard/AddDriver")
+          }
+        />
+        
+        <MenuItem
+          icon={Users2}
+          label={isCollapsed ? "" : "Drivers"}
+          onClick={() =>
+            handleNavigation("/admin/dashboard/DriverList")
           }
         />
         <MenuItem
-          icon={Users2}
-          label={isCollapsed ? "" : "Users"}
+          icon={Plus}
+          label={isCollapsed ? "" : "Register Vehicle"}
           onClick={() =>
-            handleNavigation("/admin/DashboardPages/DriverPage/DriverList")
+            handleNavigation("/admin/dashboard/RegsiterVehicle")
           }
         />
         <MenuItem
           icon={List}
-          label={isCollapsed ? "" : "Driver List with Vehicle"}
+          label={isCollapsed ? "" : "Vehicles"}
           onClick={() =>
             handleNavigation(
-              "/admin/DashboardPages/DriverPage/DriverwithVechicle"
+              "/admin/dashboard/VehicleList"
             )
           }
         />
+          {/* <MenuItem
+          icon={List}
+          label={isCollapsed ? "" : "Driver Shift History"}
+          onClick={() =>
+            handleNavigation(
+              "/admin/dashboard/ShiftHistory"
+            )
+          }
+        />
+         <MenuItem
+          icon={List}
+          label={isCollapsed ? "" : "Shift History With Bookings"}
+          onClick={() =>
+            handleNavigation(
+              "/admin/dashboard/ShiftHistory"
+            )
+          }
+        /> */}
         <MenuItem
           icon={ListChecksIcon}
           label={isCollapsed ? "" : "Reports"}
-          onClick={() => handleNavigation("/admin/DashboardPages/Reports/")}
+          onClick={() => handleNavigation("/admin/dashboard/Reports/")}
         />
         <MenuItem
           icon={Settings}
           label={isCollapsed ? "" : "Settings"}
-          onClick={() => handleNavigation("/admin/DashboardPages/Settings/")}
+          onClick={() => handleNavigation("/admin/dashboard/Settings/")}
         />
       </nav>
 
       {/* Logout Button */}
       <div className="px-4 py-4">
-        <button
-          onClick={handleLogout}
-          className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-500 transition"
-        >
-          {isCollapsed ? <LogOut /> : "Logout"}
-        </button>
-      </div>
+    <button
+      onClick={handleLogout}
+      className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-500 transition"
+    >
+      {isCollapsed ? <LogOut /> : "Logout"}
+    </button>
+  </div>
     </aside>
   );
 }

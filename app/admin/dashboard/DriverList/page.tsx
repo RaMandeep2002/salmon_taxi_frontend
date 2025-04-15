@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ChevronDown, Search, Pencil, Trash2, Eye } from "lucide-react";
+import { Search, Pencil, Trash2, Eye, Plus } from "lucide-react";
 
 import { fetchdriverdetails } from "@/app/admin/slices/slice/fetchingDriversSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
@@ -17,12 +17,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuCheckboxItem,
+//   DropdownMenuContent,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -42,51 +42,65 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Drivers } from "@/app/types/types";
-import { registerVehicle } from "@/app/admin/slices/slice/registerVehicleSlice";
-import { Vehicle } from "@/app/types/VehicleData";
+import { useRouter } from "next/navigation";
+import { updateDriver } from "../../slices/slice/updateDriverSlice";
+import { deleteDriver } from "../../slices/slice/deleteDriverSlice";
 
 export default function DriverList() {
-  const [company, setCompany] = useState("");
-  const [vehicleModel, setVehicleModel] = useState("");
-  const [year, setYear] = useState<string>("");
-  const [status, setStatus] = useState<Vehicle["status"]>("active");
-  const [driverId, setDriverId] = useState<string>("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [driverId, setDriverId] = useState<string>("");
+  const [drivername, setDrivername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [driversLicenseNumber, setDriversLicenseNumber] = useState<string>("");
+
+
+  const toast = useToast();
+  const router = useRouter();
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
   const dispatch = useDispatch<AppDispatch>();
-  const { data: drivers } = useSelector(
-    (state: RootState) => state.driversFetching
+  const {
+    data: drivers,
+    isLoading,
+    error,
+  } = useSelector((state: RootState) => state.driversFetching);
+  const { isProcessing, iserror } = useSelector(
+    (state: RootState) => state.updateDriverinfo
   );
+  const {isDeleteting,succeesMessage} = useSelector((state:RootState)=> state.deleteDriver);
+
 
   const [selectedDriver, setSelectedDriver] = useState<Drivers | null>(null);
 
   // Local state for search & filter
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("All"); // Default to "All"
+  // const [filterStatus, setFilterStatus] = useState("All"); // Default to "All"
 
   useEffect(() => {
     dispatch(fetchdriverdetails());
   }, [dispatch]);
 
   // Filtered & searched drivers
-  const filteredDrivers = drivers?.filter((driver) => {
-    const matchesSearch =
-      driver.drivername.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      driver.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      driver.driverId.toLowerCase().includes(searchTerm.toLowerCase());
-  
-    const matchesStatus = filterStatus === "All" || driver.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  }) || [];
-  
+  const filteredDrivers =
+    drivers?.filter((driver) => {
+      const matchesSearch =
+        driver.drivername.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        driver.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        driver.driverId.toLowerCase().includes(searchTerm.toLowerCase());
+
+      // const matchesStatus =
+      //   filterStatus === "All" || driver.status === filterStatus;
+      return matchesSearch;
+    }) || [];
+
   const totalPages = Math.ceil(filteredDrivers.length / itemsPerPage);
-  
+
   const paginatedDrivers = filteredDrivers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -96,35 +110,71 @@ export default function DriverList() {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+    console.log("value ==> ", value);
+    // Remove all non-digit characters
+
+    // Allow +, numbers, spaces, parentheses, and dashes
+    const cleanedValue = value.replace(/[^\d+\s()-]/g, "");
+
+    if (value.includes("+")) {
+      value = "+" + value.replace(/\+/g, "").trim();
+    } else {
+      value = "+" + value.trim();
+    }
+    console.log("cleanedValue ==> ", cleanedValue);
+    setPhoneNumber(cleanedValue);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    try {
+    if (!selectedDriver) {
+      console.error("No driver selected");
+      return;
+    }
+
+    try{
       await dispatch(
-        registerVehicle({
-          vehicle: {
-            driverId: driverId || selectedDriver?.driverId,
-            company,
-            vehicleModel,
-            year: Number(year),
-            status,
-          },
+        updateDriver({
+          driverId: selectedDriver.driverId,
+          driverData: {
+            drivername: drivername || selectedDriver.drivername,
+            email: email || selectedDriver.email,
+            driversLicenseNumber: driversLicenseNumber || selectedDriver.driversLicenseNumber,
+            phoneNumber: String(phoneNumber) || String(selectedDriver.phoneNumber),
+            password: selectedDriver.password // Keep existing password if not changing
+          }
         })
       ).unwrap();
+      if(iserror===null){
+        toast.toast({
+          title: "Driver Updated Successfully"
+        });
+        dispatch(fetchdriverdetails());
+      }
+   
+  } catch (error) {
+    console.error("Failed to update driver:", error);
+    alert("Failed to update driver. Please try again.");
+  }
+  };
 
-      alert("Vehicle registered successfully");
-      setCompany("");
-      setVehicleModel("");
-      setYear("");
-      setStatus("active");
-      setDriverId("");
-    } catch (err) {
-      console.error(err);
-      setError("Error happens!!");
-    } finally {
-      setIsLoading(false);
+  const handleDeleteDriver = (driverId: string) => async () => {
+    try {
+      await dispatch(deleteDriver(driverId));
+      if(isDeleteting === false){
+        toast.toast({
+          title: "Driver Deleted",
+          description: succeesMessage,
+        });
+        dispatch(fetchdriverdetails());
+      }
+      
+    } catch (error) {
+      console.error("Failed to delete driver:", error);
+      alert("Failed to delete driver. Please try again.");
     }
   };
 
@@ -152,7 +202,8 @@ export default function DriverList() {
           </div>
 
           {/* Filter Dropdown */}
-          <DropdownMenu>
+          {/* <div>
+              <DropdownMenu>
             <DropdownMenuTrigger
               asChild
               className="text-white bg-zinc-800 border border-[#F5EF1B]"
@@ -180,6 +231,18 @@ export default function DriverList() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          </div> */}
+        
+          <div>
+            <Button
+              className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] "
+              type="submit"
+              onClick={() => router.push("/admin/dashboard/AddDriver")}
+            >
+              <Plus />
+              Register Driver
+            </Button>
+          </div>
         </div>
 
         {/* Driver Table */}
@@ -209,9 +272,9 @@ export default function DriverList() {
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
                   Actions
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
+                {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
                   Register Vehicle
-                </TableHead>
+                </TableHead> */}
               </TableRow>
             </TableHeader>
 
@@ -253,7 +316,9 @@ export default function DriverList() {
                       {driver.email}
                     </TableCell>
                     <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
-                      {driver.phoneNumber}
+                      <a href={`tel:${driver.phoneNumber}`}>
+                        {driver.phoneNumber}
+                      </a>
                     </TableCell>
                     <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
                       {driver.driversLicenseNumber}
@@ -279,7 +344,7 @@ export default function DriverList() {
                             size="icon"
                             onClick={() => setSelectedDriver(driver)}
                           >
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-4 w-4 text-[#F5EF1B]" />
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px] bg-[#F5EF1B] border-none">
@@ -349,106 +414,133 @@ export default function DriverList() {
                         </DialogContent>
                       </Dialog>
                       <Dialog>
-                        <DialogTrigger asChild className="text-white">
+                        <DialogTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setSelectedDriver(driver)}
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="h-4 w-4 text-[#F5EF1B]" />
                           </Button>
                         </DialogTrigger>
+
                         <DialogContent className="bg-[#F5EF1B] border-none">
                           <DialogHeader>
                             <DialogTitle className="text-lg text-zinc-800">
                               Edit Driver
                             </DialogTitle>
                           </DialogHeader>
-                          <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label
-                                htmlFor="name"
-                                className="text-right text-lg font-medium text-zinc-800"
-                              >
-                                Name
-                              </Label>
-                              <Input
-                                id="name"
-                                defaultValue={selectedDriver?.drivername}
-                                className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                              />
+                          {iserror && <p className="text-red-500 text-center">{iserror}</p>}         
+                          <form
+                          onSubmit={handleSubmit} // Uncomment when ready to use
+                          >
+                            <div className="grid gap-4 py-4">
+                              {/* Driver Name */}
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label
+                                  htmlFor="drivername"
+                                  className="text-right text-lg font-medium text-zinc-800"
+                                >
+                                  Driver Name
+                                </Label>
+                                <input
+                                  id="drivername"
+                                  type="text"
+                                  placeholder="Enter Driver Name"
+                                  value={
+                                    drivername ||
+                                    selectedDriver?.drivername ||
+                                    ""
+                                  }
+                                  onChange={(e) =>
+                                    setDrivername(e.target.value)
+                                  }
+                                  className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                />
+                              </div>
+
+                              {/* Email */}
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label
+                                  htmlFor="email"
+                                  className="text-right text-lg font-medium text-zinc-800"
+                                >
+                                  Email
+                                </Label>
+                                <input
+                                  type="email"
+                                  name="email"
+                                  placeholder="Enter Email"
+                                  value={email || selectedDriver?.email || ""}
+                                  onChange={(e) => setEmail(e.target.value)}
+                                  className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                />
+                              </div>
+
+                              {/* Phone Number */}
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label
+                                  htmlFor="phoneNumber"
+                                  className="text-right text-lg font-medium text-zinc-800"
+                                >
+                                  Phone Number
+                                </Label>
+                                <input
+                                  id="phoneNumber"
+                                  type="tel"
+                                  placeholder="Enter Phone Number"
+                                  value={
+                                    phoneNumber ||
+                                    selectedDriver?.phoneNumber ||
+                                    ""
+                                  }
+                                  onChange={handlePhoneNumberChange}
+                                  className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                />
+                              </div>
+
+                              {/* License Number */}
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label
+                                  htmlFor="driversLicenseNumber"
+                                  className="text-right text-lg font-medium text-zinc-800"
+                                >
+                                  License No.
+                                </Label>
+                                <input
+                                  id="driversLicenseNumber"
+                                  type="text"
+                                  placeholder="Enter Driver's License Number"
+                                  value={
+                                    driversLicenseNumber ||
+                                    selectedDriver?.driversLicenseNumber ||
+                                    ""
+                                  }
+                                  onChange={(e) =>
+                                    setDriversLicenseNumber(e.target.value)
+                                  }
+                                  className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                />
+                              </div>
                             </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label
-                                htmlFor="email"
-                                className="text-right text-lg font-medium text-zinc-800"
+
+                            {/* Buttons */}
+                            <DialogFooter>
+                              <Button
+                                type="submit"
+                                // onClick={() => handleUpdateDriver(selectedDriver!)}
                               >
-                                Email
-                              </Label>
-                              <Input
-                                id="email"
-                                defaultValue={selectedDriver?.email}
-                                className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                              />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label
-                                htmlFor="phone"
-                                className="text-right text-lg font-medium text-zinc-800"
-                              >
-                                Phone
-                              </Label>
-                              <Input
-                                id="phone"
-                                defaultValue={selectedDriver?.phoneNumber}
-                                className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                              />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label
-                                htmlFor="license"
-                                className="text-right text-lg font-medium text-zinc-800"
-                              >
-                                License
-                              </Label>
-                              <Input
-                                id="license"
-                                defaultValue={
-                                  selectedDriver?.driversLicenseNumber
-                                }
-                                className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                              />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label
-                                htmlFor="status"
-                                className="text-right text-lg font-medium text-zinc-800"
-                              >
-                                Status
-                              </Label>
-                              <Input
-                                id="status"
-                                defaultValue={selectedDriver?.status}
-                                className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                              />
-                            </div>
-                          </div>
-                          <DialogFooter>
-                            <Button
-                              type="submit"
-                              // onClick={() =>
-                              //   handleUpdateDriver(selectedDriver!)
-                              // }
-                            >
-                              Save changes
-                            </Button>
-                          </DialogFooter>
+                                {isProcessing ? "Updating..." : "Update Driver"}
+                              </Button>
+                            </DialogFooter>
+                          </form>
                         </DialogContent>
                       </Dialog>
+
                       <AlertDialog>
                         <AlertDialogTrigger asChild className="text-white">
                           <Button variant="ghost" size="icon">
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 text-[#F5EF1B]" />
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent className="bg-[#F5EF1B] border-none">
@@ -464,7 +556,7 @@ export default function DriverList() {
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
-                            // onClick={() => handleDeleteDriver(driver._id)}
+                            onClick={handleDeleteDriver(driver.driverId)}
                             >
                               Delete
                             </AlertDialogAction>
@@ -472,7 +564,7 @@ export default function DriverList() {
                         </AlertDialogContent>
                       </AlertDialog>
                     </TableCell>
-                    <TableCell className="text-center">
+                    {/* <TableCell className="text-center">
                       <Dialog>
                         <DialogTrigger
                           asChild
@@ -605,7 +697,7 @@ export default function DriverList() {
                           </form>
                         </DialogContent>
                       </Dialog>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))
               )}
@@ -613,16 +705,24 @@ export default function DriverList() {
           </Table>
         </div>
         <div className="flex justify-between items-center mt-4">
-            <Button onClick={handlePrev} disabled={currentPage === 1} className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]">
-              Previous
-            </Button>
-            <span className="text-sm text-[#F5EF1B]">
-              Page {currentPage} of {totalPages}
-            </span>
-            <Button onClick={handleNext} disabled={currentPage === totalPages} className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]">
-              Next
-            </Button>
-          </div>
+          <Button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-[#F5EF1B]">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </DashboardLayout>
   );
