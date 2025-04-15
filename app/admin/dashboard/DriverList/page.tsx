@@ -112,7 +112,7 @@ export default function DriverList() {
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    console.log("value ==> ", value);
+ 
     // Remove all non-digit characters
 
     // Allow +, numbers, spaces, parentheses, and dashes
@@ -123,7 +123,7 @@ export default function DriverList() {
     } else {
       value = "+" + value.trim();
     }
-    console.log("cleanedValue ==> ", cleanedValue);
+
     setPhoneNumber(cleanedValue);
   };
 
@@ -131,7 +131,6 @@ export default function DriverList() {
     e.preventDefault();
 
     if (!selectedDriver) {
-      console.error("No driver selected");
       return;
     }
 
@@ -156,8 +155,7 @@ export default function DriverList() {
       }
    
   } catch (error) {
-    console.error("Failed to update driver:", error);
-    alert("Failed to update driver. Please try again.");
+    alert(`Failed to Update driver. Please try again. ${error}`);
   }
   };
 
@@ -173,8 +171,7 @@ export default function DriverList() {
       }
       
     } catch (error) {
-      console.error("Failed to delete driver:", error);
-      alert("Failed to delete driver. Please try again.");
+      alert(`Failed to delete driver. Please try again. ${error}`);
     }
   };
 

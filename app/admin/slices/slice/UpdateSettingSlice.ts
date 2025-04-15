@@ -50,7 +50,6 @@ export const UpdateSettings = createAsyncThunk(
                     },
                 }
             );
-            console.log(response.data);
             if (!response.data) {
                 throw new Error("No settings data received");
             }

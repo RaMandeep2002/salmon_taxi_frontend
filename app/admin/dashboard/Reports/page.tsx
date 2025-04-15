@@ -30,7 +30,6 @@ export default function Reports() {
     loading,
     error,
   } = useSelector((state: RootState) => state.fetchBookingHistory);
-  console.log("Data from frontend file ===>  ", bookings);
   useEffect(() => {
     dispatch(fetchBookingHistory());
   }, [dispatch]);

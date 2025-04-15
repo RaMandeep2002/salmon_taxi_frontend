@@ -112,7 +112,7 @@ export default function VechicleList() {
           },
         })
       ).unwrap();
-      console.log("isUpdating ==> ", isUpdating);
+
       if(isUpdating === true){
         toast.toast({
           title: "Vehicle Updated Successfully",
@@ -120,14 +120,12 @@ export default function VechicleList() {
         dispatch(fetchDetailWithVehicle());
       }
     } catch (error) {
-      console.error("Failed to update driver:", error);
-      alert("Failed to update driver. Please try again.");
+      alert(`Failed to delete driver. Please try again. ${error}`);
     }
   };
 
   const handleDeleteVehicle = async (registrationNumber: string) => {
     try {
-      console.log("registrationNumber ---> ", registrationNumber);
       await dispatch(deleteVehicle(registrationNumber)).unwrap();
       if(isDeleteting === true){
         toast.toast({
@@ -137,7 +135,7 @@ export default function VechicleList() {
         dispatch(fetchDetailWithVehicle());
       }
     } catch (error) {
-      console.error("Failed to delete vehicle:", error);
+      alert(`Failed to delete driver. Please try again. ${error}`);
       toast.toast({
         title: "Error Deleting Vehicle",
         description: "Failed to delete vehicle. Please try again."

@@ -36,7 +36,6 @@ export const fetchdriverdetails = createAsyncThunk(
           },
         },
       );
-      // console.log(response?.data);
       return response.data; // Return admin data
     } catch (error) {
       console.error(error);

@@ -47,7 +47,7 @@ export default function AddDriver() {
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-    console.log("value ==> ", value);
+
     // Remove all non-digit characters
 
     // Allow +, numbers, spaces, parentheses, and dashes
@@ -58,7 +58,7 @@ export default function AddDriver() {
     } else {
       value = "+" + value.trim();
     }
-    console.log("cleanedValue ==> ", cleanedValue);
+
     setPhoneNumber(cleanedValue);
   };
 

@@ -31,8 +31,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     dispatch(fetchAdminInfo());
-    dispatch(fetchBookingHistory());
-    // console.log(error, isLoading);
+    dispatch(fetchBookingHistory());;
   }, [dispatch]);
 
   // const [filterStatus, setFilterStatus] = useState("All");

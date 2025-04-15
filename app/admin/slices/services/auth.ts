@@ -24,7 +24,6 @@ export const login = async ({
         password,
       },
     );
-    console.log("response ===> ", response.data);
     return response.data;
   } catch (error) {
     console.log("Error ===> ", error);

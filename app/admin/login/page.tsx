@@ -48,10 +48,9 @@ export default function Login() {
       });
       router.push("/admin/dashboard");
     } catch (error) {
-      console.log("Error ==> ", error);
       toast({
         title: "Login Failed",
-        description: "Invalid email or password",
+        description: `Invalid email or password ${error}`,
         variant: "destructive",
       });
     }

@@ -41,7 +41,6 @@ export const fetchSettings = createAsyncThunk("settings/fetchingsetting", async 
                 },
             },
         );
-        console.log(response.data.settings[0])
         return response.data.settings[0];
     } catch (error) {
         console.error(error);

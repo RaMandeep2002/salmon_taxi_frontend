@@ -16,7 +16,6 @@ export const fetchBookingHistory = createAsyncThunk<BookingHistory[], void, { re
     async (_, { rejectWithValue }) => {
         try {
             const response = await axios.get<{ bookings: BookingHistory[] }>(`${API_URL}/customer/bookingHistory`);
-            console.log("Data: - ",response.data.bookings)
             return response.data.bookings;
         } catch (error) {
             console.error(error);

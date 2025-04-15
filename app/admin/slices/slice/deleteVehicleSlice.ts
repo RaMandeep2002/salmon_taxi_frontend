@@ -31,7 +31,6 @@ export const deleteVehicle = createAsyncThunk<DeleteVehicleResponse, string>(
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log(res.data);
             return res.data;
         } catch (err: unknown) {
             if (err instanceof Error) {

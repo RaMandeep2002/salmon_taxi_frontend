@@ -38,7 +38,6 @@ export default function Settings() {
   }, [dispatch]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("enter");
     e.preventDefault();
 
     const basePriceNum = parseFloat(base_price);
@@ -64,7 +63,7 @@ export default function Settings() {
       }
       dispatch(fetchSettings());
     } catch (error) {
-      console.error("Failed to update settings:", error);
+      alert(`Failed to delete driver. Please try again. ${error}`);
     }
   };
 

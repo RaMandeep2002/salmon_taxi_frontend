@@ -60,7 +60,6 @@ export const updateDriver = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      console.log(API_URL);
       console.error(error);
       return rejectWithValue("An unexpected error occurred");
     }
