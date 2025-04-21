@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
@@ -19,6 +19,11 @@ import { fetchBookingHistory } from "@/app/admin/slices/slice/booingHistorySlice
 
 export default function BookingHistory() {
   const dispatch = useDispatch<AppDispatch>();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 15;
+
 
   const {
     bookings: bookings,
@@ -29,6 +34,25 @@ export default function BookingHistory() {
     dispatch(fetchBookingHistory());
   }, [dispatch]);
 
+  const filteredBookings =
+  bookings?.filter((booking) => {
+    const matchesSearch =
+    booking.driver?.drivername.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    booking.pickup.address.toLowerCase().includes(searchTerm.toLowerCase()) 
+
+    // const matchesStatus =
+    //   filterStatus === "All" || driver.status === filterStatus;
+    return matchesSearch;
+  }) || [];
+
+
+  const totalPages = Math.ceil(bookings.length / itemsPerPage);
+
+  const paginatedBookings = filteredBookings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   // const [filterStatus, setFilterStatus] = useState("All");
   return (
     <DashboardLayout>
@@ -40,8 +64,9 @@ export default function BookingHistory() {
         <div className="mb-6 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Input
-              placeholder="Search by name, email, or driver ID..."
+              placeholder="Search by Driver Name, Pickup..."
               className="w-64 text-white border border-[#F5EF1B] placeholder-white"
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
 
             <Button
@@ -84,20 +109,29 @@ export default function BookingHistory() {
           <Table>
             <TableHeader>
               <TableRow className="text-center border border-[#F5EF1B] ">
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
+                {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
                   Booking ID
                 </TableHead>
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                   Customer Name
-                </TableHead>
+                </TableHead> */}
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                   Booking Date
                 </TableHead>
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Assign Driver
+                  Booking Time
+                </TableHead>
+                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                  Driver
                 </TableHead>
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                   Total Fare
+                </TableHead>
+                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                  Distance
+                </TableHead>
+                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                  Waiting Time
                 </TableHead>
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                   Pickup
@@ -105,15 +139,15 @@ export default function BookingHistory() {
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                   Drop Off
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                   Payment Status
-                </TableHead>
+                </TableHead> */}
                 {/* <TableHead className="w-[100px] text-center">
                   Payment Method
                 </TableHead> */}
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
                   Status
-                </TableHead>
+                </TableHead> */}
               </TableRow>
             </TableHeader>
 
@@ -130,20 +164,23 @@ export default function BookingHistory() {
                     Error: {error}
                   </TableCell>
                 </TableRow>
-              ) : (
-                bookings.map((booking) => (
+              ) : ( 
+                paginatedBookings.map((booking) => (
                   <TableRow
                     className="text-center border border-[#F5EF1B]"
                     key={booking.bookingId}
                   >
-                    <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg ">
+                    {/* <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg ">
                       {booking.bookingId}
                     </TableCell>
                     <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
                       {booking.customerName}
+                    </TableCell> */}
+                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                      {`${booking.pickupDate}`}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                      {booking.pickupDate}
+                      {`${booking.pickuptime}`}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                       {!booking.driver?.drivername
@@ -151,23 +188,29 @@ export default function BookingHistory() {
                         : booking.driver?.drivername}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                      {booking.totalFare}
+                    {`$ ${booking.totalFare}`}
+                    </TableCell>
+                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                      {booking.distance}
+                    </TableCell>
+                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                      {booking.wating_time}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                       {/* {`${booking.pickup.latitude}, ${booking.pickup.longitude}`} */}
                       {`${booking.pickup.address}`}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                    {/* {`${booking.dropOff.latitude}, ${booking.dropOff.longitude}`} */}
-                    {`${booking.dropOff.address}`}
+                      {/* {`${booking.dropOff.latitude}, ${booking.dropOff.longitude}`} */}
+                      {`${booking.dropOff.address}`}
                     </TableCell>
-                    
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+
+                    {/* <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                       {booking.paymentStatus}
-                    </TableCell>
+                    </TableCell> */}
                     {/* <TableCell className="text-center">{booking.totalFare}</TableCell> */}
                     {/* "pending", "accepted", "ongoing", "completed", "cancelled" */}
-                    <TableCell className="text-center text-white">
+                    {/* <TableCell className="text-center text-white">
                       {" "}
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -186,12 +229,31 @@ export default function BookingHistory() {
                       >
                         {booking.status}
                       </span>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))
               )}
             </TableBody>
           </Table>
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <Button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-[#F5EF1B]">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+          >
+            Next
+          </Button>
         </div>
       </div>
     </DashboardLayout>

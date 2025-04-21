@@ -99,7 +99,7 @@ export default function AddDriver() {
           )} */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-lg font-medium text-[#F5EF1B]">
+              <label className="block text-lg font-medium text-zinc-800">
                 Driver name
               </label>
               <input
@@ -114,7 +114,7 @@ export default function AddDriver() {
               />
             </div>
             <div>
-              <label className="block text-lg font-medium text-[#F5EF1B]">
+               <label className="block text-lg font-medium text-zinc-800">
                 Email
               </label>
               <input
@@ -129,7 +129,7 @@ export default function AddDriver() {
               />
             </div>
             <div>
-              <label className="block text-lg font-medium text-[#F5EF1B]">
+               <label className="block text-lg font-medium text-zinc-800">
                 Drivers License Number
               </label>
               <input
@@ -144,13 +144,13 @@ export default function AddDriver() {
               />
             </div>
             <div>
-              <label className="block text-lg font-medium text-[#F5EF1B]">
+               <label className="block text-lg font-medium text-zinc-800">
                 Phone Number
               </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              {/* <div className="relative"> */}
+                {/* <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
                   +
-                </span>
+                </span> */}
 
                 <input
                   type="tel"
@@ -160,12 +160,12 @@ export default function AddDriver() {
                   value={phoneNumber}
                   onChange={handlePhoneNumberChange}
                   required
-                  className="w-full px-8 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
                 />
-              </div>
+              {/* </div> */}
             </div>
             <div>
-              <label className="block text-lg font-medium text-[#F5EF1B]">
+               <label className="block text-lg font-medium text-zinc-800">
                 Password
               </label>
               <div className="flex items-center gap-2">

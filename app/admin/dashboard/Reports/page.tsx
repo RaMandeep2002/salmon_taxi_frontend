@@ -2,195 +2,209 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../DashBoardLayout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ChevronDown, Download, Search } from "lucide-react";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useDispatch } from "react-redux";
+import { Download } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
-import { useSelector } from "react-redux";
 import { fetchBookingHistory } from "../../slices/slice/booingHistorySlice";
-
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { getBookingReport } from "../../slices/slice/getReportSlice";
 
 export default function Reports() {
-  // const [fromDate, setFromDate] = useState("");
-  // const [toDate, setToDate] = useState("");
-  
-
-  const handleDownload = () => {
-    // Example API call to download CSV
-    window.location.href = `${API_URL}/admin/report-csv`;
-  };
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [pickup, setPickup] = useState("");
+  const [drivername, setDrivername] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
 
   const dispatch = useDispatch<AppDispatch>();
+  const { bookings, loading, error } = useSelector(
+    (state: RootState) => state.fetchBookingHistory
+  );
+  const { isDownloading, iserror } = useSelector(
+    (state: RootState) => state.getBookingReport
+  );
 
-  const {
-    bookings: bookings,
-    loading,
-    error,
-  } = useSelector((state: RootState) => state.fetchBookingHistory);
   useEffect(() => {
     dispatch(fetchBookingHistory());
   }, [dispatch]);
 
-  const [filterStatus, setFilterStatus] = useState("All");
+  // Convert YYYY-MM-DD to MM/DD/YYYY for comparison
+  const convertDateFormat = (dateString: string) => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split("-");
+    return `${month}/${day}/${year}`;
+  };
+  const formattedFromDate = convertDateFormat(fromDate);
+  const formattedToDate = convertDateFormat(toDate);
+ 
+  const filteredBookings =
+    bookings?.filter((booking) => {
+      const bookingDate = booking.pickupDate;
+
+
+      const isDriverMatch = drivername
+        ? booking.driver?.drivername
+            ?.toLowerCase()
+            .includes(drivername.toLowerCase())
+        : true;
+
+      const isPickupMatch = pickup
+        ? booking.pickup?.address
+            ?.toLowerCase()
+            .includes(pickup.toLowerCase())
+        : true;
+
+      const isFromDateMatch = fromDate
+        ? new Date(bookingDate) >= new Date(formattedFromDate)
+        : true;
+
+      const isToDateMatch = toDate
+        ? new Date(bookingDate) <= new Date(formattedToDate)
+        : true;
+
+      return isDriverMatch && isPickupMatch && isFromDateMatch && isToDateMatch;
+    }) || [];
+
+  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+  const paginatedBookings = filteredBookings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+
+  const handleDownload = (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(getBookingReport({  fromDate: formattedFromDate,
+      toDate: formattedToDate, pickup, drivername }));
+  };
+
   return (
     <DashboardLayout>
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">
           Booking History Reports
         </h1>
 
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Input
-              placeholder="Search by name, email, or driver ID..."
-              className="w-64 text-white border border-[#F5EF1B] placeholder-white"
+        {/* Filter & Download Form */}
+        <form onSubmit={handleDownload} className="w-full mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              className="px-2 py-2 text-white border border-[#F5EF1B] bg-transparent rounded-md appearance-none [&::-webkit-calendar-picker-indicator]:invert placeholder:text-zinc-400"
             />
-
-            <Button
-              variant="outline"
-              size="icon"
-              className="bg-zinc-800 hover:bg-zinc-800 border border-[#F5EF1B]"
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              className="px-2 py-2 text-white border border-[#F5EF1B] bg-transparent rounded-md appearance-none [&::-webkit-calendar-picker-indicator]:invert placeholder:text-zinc-400"
+            />
+            <input
+              value={pickup}
+              onChange={(e) => setPickup(e.target.value)}
+              placeholder="Pickup Address"
+              className="px-2 py-2 text-white border border-[#F5EF1B] bg-transparent rounded-md"
+            />
+            <input
+              value={drivername}
+              onChange={(e) => setDrivername(e.target.value)}
+              placeholder="Driver Name"
+              className="px-2 py-2 text-white border border-[#F5EF1B] bg-transparent rounded-md"
+            />
+            <button
+              type="submit"
+              className="px-2 py-2 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2 rounded-md"
+              disabled={isDownloading}
             >
-              <Search className="h-4 w-4 text-[#F5EF1B]" />
-            </Button>
+              <Download size={16} />
+              {isDownloading ? "Downloading..." : "Download CSV"}
+            </button>
           </div>
+          {iserror && <p className="text-red-500 text-sm mt-2">{iserror}</p>}
+        </form>
 
-          <DropdownMenu>
-          <DropdownMenuTrigger asChild className="text-white bg-zinc-800 border border-[#F5EF1B]">
-              <Button
-                variant="outline"
-                className="bg-zinc-800 hover:bg-zinc-800 text-white hover:text-white"
-              >
-                {filterStatus === "All" ? "Filter by Status" : filterStatus}
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="bg-zinc-800 hover:bg-zinc-800 text-white hover:text-white border border-[#F5EF1B]"
-            >
-              {["All", "completed", "busy", "not working"].map((status) => (
-                <DropdownMenuCheckboxItem
-                  key={status}
-                  checked={filterStatus === status}
-                  onCheckedChange={() => setFilterStatus(status)}
-                >
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-        <div className="border border-[#F5EF1B] rounded-lg overflow-hidden">
+        {/* Table */}
+        <div className="border border-[#F5EF1B] rounded-xl overflow-auto shadow-lg">
           <Table>
             <TableHeader>
-              <TableRow className="text-center border border-[#F5EF1B] ">
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
-                  Booking ID
-                </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Customer Name
-                </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Booking Date
-                </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Assign Driver
-                </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Total Fare
-                </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Pickup
-                </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Drop Off
-                </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Payment Status
-                </TableHead>
-                {/* <TableHead className="w-[100px] text-center">
-                  Payment Method
-                </TableHead> */}
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
-                  Status
-                </TableHead>
+              <TableRow className=" border-b border-[#F5EF1B] text-[#F5EF1B] text-base">
+                {[
+                  "Booking Date",
+                  "Booking Time",
+                  "Driver",
+                  "Distance",
+                  "Waiting Time",
+                  "Total Fare",
+                  "Pickup",
+                  "Drop Off",
+                ].map((header) => (
+                  <TableHead key={header} className="min-w-[120px] h-[50px]">
+                    {header}
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
 
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center">
+                  <TableCell colSpan={8} className="text-center py-8 text-white">
                     Loading...
                   </TableCell>
                 </TableRow>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-red-500">
+                  <TableCell colSpan={8} className="text-center py-8 text-red-500">
                     Error: {error}
                   </TableCell>
                 </TableRow>
+              ) : paginatedBookings.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8 text-white">
+                    No bookings found
+                  </TableCell>
+                </TableRow>
               ) : (
-                bookings.map((booking) => (
+                paginatedBookings.map((booking) => (
                   <TableRow
-                    className="text-center border border-[#F5EF1B]"
                     key={booking.bookingId}
+                    className="border-b border-[#F5EF1B]"
                   >
-                    <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg ">
-                      {booking.bookingId}
-                    </TableCell>
-                    <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
-                      {booking.customerName}
-                    </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell className="text-white">
                       {booking.pickupDate}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                      {!booking.driver?.drivername
-                        ? "No driver assign"
-                        : booking.driver?.drivername}
+                    <TableCell className="text-white">
+                      {booking.pickuptime}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                      {booking.totalFare}
+                    <TableCell className="text-white">
+                      {booking.driver?.drivername || "No driver assigned"}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                      {/* {`${booking.pickup.latitude}, ${booking.pickup.longitude}`} */}
-                      {`${booking.pickup.address}`}
+                    <TableCell className="text-white">
+                      {booking.distance}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                    {/* {`${booking.dropOff.latitude}, ${booking.dropOff.longitude}`} */}
-                    {`${booking.dropOff.address}`}
+                    <TableCell className="text-white">
+                      {booking.wating_time}
                     </TableCell>
-                    
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                      {booking.paymentStatus}
+                    <TableCell className="text-white">
+                    {`$ ${booking.totalFare}`}
                     </TableCell>
-                    {/* <TableCell className="text-center">{booking.totalFare}</TableCell> */}
-                    {/* "pending", "accepted", "ongoing", "completed", "cancelled" */}
-                    <TableCell className="text-center text-white">
-                      {" "}
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          booking.status === "completed"
-                            ? "bg-green-100 text-green-800"
-                            : booking.status === "accepted"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : booking.status === "ongoing"
-                            ? "bg-blue-100 text-blue-800"
-                            : booking.status === "pending"
-                            ? "bg-gray-100 text-gray-800"
-                            : booking.status === "cancelled"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-300 text-gray-600"
-                        }`}
-                      >
-                        {booking.status}
-                      </span>
+                    <TableCell className="text-white">
+                      {booking.pickup?.address}
+                    </TableCell>
+                    <TableCell className="text-white">
+                      {booking.dropOff?.address}
                     </TableCell>
                   </TableRow>
                 ))
@@ -198,32 +212,25 @@ export default function Reports() {
             </TableBody>
           </Table>
         </div>
-        {/* <div>
-        <h1 className="font-bold text-lg text-[#F5EF1B] mb-4 mt-4">Download Report</h1>
-        <Button className="mt-2 bg-green-600 hover:bg-green-700 flex items-center gap-2" onClick={handleDownload}>
-            <Download size={16} /> Download CSV
-          </Button>
-        </div>
-      */}
-      </div>
-      <div className="max-w-lg ml-8 p-6 bg-[#F5EF1B] rounded-lg shadow-md">
-        <h1 className="font-bold text-2xl mb-4">Download Report</h1>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          {/* <div>
-            <label className="text-sm font-medium">From Date</label>
-            <Input type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
-          </div>
-          <div>
-            <label className="text-sm font-medium">To Date</label>
-            <Input type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
-          </div>
-          <Button className="mt-auto flex items-center gap-2">
-            <Filter size={16} /> Apply Filters
-          </Button> */}
-          <Button className="mt-auto bg-green-600 hover:bg-green-700 flex items-center gap-2" onClick={handleDownload}>
-            <Download size={16} /> Download CSV
+        {/* Pagination */}
+        <div className="flex justify-between items-center gap-4 mt-6">
+          <Button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] disabled:opacity-50"
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-[#F5EF1B]">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] disabled:opacity-50"
+          >
+            Next
           </Button>
         </div>
       </div>

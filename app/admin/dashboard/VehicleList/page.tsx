@@ -56,7 +56,7 @@ export default function VechicleList() {
   const [vehicle_plate_number, setVehicle_plate_number] = useState<string | "">(
     ""
   );
-  
+
   const toast = useToast();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -73,7 +73,9 @@ export default function VechicleList() {
     (state: RootState) => state.deleteVehicle
   );
   // const getsuccessmessage = vehicleinfo.message;
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 10;
 
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   // const [filterStatus, setFilterStatus] = useState("All");
@@ -95,6 +97,17 @@ export default function VechicleList() {
     return matchesSearch;
   });
 
+  const totalPages = Math.ceil(Vehicles.length / itemsPerPage);
+
+  const paginatedVehicles = formattedVehicles.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -113,7 +126,7 @@ export default function VechicleList() {
         })
       ).unwrap();
 
-      if(isUpdating === true){
+      if (isUpdating === true) {
         toast.toast({
           title: "Vehicle Updated Successfully",
         });
@@ -127,10 +140,10 @@ export default function VechicleList() {
   const handleDeleteVehicle = async (registrationNumber: string) => {
     try {
       await dispatch(deleteVehicle(registrationNumber)).unwrap();
-      if(isDeleteting === true){
+      if (isDeleteting === true) {
         toast.toast({
           title: "Vehicle Deleted Successfully",
-          description: succeesMessage
+          description: succeesMessage,
         });
         dispatch(fetchDetailWithVehicle());
       }
@@ -138,7 +151,7 @@ export default function VechicleList() {
       alert(`Failed to delete driver. Please try again. ${error}`);
       toast.toast({
         title: "Error Deleting Vehicle",
-        description: "Failed to delete vehicle. Please try again."
+        description: "Failed to delete vehicle. Please try again.",
       });
     }
   };
@@ -210,9 +223,9 @@ export default function VechicleList() {
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Driver ID
                 </TableHead> */}
-                <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
+                {/* <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
                   Registration Number
-                </TableHead>
+                </TableHead> */}
                 <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
                   Company
                 </TableHead>
@@ -253,7 +266,7 @@ export default function VechicleList() {
                   </TableCell>
                 </TableRow>
               ) : (
-                formattedVehicles.map((vehicle) => (
+                paginatedVehicles.map((vehicle) => (
                   <TableRow
                     className="border border-[#F5EF1B]"
                     key={vehicle._id}
@@ -262,9 +275,9 @@ export default function VechicleList() {
                           {driver.driverId}
                         </TableCell> */}
 
-                    <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
+                    {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                       {vehicle.registrationNumber}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                       {vehicle?.company}
                     </TableCell>
@@ -294,81 +307,73 @@ export default function VechicleList() {
                     </TableCell> */}
                     <TableCell>
                       <Dialog>
-                        <DialogTrigger asChild className="text-[#F5EF1B]">
-                          <Button variant="ghost" size="icon">
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-[#F5EF1B] hover:bg-zinc-800"
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-[#F5EF1B] border-none max-w-2xl">
+
+                        <DialogContent className="bg-[#F5EF1B] border-none rounded-2xl shadow-xl max-w-2xl px-6 py-6">
                           <DialogHeader>
-                            <DialogTitle>Vehicle Detail</DialogTitle>
+                            <DialogTitle className="text-2xl font-semibold text-zinc-800">
+                              Vehicle Detail
+                            </DialogTitle>
                           </DialogHeader>
-                          <div className="grid gap-5 p-4">
-                            <div className="grid grid-cols-4 items-center gap-2">
-                              <Label className="text-right text-base font-medium text-zinc-800">
-                                Registration Number
-                              </Label>
-                              <div className="col-span-3 text-base font-medium text-zinc-800">
-                                {vehicle.registrationNumber}
-                              </div>
-                            </div>
 
-                            <div className="grid grid-cols-4 items-center gap-2">
-                              <Label className="text-right text-base font-medium text-zinc-800">
-                                Company
-                              </Label>
-                              <div className="col-span-3 text-base font-medium text-zinc-800">
-                                {vehicle.company}
+                          <div className="grid gap-y-4 mt-4">
+                            {[
+                              // {
+                              //   label: "Registration Number",
+                              //   value: vehicle.registrationNumber,
+                              // },
+                              { label: "Company", value: vehicle.company },
+                              {
+                                label: "Vehicle Model",
+                                value: vehicle.vehicleModel,
+                              },
+                              { label: "Year", value: vehicle.year },
+                              {
+                                label: "Vehicle Plate Number",
+                                value:
+                                  vehicle.vehicle_plate_number || "Not Set",
+                              },
+                            ].map((item, index) => (
+                              <div
+                                key={index}
+                                className="grid grid-cols-4 items-center gap-2 py-2 border-b last:border-none"
+                              >
+                                <Label className="col-span-1 text-right text-sm font-medium text-zinc-600">
+                                  {item.label}
+                                </Label>
+                                <div className="col-span-3 text-base font-semibold text-zinc-800">
+                                  {item.value}
+                                </div>
                               </div>
-                            </div>
+                            ))}
 
-                            <div className="grid grid-cols-4 items-center gap-2">
-                              <Label className="text-right text-base font-medium text-zinc-800">
-                                Vehicle Model
-                              </Label>
-                              <div className="col-span-3 text-base font-medium text-zinc-800">
-                                {vehicle.vehicleModel}
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-4 items-center gap-2">
-                              <Label className="text-right text-base font-medium text-zinc-800">
-                                Year
-                              </Label>
-                              <div className="col-span-3 text-base font-medium text-zinc-800">
-                                {vehicle.year}
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-4 items-center gap-2">
-                              <Label className="text-right text-base font-medium text-zinc-800">
-                                Vehicle Plate Number
-                              </Label>
-                              <div className="col-span-3 text-base font-medium text-zinc-800">
-                                {vehicle.vehicle_plate_number
-                                  ? vehicle.vehicle_plate_number
-                                  : "Not Set"}
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-4 items-center gap-2">
-                              <Label className="text-right text-base font-medium text-zinc-800">
-                                Status
-                              </Label>
-                              <div className="col-span-3">
-                                <span
-                                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                    vehicle.status === "active"
-                                      ? "bg-green-100 text-green-800"
-                                      : vehicle.status === "free"
-                                      ? "bg-yellow-100 text-yellow-800"
-                                      : "bg-red-100 text-red-800"
-                                  }`}
-                                >
-                                  {vehicle.status}
-                                </span>
-                              </div>
-                            </div>
+                            {/* Uncomment if you want to add status badge again */}
+                            {/* <div className="grid grid-cols-4 items-center gap-2 py-2">
+        <Label className="text-right text-sm font-medium text-zinc-600">
+          Status
+        </Label>
+        <div className="col-span-3">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+              vehicle.status === "active"
+                ? "bg-green-100 text-green-800"
+                : vehicle.status === "free"
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {vehicle.status}
+          </span>
+        </div>
+      </div> */}
                           </div>
                         </DialogContent>
                       </Dialog>
@@ -531,7 +536,9 @@ export default function VechicleList() {
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
-                            onClick={() => handleDeleteVehicle(vehicle.registrationNumber)}
+                              onClick={() =>
+                                handleDeleteVehicle(vehicle.registrationNumber)
+                              }
                             >
                               Delete
                             </AlertDialogAction>
@@ -544,6 +551,25 @@ export default function VechicleList() {
               )}
             </TableBody>
           </Table>
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <Button
+            onClick={handlePrev}
+            disabled={currentPage === 1}
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+          >
+            Previous
+          </Button>
+          <span className="text-sm text-[#F5EF1B]">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+          >
+            Next
+          </Button>
         </div>
       </div>
     </DashboardLayout>

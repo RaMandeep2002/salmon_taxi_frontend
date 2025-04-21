@@ -26,7 +26,6 @@ const initialState: SettingState = {
 
 export const fetchSettings = createAsyncThunk("settings/fetchingsetting", async (_, { rejectWithValue }) => {
     try {
-        console.log("api url ----> ", API_URL)
         const token = localStorage.getItem("token");
 
         if (!token) {

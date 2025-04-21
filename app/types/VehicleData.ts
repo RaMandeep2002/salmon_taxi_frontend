@@ -5,7 +5,6 @@ export interface Vehicle {
     vehicleModel: string;
     year: number;
     vehicle_plate_number:string;
-    status: string;
     isAssigned?: boolean;
   }
   

@@ -26,31 +26,40 @@ export default function Login() {
   const { toast } = useToast();
 
   const dispatch = useDispatch<AppDispatch>();
-  const { token, isLoading } = useSelector((state: RootState) => state.auth);
+  const { token, isLoading, role } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (token) {
+    if (token && role === "admin") {
       toast({
         title: "Already Logged In",
         description: "Redirecting to dashboard...",
       });
       router.push("/admin/dashboard");
     }
-  }, [token, router, toast]);
+  }, [token, role, router, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await dispatch(loginAdmin({ email, password })).unwrap();
-      toast({
-        title: "Login Successful",
-        description: "Redirecting to dashboard...",
-      });
-      router.push("/admin/dashboard");
+      const result = await dispatch(loginAdmin({ email, password })).unwrap();
+
+      if (result.role === "admin") {
+        toast({
+          title: "Login Successful",
+          description: "Redirecting to dashboard...",
+        });
+        router.push("/admin/dashboard");
+      } else {
+        toast({
+          title: "Access Denied",
+          description: "Only admins can access this portal.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       toast({
         title: "Login Failed",
-        description: `Invalid email or password ${error}`,
+        description: `Invalid email or password. ${error}`,
         variant: "destructive",
       });
     }

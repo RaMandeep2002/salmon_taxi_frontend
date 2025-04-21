@@ -11,7 +11,7 @@ export default function RegisterVehicle() {
   const [vehicleModel, setVehicleModel] = useState("");
   const [year, setYear] = useState<number | "">("");
   const [vehicle_plate_number, setVehiclePlateNumber] = useState<string>("")
-  const [status, setStatus] = useState("active");
+  // const [status, setStatus] = useState("active");
 
   const dispatch = useDispatch<AppDispatch>();
   const { isloading, iserror } = useSelector(
@@ -23,7 +23,7 @@ export default function RegisterVehicle() {
     e.preventDefault();
     setSuccess(false);
 
-    dispatch(registerVehicle({ company, vehicleModel, year: Number(year),vehicle_plate_number, status }))
+    dispatch(registerVehicle({ company, vehicleModel, year: Number(year),vehicle_plate_number }))
       .unwrap()
       .then(() => {
         setSuccess(true);
@@ -31,7 +31,7 @@ export default function RegisterVehicle() {
         setVehicleModel("");
         setYear("");
         setVehiclePlateNumber("");
-        setStatus("active");
+        // setStatus("active");
       })
       .catch(() => {
         setSuccess(false);
@@ -108,7 +108,7 @@ export default function RegisterVehicle() {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-lg font-medium text-zinc-800">
                 Status
               </label>
@@ -120,7 +120,7 @@ export default function RegisterVehicle() {
                 <option value="active">Active</option>
                 <option value="free">Free</option>
               </select>
-            </div>
+            </div> */}
 
             <button
               type="submit"

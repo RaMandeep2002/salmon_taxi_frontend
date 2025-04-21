@@ -15,6 +15,8 @@ export interface BookingHistory {
     pickupDate: string;
     pickuptime: string;
     totalFare: number;
+    distance:number;
+    wating_time:number;
     paymentStatus: string;
     status: string;
     pickup: Location;

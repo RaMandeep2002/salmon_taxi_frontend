@@ -1,24 +1,24 @@
-import { FC } from "react";
-import { IconType } from "react-icons"; // or appropriate icon library type
+import { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-type MenuItemProps = {
-  icon: IconType;
+interface MenuItemProps {
+  icon: LucideIcon;
   label: string;
   onClick: () => void;
-};
+  isCollapsed?: boolean;
+}
 
-export const MenuItem: FC<MenuItemProps> = ({ icon: Icon, label, onClick }) => {
+export function MenuItem({ icon: Icon, label, onClick, isCollapsed }: MenuItemProps) {
   return (
-    <div className="relative">
-      <button
-        onClick={onClick}
-        className="flex items-center justify-between w-full px-4 py-2 text-left hover:bg-zinc-800 dark:hover:bg-gray-800 text-gray-800 hover:text-[#F5EF1B] rounded-md"
-      >
-        <div className="flex items-center space-x-2">
-          <Icon className="w-5 h-5" />
-          <span>{label}</span>
-        </div>
-      </button>
-    </div>
+    <button
+      onClick={onClick}
+      className={cn(
+        "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-800 hover:bg-yellow-500 hover:text-white transition-colors",
+        isCollapsed && "justify-center"
+      )}
+    >
+      <Icon size={20} />
+      {!isCollapsed && <span className="font-medium">{label}</span>}
+    </button>
   );
-};
+}

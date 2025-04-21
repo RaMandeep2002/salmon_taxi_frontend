@@ -13,6 +13,7 @@ import deleteVehicleReducer from "../admin/slices/slice/deleteVehicleSlice";
 import fetchBookingHistoryReducer from "../admin/slices/slice/booingHistorySlice";
 import updateSettingReducer from "../admin/slices/slice/UpdateSettingSlice";
 import settingsReducer from "../admin/slices/slice/settingSlics"
+import BookingReportReducer from "../admin/slices/slice/getReportSlice"
 
 export const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ export const store = configureStore({
     deleteVehicle: deleteVehicleReducer,
     updateSetting : updateSettingReducer,
     settings: settingsReducer,
+    getBookingReport : BookingReportReducer
   },
 });
 

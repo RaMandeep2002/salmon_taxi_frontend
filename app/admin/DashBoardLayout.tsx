@@ -36,21 +36,22 @@ export default function DashboardLayout({
 
   return (
     <div className="flex h-screen bg-gray-100">
-      
       <DashboardSidebar />
-    
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <HeaderDashboard />
 
         <nav className="shadow-sm p-4 bg-zinc-800">
-          <ul className="flex space-x-2 text-white text-sm">
-            {pathSegments.map((segment, index) => {
-              const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
+          <ul className="flex space-x-2 text-white text-sm overflow-x-auto">
+            {pathSegments.slice(1).map((segment, index) => {
+              const path = `/${pathSegments.slice(1, index + 2).join("/")}`;
               return (
-                <li key={path} className="flex items-center">
-                  <span className="mx-2">/</span>
-                  <Link href={path} className="hover:text-[#F5EF1B] capitalize">
+                <li key={path} className="flex items-center whitespace-nowrap">
+                  {index > 0 && <span className="mx-2">/</span>}
+                  <Link 
+                    href={path} 
+                    className="hover:text-[#F5EF1B] capitalize transition-colors"
+                  >
                     {segment}
                   </Link>
                 </li>
@@ -59,7 +60,7 @@ export default function DashboardLayout({
           </ul>
         </nav>
 
-        <main className="flex-1 overflow-y-auto p-6 bg-zinc-800">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-zinc-800">
           <div className="max-w-full mx-auto space-y-6">{children}</div>
         </main>
       </div>

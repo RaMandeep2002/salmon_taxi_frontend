@@ -15,11 +15,30 @@ export const fetchBookingHistory = createAsyncThunk<BookingHistory[], void, { re
     "booking/fetchHistory",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axios.get<{ bookings: BookingHistory[] }>(`${API_URL}/customer/bookingHistory`);
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+              return rejectWithValue("No authentication token found.");
+            }
+            const response = await axios.get<{ bookings: BookingHistory[] }>(`${API_URL}/admin/bookings`, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              });
             return response.data.bookings;
-        } catch (error) {
-            console.error(error);
-            return rejectWithValue("Failed to fetch bookings");
+        } catch (error:unknown) {
+             // @ts-expect-error this is giving no import error
+            if (axios.isAxiosError(error)) {
+                // @ts-expect-error this is giving no import error
+                return rejectWithValue(error.response?.data?.message || "API Error");
+              }
+            
+              if (error instanceof Error) {
+                return rejectWithValue(error.message);
+              }
+            
+              return rejectWithValue("An unknown error occurred");
         }
     }
 );

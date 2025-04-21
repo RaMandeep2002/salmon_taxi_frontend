@@ -263,9 +263,9 @@ export default function DriverList() {
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
                   License Number
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
+                {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
                   Status
-                </TableHead>
+                </TableHead> */}
                 <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
                   Actions
                 </TableHead>
@@ -320,7 +320,7 @@ export default function DriverList() {
                     <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
                       {driver.driversLicenseNumber}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
+                    {/* <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           driver.status === "available"
@@ -332,7 +332,7 @@ export default function DriverList() {
                       >
                         {driver.status}
                       </span>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className="text-center">
                       <Dialog>
                         <DialogTrigger asChild className="text-white">
@@ -389,7 +389,7 @@ export default function DriverList() {
                                 {selectedDriver?.driversLicenseNumber}
                               </div>
                             </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
+                            {/* <div className="grid grid-cols-4 items-center gap-4">
                               <Label className="text-right text-lg font-medium text-zinc-800">
                                 Status
                               </Label>
@@ -406,7 +406,7 @@ export default function DriverList() {
                                   {selectedDriver?.status}
                                 </span>
                               </div>
-                            </div>
+                            </div> */}
                           </div>
                         </DialogContent>
                       </Dialog>

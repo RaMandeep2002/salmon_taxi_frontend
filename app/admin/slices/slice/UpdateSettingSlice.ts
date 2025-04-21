@@ -70,12 +70,13 @@ const settingsSlice = createSlice({
         builder
             .addCase(UpdateSettings.pending, (state) => {
                 state.isLoading = true;
+                state.isUpdating = true; // start updating
                 state.error = null;
             })
             .addCase(UpdateSettings.fulfilled, (state, action) => {
                 state.settings = action.payload.settings;
                 state.isLoading = false;
-                state.isUpdating = true;
+                state.isUpdating = false; // stop updating
             })
             .addCase(UpdateSettings.rejected, (state, action) => {
                 state.isLoading = false;
