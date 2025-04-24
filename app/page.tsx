@@ -1,14 +1,14 @@
-import Link from "next/link";
-import AboutUs from "./LandingPage/AboutUs";
-// import AppDownloadSection from "./LandingPage/AppDownloadSection";
-import GallerySection from "./LandingPage/GallerySection";
-import HeroSection from "./LandingPage/HeroSection";
-import Navbar from "./LandingPage/Navbar";
-import WelcomeSection from "./LandingPage/WelcomeSection";
-import {
-  Mail,
-  PhoneCall,
-} from "lucide-react";
+// import Link from "next/link";
+// import AboutUs from "./LandingPage/AboutUs";
+// // import AppDownloadSection from "./LandingPage/AppDownloadSection";
+// import GallerySection from "./LandingPage/GallerySection";
+// import HeroSection from "./LandingPage/HeroSection";
+// import Navbar from "./LandingPage/Navbar";
+// import WelcomeSection from "./LandingPage/WelcomeSection";
+// import {
+//   Mail,
+//   PhoneCall,
+// } from "lucide-react";
 
 export default function Home() {
   return (
