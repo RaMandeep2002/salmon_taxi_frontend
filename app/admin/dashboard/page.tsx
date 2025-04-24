@@ -33,7 +33,8 @@ export default function DashboardPage() {
     currentPage * itemsPerPage
   );
 
-  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   return (
@@ -43,6 +44,9 @@ export default function DashboardPage() {
           Welcome Admin
         </h1>
 
+        <h4 className="text-xl sm:text-xl font-bold mb-4 sm:mb-6 text-[#F5EF1B]">
+          Bookings
+        </h4>
         <div className="border border-[#F5EF1B] rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <Table className="min-w-[900px]">
@@ -87,18 +91,30 @@ export default function DashboardPage() {
                       className="text-center border border-[#F5EF1B]"
                       key={booking.bookingId}
                     >
-                      <TableCell className="text-white text-xs sm:text-sm">{booking.pickupDate}</TableCell>
-                      <TableCell className="text-white text-xs sm:text-sm">{booking.pickuptime}</TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.pickupDate}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.pickuptime}
+                      </TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">
                         {!booking.driver?.drivername
                           ? "No driver assigned"
                           : booking.driver.drivername}
                       </TableCell>
-                      <TableCell className="text-white text-xs sm:text-sm">{booking.distance}</TableCell>
-                      <TableCell className="text-white text-xs sm:text-sm">{booking.wating_time}</TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.distance}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.wating_time_formated}
+                      </TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">{`$ ${booking.totalFare}`}</TableCell>
-                      <TableCell className="text-white text-xs sm:text-sm">{booking.pickup?.address}</TableCell>
-                      <TableCell className="text-white text-xs sm:text-sm">{booking.dropOff?.address}</TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.pickup?.address}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.dropOff?.address}
+                      </TableCell>
                     </TableRow>
                   ))
                 )}

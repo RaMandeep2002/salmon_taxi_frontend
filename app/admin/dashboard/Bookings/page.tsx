@@ -37,7 +37,7 @@ export default function BookingHistory() {
   const filteredBookings =
   bookings?.filter((booking) => {
     const matchesSearch =
-    booking.driver?.drivername.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    booking.driver?.drivername?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     booking.pickup.address.toLowerCase().includes(searchTerm.toLowerCase()) 
 
     // const matchesStatus =
@@ -194,7 +194,7 @@ export default function BookingHistory() {
                       {booking.distance}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                      {booking.wating_time}
+                      {booking.wating_time_formated}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                       {/* {`${booking.pickup.latitude}, ${booking.pickup.longitude}`} */}

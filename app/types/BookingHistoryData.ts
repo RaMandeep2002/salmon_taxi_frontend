@@ -17,6 +17,7 @@ export interface BookingHistory {
     totalFare: number;
     distance:number;
     wating_time:number;
+    wating_time_formated:string;
     paymentStatus: string;
     status: string;
     pickup: Location;

@@ -114,7 +114,7 @@ export default function AddDriver() {
               />
             </div>
             <div>
-               <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-lg font-medium text-zinc-800">
                 Email
               </label>
               <input
@@ -129,7 +129,7 @@ export default function AddDriver() {
               />
             </div>
             <div>
-               <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-lg font-medium text-zinc-800">
                 Drivers License Number
               </label>
               <input
@@ -144,33 +144,33 @@ export default function AddDriver() {
               />
             </div>
             <div>
-               <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-lg font-medium text-zinc-800">
                 Phone Number
               </label>
               {/* <div className="relative"> */}
-                {/* <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              {/* <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
                   +
                 </span> */}
 
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  autoComplete="off"
-                  placeholder="Enter the Phone Number of Driver"
-                  value={phoneNumber}
-                  onChange={handlePhoneNumberChange}
-                  required
+              <input
+                type="tel"
+                name="phoneNumber"
+                autoComplete="off"
+                placeholder="Enter the Phone Number of Driver"
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
+                required
                 className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
-                />
+              />
               {/* </div> */}
             </div>
             <div>
-               <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-lg font-medium text-zinc-800">
                 Password
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
                 {/* Flex container to align items horizontally */}
-                <div className="relative flex-1">
+                <div className="relative flex-1 w-full">
                   {/* Relative container for input and Show/Hide button */}
                   <input
                     type={showPassword ? "text" : "password"} // Toggle between text and password
@@ -189,13 +189,22 @@ export default function AddDriver() {
                     {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
-                <button
+                <div className="relative xs:w-auto">
+                  <button
+                    type="button"
+                    onClick={generatePassword}
+                   className="w-full sm:w-auto bg-yellow-600 text-white hover:bg-yellow-500 py-3 px-4 text-lg font-semibold rounded-lg transition duration-300"
+                  >
+                    Generate Password
+                  </button>
+                </div>
+                {/* <button
                   type="button"
                   onClick={generatePassword}
                   className=" bg-yellow-600 text-white hover:bg-yellow-500 py-3 px-4 text-lg font-semibold rounded-lg  transition duration-300"
                 >
                   Generate Password
-                </button>
+                </button> */}
               </div>
             </div>
             <button

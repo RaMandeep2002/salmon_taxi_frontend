@@ -73,7 +73,7 @@ const BookingReportSlice = createSlice({
                 state.iserror = null;
             })
             .addCase(getBookingReport.fulfilled, (state) => {
-                state.isDownloading = true;
+                state.isDownloading = false;
             })
             .addCase(getBookingReport.rejected, (state, action) => {
                 state.isDownloading = false;

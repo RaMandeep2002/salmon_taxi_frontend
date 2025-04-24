@@ -9,6 +9,12 @@ export default {
   ],
   theme: {
   	extend: {
+		screens: {
+			'xs': '30rem',         // 480px
+			'2xl': '100rem',       // 1600px
+			'3xl': '120rem',       // 1920px
+			'large': '2550px',     // 2550px
+		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
