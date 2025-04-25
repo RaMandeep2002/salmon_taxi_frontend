@@ -67,6 +67,7 @@ export default function DashboardSidebar() {
 
       {/* Sidebar Navigation */}
       <nav className="flex-1 px-2 pt-5 space-y-2 overflow-y-auto">
+    
         <MenuItem
           icon={Home}
           label={isCollapsed ? "" : "Dashboard"}

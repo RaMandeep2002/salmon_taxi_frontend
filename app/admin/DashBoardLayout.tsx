@@ -44,7 +44,7 @@ export default function DashboardLayout({
         <nav className="shadow-sm p-4 bg-zinc-800">
           <ul className="flex space-x-2 text-white text-sm overflow-x-auto">
             {pathSegments.slice(1).map((segment, index) => {
-              const path = `/${pathSegments.slice(1, index + 2).join("/")}`;
+              const path = `/${pathSegments.slice(0, index + 2).join("/")}`;
               return (
                 <li key={path} className="flex items-center whitespace-nowrap">
                   {index > 0 && <span className="mx-2">/</span>}

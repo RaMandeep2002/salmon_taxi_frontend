@@ -50,12 +50,12 @@ import { useToast } from "@/hooks/use-toast";
 import { deleteVehicle } from "../../slices/slice/deleteVehicleSlice";
 
 export default function VechicleList() {
-  const [company, setCompany] = useState<string | "">("");
-  const [vehiclemodel, setVehiclemodel] = useState<string | "">("");
-  const [year, setYear] = useState<number | "">("");
-  const [vehicle_plate_number, setVehicle_plate_number] = useState<string | "">(
-    ""
-  );
+  // const [company, setCompany] = useState<string | "">("");
+  // const [vehiclemodel, setVehiclemodel] = useState<string | "">("");
+  // const [year, setYear] = useState<number | "">("");
+  // const [vehicle_plate_number, setVehicle_plate_number] = useState<string | "">(
+  //   ""
+  // );
 
   const toast = useToast();
   const router = useRouter();
@@ -66,7 +66,7 @@ export default function VechicleList() {
     error,
   } = useSelector((state: RootState) => state.detailWithVehicle);
 
-  const { isUpdating, iserror } = useSelector(
+  const { iserror } = useSelector(
     (state: RootState) => state.updateVehcile
   );
   const { isDeleteting, succeesMessage } = useSelector(
@@ -78,11 +78,29 @@ export default function VechicleList() {
   const itemsPerPage = 10;
 
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // const [filterStatus, setFilterStatus] = useState("All");
 
   useEffect(() => {
     dispatch(fetchDetailWithVehicle());
   }, [dispatch]);
+  const [formData, setFormData] = useState({
+    company: selectedVehicle?.company || "",
+    vehicleModel: selectedVehicle?.vehicleModel || "",
+    year: selectedVehicle?.year || 0,
+    vehicle_plate_number: selectedVehicle?.vehicle_plate_number || "",
+  });
+  useEffect(() => {
+    if (selectedVehicle) {
+      setFormData({
+        company: selectedVehicle.company || "",
+        vehicleModel: selectedVehicle.vehicleModel || "",
+        year: selectedVehicle.year || 0,
+        vehicle_plate_number: selectedVehicle.vehicle_plate_number || "",
+      });
+    }
+  }, [selectedVehicle]);
 
   const formattedVehicles = Vehicles?.filter((vehicle) => {
     const matchesSearch = vehicle.company
@@ -110,30 +128,31 @@ export default function VechicleList() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       await dispatch(
         updateVehicle({
           registrationNumber: selectedVehicle!.registrationNumber,
           vehicleData: {
-            company: company || selectedVehicle?.company || "",
-            vehicleModel: vehiclemodel || selectedVehicle?.vehicleModel || "",
-            year: year || selectedVehicle?.year || 0,
-            vehicle_plate_number:
-              vehicle_plate_number ||
-              selectedVehicle?.vehicle_plate_number ||
-              "",
+            company: formData.company,
+            vehicleModel: formData.vehicleModel,
+            year: formData.year,
+            vehicle_plate_number: formData.vehicle_plate_number,
           },
         })
       ).unwrap();
 
-      if (isUpdating === true) {
+      // if (isUpdating === true) {
         toast.toast({
           title: "Vehicle Updated Successfully",
         });
         dispatch(fetchDetailWithVehicle());
-      }
+      // }
     } catch (error) {
       alert(`Failed to delete driver. Please try again. ${error}`);
+    }
+    finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -439,11 +458,13 @@ export default function VechicleList() {
                                 <Input
                                   id="company"
                                   type="text"
-                                  value={
-                                    company || selectedVehicle?.company || ""
+                                  value={formData.company}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      company: e.target.value,
+                                    })
                                   }
-                                  onChange={(e) => setCompany(e.target.value)}
-                                  // defaultValue={vehicle.company}
                                   className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
                                 />
                               </div>
@@ -457,13 +478,12 @@ export default function VechicleList() {
                                 <Input
                                   id="vehicleModel"
                                   type="text"
-                                  value={
-                                    vehiclemodel ||
-                                    selectedVehicle?.vehicleModel ||
-                                    ""
-                                  }
+                                  value={formData.vehicleModel}
                                   onChange={(e) =>
-                                    setVehiclemodel(e.target.value)
+                                    setFormData({
+                                      ...formData,
+                                      vehicleModel: e.target.value,
+                                    })
                                   }
                                   // defaultValue={vehicle.vehicleModel}
                                   className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
@@ -479,9 +499,12 @@ export default function VechicleList() {
                                 <Input
                                   id="year"
                                   type="number"
-                                  value={year || selectedVehicle?.year || 0}
+                                  value={formData.year}
                                   onChange={(e) =>
-                                    setYear(Number(e.target.value))
+                                    setFormData({
+                                      ...formData,
+                                      year: Number(e.target.value),
+                                    })
                                   }
                                   // defaultValue={vehicle.year}
                                   className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
@@ -497,13 +520,12 @@ export default function VechicleList() {
                                 <Input
                                   id="vehicle_plate_number"
                                   type="text"
-                                  value={
-                                    vehicle_plate_number ||
-                                    selectedVehicle?.vehicle_plate_number ||
-                                    ""
-                                  }
+                                  value={formData.vehicle_plate_number}
                                   onChange={(e) =>
-                                    setVehicle_plate_number(e.target.value)
+                                    setFormData({
+                                      ...formData,
+                                      vehicle_plate_number: e.target.value,
+                                    })
                                   }
                                   // defaultValue={vehicle.vehicle_plate_number}
                                   className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
@@ -511,7 +533,7 @@ export default function VechicleList() {
                               </div>
                             </div>
                             <DialogFooter>
-                              <Button type="submit">Update Vehicle</Button>
+                              <Button type="submit" disabled={isSubmitting}>Update Vehicle</Button>
                             </DialogFooter>
                           </form>
                         </DialogContent>

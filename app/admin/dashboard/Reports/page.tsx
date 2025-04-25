@@ -150,7 +150,7 @@ export default function Reports() {
                   "Pickup",
                   "Drop Off",
                 ].map((header) => (
-                  <TableHead key={header} className="min-w-[120px] h-[50px]">
+                  <TableHead key={header} className="min-w-[120px] h-[50px] text-[#F5EF1B]">
                     {header}
                   </TableHead>
                 ))}
