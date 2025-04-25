@@ -108,7 +108,7 @@ export default function DashboardPage() {
                       <TableCell className="text-white text-xs sm:text-sm">
                         {booking.wating_time_formated}
                       </TableCell>
-                      <TableCell className="text-white text-xs sm:text-sm">{`$ ${booking.totalFare}`}</TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">{`$${booking.totalFare}`}</TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">
                         {booking.pickup?.address}
                       </TableCell>

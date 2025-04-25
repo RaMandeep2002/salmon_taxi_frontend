@@ -198,7 +198,7 @@ export default function Reports() {
                       {booking.wating_time}
                     </TableCell>
                     <TableCell className="text-white">
-                    {`$ ${booking.totalFare}`}
+                    {`$${booking.totalFare}`}
                     </TableCell>
                     <TableCell className="text-white">
                       {booking.pickup?.address}

@@ -188,7 +188,7 @@ export default function BookingHistory() {
                         : booking.driver?.drivername}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                    {`$ ${booking.totalFare}`}
+                    {`$${booking.totalFare}`}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                       {booking.distance}
