@@ -1,4 +1,5 @@
 // import Image from "next/image";
+import * as motion from "motion/react-client"
 
 export default function AboutUs() {
   return (
@@ -10,18 +11,33 @@ export default function AboutUs() {
         <div className="max-w-6xl w-full px-4 md:px-6">
           <div className="items-center justify-center">
             <div className="space-y-4 text-center lg:text-left">
-              <h2 className="text-3xl font-bold text-center tracking-tighter md:text-4xl">
+              <motion.h2
+                 initial={{ opacity: 0, y: -50 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 transition={{ duration: 0.2 }}
+                 viewport={{ once: true }}
+               className="text-3xl font-bold text-center tracking-tighter md:text-4xl">
                 About Us
-              </h2>
-              <p className="text-muted-foreground md:text-xl">
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: -50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4}}
+                viewport={{ once: true }}
+                 className="text-muted-foreground md:text-xl">
                 Locally owned Salmon Arm Taxi is a major part of transportation
                 services in Salmon Arm all year around. By emphasizing on
                 quality and service, Salmon Arm Taxi has been providing
                 contractual transportation services to many local and national
                 companies.
-              </p>
+              </motion.p>
               <div className="space-y-1 text-base md:text-lg text-gray-800 gap-3 text-center ">
-                <p className="gap-3">
+                <motion.p
+                 initial={{ opacity: 0, y: -50 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 transition={{ duration: 0.6 }}
+                 viewport={{ once: true }}
+                 className="gap-3">
                   <strong>Email:</strong>
                   <a
                     href="mailto:salmonarmtaxi@yahoo.ca"
@@ -29,8 +45,12 @@ export default function AboutUs() {
                   >
                     salmonarmtaxi@yahoo.ca
                   </a>
-                </p>
-                <p>
+                </motion.p>
+                <motion.p
+                 initial={{ opacity: 0, y: -50 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 transition={{ duration: 0.8 }}
+                 viewport={{ once: true }}>
                   <strong>Contact:</strong>
                   <a
                     href="tel:+12508321111"
@@ -38,7 +58,7 @@ export default function AboutUs() {
                   >
                     +1 (250) 832-1111
                   </a>
-                </p>
+                </motion.p>
               </div>
             </div>
 
