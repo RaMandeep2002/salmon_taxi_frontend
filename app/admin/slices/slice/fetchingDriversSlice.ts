@@ -2,7 +2,7 @@ import { Drivers, DriversResponse } from "@/app/types/types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // const API_URL = process.env.NEXT_PUBLIC_API_LOCAL_URL;
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_URL = process.env.API_BASE_URL;
 
 import axios from "axios";
 
