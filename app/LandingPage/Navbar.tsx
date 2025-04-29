@@ -125,7 +125,7 @@ export default function Navbar() {
         }}
          className="md:hidden bg-yellow-400 px-5 pb-4">
           <nav className="flex flex-col gap-3">
-            {["home", "about", "gallery", "app", "contact"].map((section) => (
+            {["home", "about", "gallery","contact"].map((section) => (
               <Link
                 key={section}
                 href={`#${section}`}
