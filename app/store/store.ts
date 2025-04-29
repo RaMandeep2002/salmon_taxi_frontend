@@ -14,6 +14,7 @@ import fetchBookingHistoryReducer from "../admin/slices/slice/booingHistorySlice
 import updateSettingReducer from "../admin/slices/slice/UpdateSettingSlice";
 import settingsReducer from "../admin/slices/slice/settingSlics"
 import BookingReportReducer from "../admin/slices/slice/getReportSlice"
+import driverStatusReducer from "../admin/slices/slice/driverStatusSlice"
 
 export const store = configureStore({
   reducer: {
@@ -30,7 +31,8 @@ export const store = configureStore({
     deleteVehicle: deleteVehicleReducer,
     updateSetting : updateSettingReducer,
     settings: settingsReducer,
-    getBookingReport : BookingReportReducer
+    getBookingReport : BookingReportReducer,
+    driverStatus: driverStatusReducer,
   },
 });
 

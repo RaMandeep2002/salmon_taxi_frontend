@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // const API_URL = process.env.NEXT_PUBLIC_API_LOCAL_URL;
-const API_URL = process.env.API_BASE_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface Driver {
   drivername: string;
@@ -35,7 +35,6 @@ export const updateDriver = createAsyncThunk(
       email: string;
       driversLicenseNumber: string;
       phoneNumber: string;
-      password: string;
     };
   },
     { rejectWithValue }

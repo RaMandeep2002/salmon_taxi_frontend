@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { Vehicle, VehicleState } from "@/app/types/VehicleData";
 
-const API_URL = process.env.API_BASE_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const initialState: VehicleState = {
   vehicles: [],

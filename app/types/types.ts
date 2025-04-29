@@ -17,6 +17,7 @@ export interface Drivers {
   shifts: []; // Replace `any` with a specific type if needed
   createdAt: string;
   updatedAt: string;
+  isActive: boolean;
   __v: number;
 }
 

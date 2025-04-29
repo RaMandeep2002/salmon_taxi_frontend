@@ -22,7 +22,7 @@ export default function Navbar() {
     transition={{
       duration: 1.5,
     }}
-     className="sticky top-0 z-50 w-full border-b border-black bg-[#F2EE21]">
+     className="sticky top-0 z-50 w-full border-b border-black bg-[#F2EE21] shadow-lg">
       <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-8">
         {/* Logo */}
         <motion.div

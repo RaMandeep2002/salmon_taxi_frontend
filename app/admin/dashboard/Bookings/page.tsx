@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
 import { fetchBookingHistory } from "@/app/admin/slices/slice/booingHistorySlice";
+// import ServerTime from "@/app/components/LocalTime";
 
 export default function BookingHistory() {
   const dispatch = useDispatch<AppDispatch>();
@@ -78,6 +79,10 @@ export default function BookingHistory() {
             </Button>
           </div>
 
+
+          {/* <div className="text-white">
+          <ServerTime />
+          </div> */}
           {/* <DropdownMenu>
           <DropdownMenuTrigger asChild className="text-white bg-zinc-800 border border-[#F5EF1B]">
               <Button
@@ -188,7 +193,15 @@ export default function BookingHistory() {
                         : booking.driver?.drivername}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                    {`$${booking.totalFare}`}
+                    {(() => {
+                      const fare = booking.totalFare;
+                      const fareStr = `$${fare}`;
+                      const decimalPart = fare.toString().split(".")[1];
+                      if (decimalPart && decimalPart.length === 1) {
+                        return fareStr + "0";
+                      }
+                      return fareStr;
+                    })()}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                       {booking.distance}

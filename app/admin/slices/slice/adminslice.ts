@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = process.env.API_BASE_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface Admin {
   name: string;

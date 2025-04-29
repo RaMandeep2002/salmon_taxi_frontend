@@ -34,6 +34,7 @@ export default function HeroSection() {
             <div className="space-y-2">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-black">
               <span className="mr-3">{text}<Cursor cursorColor='#F7AB0A' cursorStyle="_" /></span>
+              {/* Welcome To Salmon Arm Taxi */}
               </h1>
               <motion.p
                 initial={{ opacity: 0, y: -50 }}
