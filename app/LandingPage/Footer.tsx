@@ -143,14 +143,14 @@ export default function Footer(){
               <p className="text-xs text-muted-foreground">
                 © {new Date().getFullYear()} Salmon Arm Taxi. All rights reserved.
               </p>
-              <div className="flex gap-4 text-xs text-muted-foreground">
+              {/* <div className="flex gap-4 text-xs text-muted-foreground">
                 <Link href="#" className="hover:underline">
                   Privacy Policy
                 </Link>
                 <Link href="#" className="hover:underline">
                   Terms of Service
                 </Link>
-              </div>
+              </div> */}
             </motion.div>
           </div>
         </div>
