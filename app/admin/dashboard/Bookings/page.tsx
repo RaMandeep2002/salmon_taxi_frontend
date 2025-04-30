@@ -117,40 +117,40 @@ export default function BookingHistory() {
                 {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg ">
                   Booking ID
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Customer Name
                 </TableHead> */}
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Booking Date
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Booking Time
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Driver
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Total Fare
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Distance
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Waiting Time
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Pickup
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Drop Off
                 </TableHead>
-                {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                {/* <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Payment Status
                 </TableHead> */}
                 {/* <TableHead className="w-[100px] text-center">
                   Payment Method
                 </TableHead> */}
-                {/* <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                {/* <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Status
                 </TableHead> */}
               </TableRow>
@@ -249,11 +249,11 @@ export default function BookingHistory() {
             </TableBody>
           </Table>
         </div>
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Previous
           </Button>
@@ -263,7 +263,7 @@ export default function BookingHistory() {
           <Button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Next
           </Button>

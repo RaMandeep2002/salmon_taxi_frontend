@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Search, Pencil, Trash2, Eye, Plus } from "lucide-react";
+import { Pencil, Trash2, Eye, Plus } from "lucide-react";
 
 import { fetchdriverdetails } from "@/app/admin/slices/slice/fetchingDriversSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
@@ -193,26 +193,26 @@ export default function DriverList() {
       <div className="p-8">
         <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">Driver List</h1>
 
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+        <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
             <Input
               placeholder="Search by name, email, or driver ID..."
-              className="w-64 text-white border border-[#F5EF1B] placeholder-white"
+              className="w-full sm:w-72 text-white border border-[#F5EF1B] placeholder-white"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button
+            {/* <Button
               variant="outline"
               size="icon"
-              className="bg-zinc-800 hover:bg-zinc-800 border border-[#F5EF1B]"
+              className="bg-zinc-800 hover:bg-zinc-800 border border-[#F5EF1B] flex-shrink-0"
             >
               <Search className="h-4 w-4 text-[#F5EF1B]" />
-            </Button>
+            </Button> */}
           </div>
 
-          <div>
+          <div className="w-full sm:w-auto flex justify-end">
             <Button
-              className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+              className="w-full sm:w-auto text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
               onClick={() => router.push("/admin/dashboard/AddDriver")}
             >
               <Plus className="mr-2 h-4 w-4" />
@@ -225,19 +225,20 @@ export default function DriverList() {
           <Table>
             <TableHeader>
               <TableRow className="text-center border border-[#F5EF1B]">
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Name
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Email
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Phone Number
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   License Number
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px] text-center text-[#F5EF1B] text-lg">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Actions
                 </TableHead>
               </TableRow>
@@ -268,18 +269,18 @@ export default function DriverList() {
                     className="text-center border border-[#F5EF1B]"
                     key={driver._id}
                   >
-                    <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
+                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {driver.drivername}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
+                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {driver.email}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
+                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       <a href={`tel:${driver.phoneNumber}`}>
                         {driver.phoneNumber}
                       </a>
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
+                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {driver.driversLicenseNumber}
                     </TableCell>
                     <TableCell className="text-center">
@@ -489,11 +490,11 @@ export default function DriverList() {
             </TableBody>
           </Table>
         </div>
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Previous
           </Button>
@@ -503,7 +504,7 @@ export default function DriverList() {
           <Button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Next
           </Button>

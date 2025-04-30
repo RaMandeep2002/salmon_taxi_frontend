@@ -40,21 +40,24 @@ export default function RegisterVehicle() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-full mx-auto">
-        <h2 className="text-2xl font-bold text-center mb-6 text-[#F5EF1B]">
+     <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
+     <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6 text-[#F5EF1B]">
           Add New Vehicle
         </h2>
-        <div className="max-w-2xl mx-auto bg-[#F5EF1B] p-8 mt-12 border border-slate-500 rounded-2xl">
-          {iserror && <p className="text-red-500 text-center">{iserror}</p>}
+        <div
+          className="max-w-2xl w-full mx-auto bg-[#F5EF1B] p-4 sm:p-6 md:p-8 mt-6 sm:mt-12 rounded-md
+        "
+        >
+          {iserror &&  <p className="text-red-500 text-center text-sm sm:text-base">{iserror}</p>}
           {success && (
-            <p className="text-green-600 text-center font-semibold">
+             <p className="text-green-600 text-center text-sm sm:text-base font-semibold">
               Vehicle added successfully!
             </p>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Company
               </label>
               <input
@@ -63,12 +66,12 @@ export default function RegisterVehicle() {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                  className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
             </div>
 
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Vehicle Model
               </label>
               <input
@@ -77,12 +80,12 @@ export default function RegisterVehicle() {
                 value={vehicleModel}
                 onChange={(e) => setVehicleModel(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                  className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
             </div>
 
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Year
               </label>
               <input
@@ -91,11 +94,11 @@ export default function RegisterVehicle() {
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
                 required
-                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                  className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
             </div>
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Vehcile Plate Number
               </label>
               <input
@@ -104,12 +107,12 @@ export default function RegisterVehicle() {
                 value={vehicle_plate_number}
                 onChange={(e) => setVehiclePlateNumber(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                  className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
             </div>
 
             {/* <div>
-              <label className="block text-lg font-medium text-zinc-800">
+               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Status
               </label>
               <select
@@ -124,7 +127,7 @@ export default function RegisterVehicle() {
 
             <button
               type="submit"
-              className="w-full bg-yellow-600 text-white rounded-lg hover:bg-yellow-500 py-3 text-lg font-semibold transition duration-300"
+                 className="w-full bg-yellow-600 text-white rounded-md hover:bg-yellow-500 py-2 sm:py-3 text-base sm:text-lg font-semibold transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isloading ? "Adding..." : "Add Vehicle"}
             </button>

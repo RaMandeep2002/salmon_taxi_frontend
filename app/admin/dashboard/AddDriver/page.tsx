@@ -11,7 +11,7 @@ export default function AddDriver() {
   const [driversLicenseNumber, setDriversLicenseNumber] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [showPassword, setShowPassword] = useState<boolean>(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const { isLoading, error, successMessage } = useSelector(
@@ -34,9 +34,6 @@ export default function AddDriver() {
       })
     );
     if (addDriver.fulfilled.match(resultAction)) {
-      // setShowSuccessDialog(true);
-
-      // Optional: reset fields here if needed
       setDrivername("");
       setEmail("");
       setDriversLicenseNumber("");
@@ -47,10 +44,6 @@ export default function AddDriver() {
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
-
-    // Remove all non-digit characters
-
-    // Allow +, numbers, spaces, parentheses, and dashes
     const cleanedValue = value.replace(/[^\d+\s()-]/g, "");
 
     if (value.includes("+")) {
@@ -62,11 +55,10 @@ export default function AddDriver() {
     setPhoneNumber(cleanedValue);
   };
 
-  // Function to generate a random password
   const generatePassword = () => {
-    const length = 8; // Length of the generated password
+    const length = 8;
     const charset =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // Only letters and numbers
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let newPassword = "";
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * charset.length);
@@ -75,31 +67,34 @@ export default function AddDriver() {
     setPassword(newPassword);
   };
 
-  // Function to toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
     <DashboardLayout>
-      <div className="max-w-full mx-auto">
-        <h2 className="text-2xl font-bold text-center mb-6 text-[#F5EF1B]">
+      <div className="w-full px-4 sm:px-6 lg:px-8 mx-auto">
+        <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6 text-[#F5EF1B]">
           Add New Driver
         </h2>
-        <div className="max-w-2xl mx-auto bg-[#F5EF1B] p-8 mt-12 border border-slate-500 rounded-2xl">
-          {error && <p className="text-red-500 text-center">{error}</p>}
-
-          {successMessage && (
-            <p className="text-red-500 text-center">{successMessage}</p>
-          )}
-          {/* {driver. && (
-            <p className="text-green-600 text-center font-semibold">
-              Driver added successfully!
+        <div
+          className="max-w-2xl w-full mx-auto bg-[#F5EF1B] p-4 sm:p-6 md:p-8 mt-6 sm:mt-12 rounded-md
+        "
+        >
+          {error && (
+            <p className="text-red-500 text-center text-sm sm:text-base">
+              {error}
             </p>
-          )} */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          )}
+          {successMessage && (
+            <p className="text-green-600 text-center text-sm sm:text-base font-semibold">
+              {successMessage}
+            </p>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Driver name
               </label>
               <input
@@ -110,11 +105,12 @@ export default function AddDriver() {
                 value={drivername}
                 onChange={(e) => setDrivername(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
             </div>
+
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Email
               </label>
               <input
@@ -125,11 +121,11 @@ export default function AddDriver() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
             </div>
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Drivers License Number
               </label>
               <input
@@ -140,18 +136,14 @@ export default function AddDriver() {
                 value={driversLicenseNumber}
                 onChange={(e) => setDriversLicenseNumber(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
             </div>
+
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Phone Number
               </label>
-              {/* <div className="relative"> */}
-              {/* <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                  +
-                </span> */}
-
               <input
                 type="tel"
                 name="phoneNumber"
@@ -160,56 +152,47 @@ export default function AddDriver() {
                 value={phoneNumber}
                 onChange={handlePhoneNumberChange}
                 required
-                className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
-              {/* </div> */}
             </div>
+
             <div>
-              <label className="block text-lg font-medium text-zinc-800">
+              <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Password
               </label>
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-2">
-                {/* Flex container to align items horizontally */}
-                <div className="relative flex-1 w-full">
-                  {/* Relative container for input and Show/Hide button */}
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                <div className="relative flex-1">
                   <input
-                    type={showPassword ? "text" : "password"} // Toggle between text and password
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Enter the Password for Driver"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full px-4 py-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg bg-transparent placeholder:text-zinc-800"
+                    className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
                   />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-0 px-4 py-3 text-sm font-medium text-blue-600 hover:text-blue-700"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-blue-600 hover:text-blue-700"
                   >
                     {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
-                <div className="relative xs:w-auto">
-                  <button
-                    type="button"
-                    onClick={generatePassword}
-                   className="w-full sm:w-auto bg-yellow-600 text-white hover:bg-yellow-500 py-3 px-4 text-lg font-semibold rounded-lg transition duration-300"
-                  >
-                    Generate Password
-                  </button>
-                </div>
-                {/* <button
+                <button
                   type="button"
                   onClick={generatePassword}
-                  className=" bg-yellow-600 text-white hover:bg-yellow-500 py-3 px-4 text-lg font-semibold rounded-lg  transition duration-300"
+                  className="w-full sm:w-auto bg-yellow-600 text-white hover:bg-yellow-500 py-3 sm:py-3 px-3 sm:px-4 text-sm sm:text-base font-semibold rounded-md transition duration-300"
                 >
                   Generate Password
-                </button> */}
+                </button>
               </div>
             </div>
+
             <button
               type="submit"
-              className="w-full bg-yellow-600 text-white rounded-lg hover:bg-yellow-500 py-3 text-lg font-semibold  transition duration-300"
+              disabled={isLoading}
+              className="w-full bg-yellow-600 text-white rounded-md hover:bg-yellow-500 py-2 sm:py-3 text-base sm:text-lg font-semibold transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isLoading ? "Adding..." : "Add Driver"}
             </button>

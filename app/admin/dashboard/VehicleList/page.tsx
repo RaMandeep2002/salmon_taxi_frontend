@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Search, Pencil, Trash2, Eye, Plus } from "lucide-react";
+import { Pencil, Trash2, Eye, Plus } from "lucide-react";
 
 import { fetchDetailWithVehicle } from "@/app/admin/slices/slice/detailWithVechicle";
 import { AppDispatch, RootState } from "@/app/store/store";
@@ -179,21 +179,21 @@ export default function VechicleList() {
     <DashboardLayout>
       <div className="p-8">
         <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">Vehicle List</h1>
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+        <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
             <Input
               placeholder="Search by name or email..."
-              className="w-64 text-white border border-[#F5EF1B] placeholder-white"
+               className="w-full sm:w-72 text-white border border-[#F5EF1B] placeholder-white"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button
+            {/* <Button
               variant="outline"
               size="icon"
               className="bg-zinc-800 hover:bg-zinc-800 border border-[#F5EF1B]"
             >
               <Search className="h-4 w-4 text-[#F5EF1B]" />
-            </Button>
+            </Button> */}
           </div>
           {/* <DropdownMenu>
             <DropdownMenuTrigger
@@ -226,7 +226,7 @@ export default function VechicleList() {
 
           <div>
             <Button
-              className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] "
+            className="w-full sm:w-auto text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
               type="submit"
               onClick={() => router.push("/admin/dashboard/RegsiterVehicle")}
             >
@@ -242,25 +242,25 @@ export default function VechicleList() {
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Driver ID
                 </TableHead> */}
-                {/* <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
+                {/*    <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Registration Number
                 </TableHead> */}
-                <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
+                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Company
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
+                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Vehicle Model
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
+                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Year
                 </TableHead>
-                <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
+                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Vehcile Plate Number
                 </TableHead>
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Status
                 </TableHead> */}
-                <TableHead className="w-[100px] h-[50px]  text-[#F5EF1B] text-lg ">
+                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Actions
                 </TableHead>
               </TableRow>
@@ -297,16 +297,16 @@ export default function VechicleList() {
                     {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                       {vehicle.registrationNumber}
                     </TableCell> */}
-                    <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
+                  <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {vehicle?.company}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
+                  <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {vehicle?.vehicleModel}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
+                  <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {vehicle?.year}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
+                  <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {vehicle?.vehicle_plate_number
                         ? vehicle.vehicle_plate_number
                         : "Not Set"}
@@ -574,11 +574,11 @@ export default function VechicleList() {
             </TableBody>
           </Table>
         </div>
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Previous
           </Button>
@@ -588,7 +588,7 @@ export default function VechicleList() {
           <Button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Next
           </Button>

@@ -198,7 +198,15 @@ export default function Reports() {
                       {booking.wating_time}
                     </TableCell>
                     <TableCell className="text-white">
-                    {`$${booking.totalFare}`}
+                    {(() => {
+                      const fare = booking.totalFare;
+                      const fareStr = `$${fare}`;
+                      const decimalPart = fare.toString().split(".")[1];
+                      if (decimalPart && decimalPart.length === 1) {
+                        return fareStr + "0";
+                      }
+                      return fareStr;
+                    })()}
                     </TableCell>
                     <TableCell className="text-white">
                       {booking.pickup?.address}
@@ -214,11 +222,11 @@ export default function Reports() {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-between items-center gap-4 mt-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] disabled:opacity-50"
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Previous
           </Button>
@@ -228,7 +236,7 @@ export default function Reports() {
           <Button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] disabled:opacity-50"
+            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Next
           </Button>
