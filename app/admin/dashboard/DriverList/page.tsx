@@ -42,6 +42,7 @@ import { Drivers } from "@/app/types/types";
 import { useRouter } from "next/navigation";
 import { updateDriver } from "../../slices/slice/updateDriverSlice";
 import { deleteDriver } from "../../slices/slice/deleteDriverSlice";
+import { useDebounce } from "@/lib/useDebounce";
 
 interface FormData {
   drivername: string;
@@ -72,6 +73,8 @@ export default function DriverList() {
 
   const [selectedDriver, setSelectedDriver] = useState<Drivers | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 300);
+
   const [formData, setFormData] = useState<FormData>({
     drivername: "",
     email: "",
@@ -97,9 +100,9 @@ export default function DriverList() {
   const filteredDrivers =
     drivers?.filter((driver) => {
       const matchesSearch =
-        driver.drivername.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        driver.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        driver.driverId.toLowerCase().includes(searchTerm.toLowerCase());
+        driver.drivername.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        driver.email.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        driver.driverId.toLowerCase().includes(debouncedSearch.toLowerCase());
       return matchesSearch;
     }) || [];
 
@@ -270,7 +273,7 @@ export default function DriverList() {
                     key={driver._id}
                   >
                     <TableCell className="font-medium w-[100px] text-center text-white text-base">
-                      {driver.drivername}
+                    {highlightMatch(driver.drivername, debouncedSearch)}
                     </TableCell>
                     <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {driver.email}
@@ -513,3 +516,17 @@ export default function DriverList() {
     </DashboardLayout>
   );
 }
+
+
+
+
+const highlightMatch = (text: string, term: string) => {
+  const regex = new RegExp(`(${term})`, "gi");
+  return (
+    <span
+      dangerouslySetInnerHTML={{
+        __html: text.replace(regex, `<mark class="bg-yellow-300">$1</mark>`),
+      }}
+    />
+  );
+};

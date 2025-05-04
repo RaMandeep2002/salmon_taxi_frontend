@@ -24,7 +24,7 @@ export default function DashboardLayout({
     } else {
       setIsAuthenticated(true);
     }
-  }, [pathname]);
+  }, [pathname,router]);
 
   if (isAuthenticated === null) {
     return null; // or loading spinner

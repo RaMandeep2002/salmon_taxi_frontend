@@ -9,7 +9,8 @@ import {
   LogOut,
   Menu,
   Clock,
-  CarTaxiFront
+  CarTaxiFront,
+  SquareChartGantt
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -98,6 +99,12 @@ export default function DashboardSidebar() {
           icon={CarTaxiFront}
           label={isCollapsed ? "" : "Vehicles"}
           onClick={() => handleNavigation("/admin/dashboard/VehicleList")}
+          isCollapsed={isCollapsed}
+        />
+        <MenuItem
+          icon={SquareChartGantt}
+          label={isCollapsed ? "" : "Shift Management"}
+          onClick={() => handleNavigation("/admin/dashboard/ShiftManagement")}
           isCollapsed={isCollapsed}
         />
         <MenuItem

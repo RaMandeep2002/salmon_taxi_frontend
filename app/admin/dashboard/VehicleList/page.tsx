@@ -48,6 +48,7 @@ import { updateVehicle } from "../../slices/slice/updateVehicleSlice";
 import { Vehicle } from "@/app/types/DriverVechicleData";
 import { useToast } from "@/hooks/use-toast";
 import { deleteVehicle } from "../../slices/slice/deleteVehicleSlice";
+import { useDebounce } from "@/lib/useDebounce";
 
 export default function VechicleList() {
   // const [company, setCompany] = useState<string | "">("");
@@ -75,6 +76,9 @@ export default function VechicleList() {
   // const getsuccessmessage = vehicleinfo.message;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const debouncedsearch = useDebounce(searchTerm, 300);
+
   const itemsPerPage = 10;
 
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
@@ -105,7 +109,7 @@ export default function VechicleList() {
   const formattedVehicles = Vehicles?.filter((vehicle) => {
     const matchesSearch = vehicle.company
       .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+      .includes(debouncedsearch.toLowerCase());
 
     // const matchesStatus =
     //   filterStatus === "All" ||
@@ -298,7 +302,7 @@ export default function VechicleList() {
                       {vehicle.registrationNumber}
                     </TableCell> */}
                   <TableCell className="font-medium w-[100px] text-center text-white text-base">
-                      {vehicle?.company}
+                      {highlightMatch(vehicle?.company, debouncedsearch)}
                     </TableCell>
                   <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {vehicle?.vehicleModel}
@@ -597,3 +601,17 @@ export default function VechicleList() {
     </DashboardLayout>
   );
 }
+
+
+
+
+const highlightMatch = (text: string, term: string) => {
+  const regex = new RegExp(`(${term})`, "gi");
+  return (
+    <span
+      dangerouslySetInnerHTML={{
+        __html: text.replace(regex, `<mark class="bg-yellow-300">$1</mark>`),
+      }}
+    />
+  );
+};

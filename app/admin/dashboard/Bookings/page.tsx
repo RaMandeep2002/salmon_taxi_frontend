@@ -16,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
 import { fetchBookingHistory } from "@/app/admin/slices/slice/booingHistorySlice";
+import { useDebounce } from "@/lib/useDebounce";
 // import ServerTime from "@/app/components/LocalTime";
 
 export default function BookingHistory() {
@@ -23,6 +24,7 @@ export default function BookingHistory() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 500);
   const itemsPerPage = 15;
 
 
@@ -38,8 +40,8 @@ export default function BookingHistory() {
   const filteredBookings =
   bookings?.filter((booking) => {
     const matchesSearch =
-    booking.driver?.drivername?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    booking.pickup.address.toLowerCase().includes(searchTerm.toLowerCase()) 
+    booking.driver?.drivername?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+    booking.pickup.address.toLowerCase().includes(debouncedSearch.toLowerCase()) 
 
     // const matchesStatus =
     //   filterStatus === "All" || driver.status === filterStatus;
@@ -188,9 +190,10 @@ export default function BookingHistory() {
                       {`${booking.pickuptime}`}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
-                      {!booking.driver?.drivername
+                      
+                       {highlightMatch(!booking.driver?.drivername
                         ? "No driver assign"
-                        : booking.driver?.drivername}
+                        : booking.driver?.drivername, debouncedSearch)}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                     {(() => {
@@ -211,7 +214,8 @@ export default function BookingHistory() {
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                       {/* {`${booking.pickup.latitude}, ${booking.pickup.longitude}`} */}
-                      {`${booking.pickup.address}`}
+                     
+                      {highlightMatch(`${booking.pickup.address}`, debouncedSearch)}
                     </TableCell>
                     <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
                       {/* {`${booking.dropOff.latitude}, ${booking.dropOff.longitude}`} */}
@@ -272,3 +276,16 @@ export default function BookingHistory() {
     </DashboardLayout>
   );
 }
+
+
+
+const highlightMatch = (text: string, term: string) => {
+  const regex = new RegExp(`(${term})`, "gi");
+  return (
+    <span
+      dangerouslySetInnerHTML={{
+        __html: text.replace(regex, `<mark class="bg-yellow-300">$1</mark>`),
+      }}
+    />
+  );
+};

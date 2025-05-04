@@ -15,6 +15,8 @@ import updateSettingReducer from "../admin/slices/slice/UpdateSettingSlice";
 import settingsReducer from "../admin/slices/slice/settingSlics"
 import BookingReportReducer from "../admin/slices/slice/getReportSlice"
 import driverStatusReducer from "../admin/slices/slice/driverStatusSlice"
+import shiftsWithVehicleReducer from "../admin/slices/slice/shiftandvehicleSlice";
+import shiftActionsReducer from "../admin/slices/slice/stopShiftsDriver";
 
 export const store = configureStore({
   reducer: {
@@ -33,6 +35,8 @@ export const store = configureStore({
     settings: settingsReducer,
     getBookingReport : BookingReportReducer,
     driverStatus: driverStatusReducer,
+    shiftsWithVehicle : shiftsWithVehicleReducer,
+    shiftActions: shiftActionsReducer,
   },
 });
 

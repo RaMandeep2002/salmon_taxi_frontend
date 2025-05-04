@@ -16,6 +16,7 @@ import {
   Settings,
   Clock,
   CarTaxiFront,
+  SquareChartGantt,
 } from "lucide-react"; // Import icons for mobile menu
 
 import { useState } from "react";
@@ -119,8 +120,8 @@ export default function HeaderDashboard() {
       {/* Sidebar as absolute overlay on mobile */}
       {isMobileSideBarOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
-           <div className="absolute left-0 top-0 h-full w-64 bg-[#F5EE1D] shadow-lg z-50">
-           <nav className="flex-1 px-2 pt-[80px] space-y-2 overflow-y-auto">
+          <div className="absolute left-0 top-0 h-full w-64 bg-[#F5EE1D] shadow-lg z-50">
+            <nav className="flex-1 px-2 pt-[80px] space-y-2 overflow-y-auto">
               <MenuItem
                 icon={Home}
                 label="Dashboard"
@@ -154,6 +155,14 @@ export default function HeaderDashboard() {
                 icon={CarTaxiFront}
                 label="Vehicles"
                 onClick={() => handleNavigation("/admin/dashboard/VehicleList")}
+                isCollapsed={false}
+              />
+              <MenuItem
+                icon={SquareChartGantt}
+                label="Shift Management"
+                onClick={() =>
+                  handleNavigation("/admin/dashboard/ShiftManagement")
+                }
                 isCollapsed={false}
               />
               <MenuItem

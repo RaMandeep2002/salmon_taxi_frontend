@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { fetchBookingHistory } from "../../slices/slice/booingHistorySlice";
 import { getBookingReport } from "../../slices/slice/getReportSlice";
+import { useDebounce } from "@/lib/useDebounce";
 
 export default function Reports() {
   const [fromDate, setFromDate] = useState("");
@@ -23,6 +24,9 @@ export default function Reports() {
   const [drivername, setDrivername] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
+
+  const debouncedDriverSearch = useDebounce(drivername, 300);
+  const debouncedPickupSearch = useDebounce(pickup, 300);
 
   const dispatch = useDispatch<AppDispatch>();
   const { bookings, loading, error } = useSelector(
@@ -50,17 +54,13 @@ export default function Reports() {
       const bookingDate = booking.pickupDate;
 
 
-      const isDriverMatch = drivername
-        ? booking.driver?.drivername
-            ?.toLowerCase()
-            .includes(drivername.toLowerCase())
-        : true;
-
-      const isPickupMatch = pickup
-        ? booking.pickup?.address
-            ?.toLowerCase()
-            .includes(pickup.toLowerCase())
-        : true;
+      const isDriverMatch = debouncedDriverSearch
+      ? booking.driver?.drivername?.toLowerCase().includes(debouncedDriverSearch.toLowerCase())
+      : true;
+    
+    const isPickupMatch = debouncedPickupSearch
+      ? booking.pickup?.address?.toLowerCase().includes(debouncedPickupSearch.toLowerCase())
+      : true;
 
       const isFromDateMatch = fromDate
         ? new Date(bookingDate) >= new Date(formattedFromDate)
