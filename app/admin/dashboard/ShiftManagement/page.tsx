@@ -97,14 +97,12 @@ export default function ShiftsAndVehicle() {
       month: "2-digit",
       day: "2-digit",
       year: "numeric",
-      timeZone: 'America/Vancouver',
     });
 
     const endTime = now
       .toLocaleTimeString("en-US", {
         hour: "numeric",
-        minute: "2-digit",
-        timeZone: 'America/Vancouver',
+        minute: "2-digit"
       })
       .replace(/\s?([AP]M)$/i, (match, p1) => p1.toLowerCase());
 
