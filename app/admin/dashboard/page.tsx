@@ -13,6 +13,28 @@ import {
 } from "@/components/ui/table";
 import { fetchBookingHistory } from "../slices/slice/booingHistorySlice";
 import { Button } from "@/components/ui/button";
+import { BookText, Car, Route, Users } from "lucide-react";
+import { fetchDashboardStats } from "../slices/slice/getCountSlice";
+
+type StatCardProps = {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+};
+
+function StatCard({ title, value, icon }: StatCardProps) {
+  return (
+    <div className="bg-[#F5EF1B] rounded-lg p-4 flex items-center">
+      <div className="rounded-full bg-[#F5EF1B]/10 p-3 mr-4">
+        <div className="text-zinc-800">{icon}</div>
+      </div>
+      <div>
+        <p className="text-sm text-zinc-800">{title}</p>
+        <p className="text-2xl font-bold text-zinc-800">{value}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -22,9 +44,13 @@ export default function DashboardPage() {
   const { bookings, loading, error } = useSelector(
     (state: RootState) => state.fetchBookingHistory
   );
+  const { data, iserror } = useSelector(
+    (state: RootState) => state.dashboardStats
+  );
 
   useEffect(() => {
     dispatch(fetchBookingHistory());
+    dispatch(fetchDashboardStats());
   }, [dispatch]);
 
   const totalPages = Math.ceil(bookings.length / itemsPerPage);
@@ -43,6 +69,34 @@ export default function DashboardPage() {
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-[#F5EF1B]">
           Welcome Admin
         </h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          {iserror && (
+            <p className="text-red-500 text-center text-sm sm:text-base col-span-3">
+              Error: {iserror}
+            </p>
+          )}
+          <StatCard
+            title="Total Drivers"
+            value={data.driverCount}
+            icon={<Users className="h-6 w-6" />}
+          />
+          <StatCard
+            title="Total Vehicles"
+            value={data.vehicleCount}
+            icon={<Car className="h-6 w-6" />}
+          />
+          <StatCard
+            title="Total Rides"
+            value={data.bookingCount}
+            icon={<Route className="h-6 w-6" />}
+          />
+          <StatCard
+            title="Total Shifts"
+            value={data.shiftsCount}
+            icon={<BookText className="h-6 w-6" />}
+          />
+        </div>
 
         <h4 className="text-xl sm:text-xl font-bold mb-4 sm:mb-6 text-[#F5EF1B]">
           Bookings
@@ -92,28 +146,26 @@ export default function DashboardPage() {
                       key={booking.bookingId}
                     >
                       <TableCell className="text-white text-xs sm:text-sm">
-                        {booking.pickupDate}
+                        {booking.pickupDate || "N/A"}
                       </TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">
-                        {booking.pickuptime}
+                        {booking.pickuptime || "N/A"}
                       </TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">
-                        {!booking.driver?.drivername
-                          ? "No driver assigned"
-                          : booking.driver.drivername}
+                        {booking.driver?.drivername || "No driver assigned"}
                       </TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">
-                        {booking.distance}
+                        {booking.distance || "0"}
                       </TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">
-                        {booking.wating_time_formated}
+                        {booking.wating_time_formated || "0"}
                       </TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">{`$${booking.totalFare}`}</TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">
-                        {booking.pickup?.address}
+                        {booking.pickup?.address || "N/A"}
                       </TableCell>
                       <TableCell className="text-white text-xs sm:text-sm">
-                        {booking.dropOff?.address}
+                        {booking.dropOff?.address || "N/A"}
                       </TableCell>
                     </TableRow>
                   ))

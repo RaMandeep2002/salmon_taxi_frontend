@@ -4,12 +4,14 @@ import { addDriver } from "@/app/admin/slices/slice/addDriverSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 export default function AddDriver() {
   const [drivername, setDrivername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [driversLicenseNumber, setDriversLicenseNumber] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string | undefined>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -42,18 +44,18 @@ export default function AddDriver() {
     }
   };
 
-  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
-    const cleanedValue = value.replace(/[^\d+\s()-]/g, "");
+  // const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   let value = e.target.value;
+  //   const cleanedValue = value.replace(/[^\d+\s()-]/g, "");
 
-    if (value.includes("+")) {
-      value = "+" + value.replace(/\+/g, "").trim();
-    } else {
-      value = "+" + value.trim();
-    }
+  //   if (value.includes("+")) {
+  //     value = "+" + value.replace(/\+/g, "").trim();
+  //   } else {
+  //     value = "+" + value.trim();
+  //   }
 
-    setPhoneNumber(cleanedValue);
-  };
+  //   setPhoneNumber(cleanedValue);
+  // };
 
   const generatePassword = () => {
     const length = 8;
@@ -144,15 +146,13 @@ export default function AddDriver() {
               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Phone Number
               </label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                autoComplete="off"
-                placeholder="Enter the Phone Number of Driver"
+              <PhoneInput
+                international
+                defaultCountry="US"
+                placeholder="Enter phone number"
                 value={phoneNumber}
-                onChange={handlePhoneNumberChange}
-                required
-                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
+                onChange={(value) => setPhoneNumber(value || "")}
+                className="PhoneInputInput w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               />
             </div>
 
