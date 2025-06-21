@@ -30,7 +30,7 @@ export default function ShiftsAndVehicle() {
   const debouncedSearch = useDebounce(searchTerm, 500);
   const [stoppingDriverId, setStoppingDriverId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 15;
   const hasHandledToast = useRef(false); // prevent infinite re-renders
 
   const { shifts, loading, error } = useSelector(
