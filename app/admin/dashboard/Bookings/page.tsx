@@ -167,8 +167,8 @@ export default function BookingHistory() {
                 </TableRow>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-red-500">
-                    Error: {error}
+                  <TableCell colSpan={6} className="text-center text-white">
+                    {error}
                   </TableCell>
                 </TableRow>
               ) : ( 

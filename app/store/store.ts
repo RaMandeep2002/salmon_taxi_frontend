@@ -19,6 +19,7 @@ import shiftsWithVehicleReducer from "../admin/slices/slice/shiftandvehicleSlice
 import shiftActionsReducer from "../admin/slices/slice/stopShiftsDriver";
 import scheduleReducer from "../admin/slices/slice/scheduleRideSlice";
 import dashboardStatsReducer from "../admin/slices/slice/getCountSlice";
+import resetPasswordReducer from "../admin/slices/slice/resetPasswordSlice";
 
 
 export const store = configureStore({
@@ -41,7 +42,8 @@ export const store = configureStore({
     shiftsWithVehicle : shiftsWithVehicleReducer,
     shiftActions: shiftActionsReducer,
     scheduleRIde:scheduleReducer,
-    dashboardStats: dashboardStatsReducer
+    dashboardStats: dashboardStatsReducer,
+    resetPassword: resetPasswordReducer,
   },
 });
 

@@ -31,7 +31,7 @@ export const fetchBookingHistory = createAsyncThunk<BookingHistory[], void, { re
              // @ts-expect-error this is giving no import error
             if (axios.isAxiosError(error)) {
                 // @ts-expect-error this is giving no import error
-                return rejectWithValue(error.response?.data?.message || "API Error");
+                return rejectWithValue(error.response?.data?.message || "Failed To Get Bookings");
               }
             
               if (error instanceof Error) {

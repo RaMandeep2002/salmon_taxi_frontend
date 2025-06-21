@@ -44,7 +44,7 @@ export const fetchSettings = createAsyncThunk("settings/fetchingsetting", async 
     } catch (error) {
         console.error(error);
         return rejectWithValue(
-         "Failed to fetch settings info",
+         "Failed to Get Settings",
         );
     }
 });

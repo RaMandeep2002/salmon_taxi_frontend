@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pencil, Trash2, Eye, Plus } from "lucide-react";
+import { Pencil, Trash2, Eye, Plus, EyeOff } from "lucide-react";
 
 import { fetchdriverdetails } from "@/app/admin/slices/slice/fetchingDriversSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
@@ -43,17 +43,21 @@ import { useRouter } from "next/navigation";
 import { updateDriver } from "../../slices/slice/updateDriverSlice";
 import { deleteDriver } from "../../slices/slice/deleteDriverSlice";
 import { useDebounce } from "@/lib/useDebounce";
+// import { resetDriverPassword } from "../../slices/slice/resetPasswordSlice";
 
 interface FormData {
   drivername: string;
   email: string;
   phoneNumber: string;
   driversLicenseNumber: string;
+  password: string;
 }
 
 export default function DriverList() {
   const toast = useToast();
   const router = useRouter();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
@@ -71,6 +75,7 @@ export default function DriverList() {
     (state: RootState) => state.deleteDriver
   );
 
+  // const { success } = useSelector((state: RootState) => state.resetPassword);
   const [selectedDriver, setSelectedDriver] = useState<Drivers | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 300);
@@ -80,7 +85,10 @@ export default function DriverList() {
     email: "",
     phoneNumber: "",
     driversLicenseNumber: "",
+    password: "",
   });
+
+  // const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     dispatch(fetchdriverdetails());
@@ -93,6 +101,7 @@ export default function DriverList() {
         email: selectedDriver.email,
         phoneNumber: selectedDriver.phoneNumber.toString(),
         driversLicenseNumber: selectedDriver.driversLicenseNumber,
+        password: "",
       });
     }
   }, [selectedDriver]);
@@ -100,7 +109,9 @@ export default function DriverList() {
   const filteredDrivers =
     drivers?.filter((driver) => {
       const matchesSearch =
-        driver.drivername.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        driver.drivername
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase()) ||
         driver.email.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
         driver.driverId.toLowerCase().includes(debouncedSearch.toLowerCase());
       return matchesSearch;
@@ -118,7 +129,7 @@ export default function DriverList() {
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value;
- 
+
     // Remove all non-digit characters
 
     // Allow +, numbers, spaces, parentheses, and dashes
@@ -130,10 +141,9 @@ export default function DriverList() {
       value = "+" + value.trim();
     }
 
-    
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      phoneNumber: cleanedValue
+      phoneNumber: cleanedValue,
     }));
   };
 
@@ -153,10 +163,11 @@ export default function DriverList() {
             email: formData.email,
             driversLicenseNumber: formData.driversLicenseNumber,
             phoneNumber: formData.phoneNumber,
+            password: formData.password,
           },
         })
       ).unwrap();
-      
+
       if (!iserror) {
         toast.toast({
           title: "Driver Updated Successfully",
@@ -190,6 +201,45 @@ export default function DriverList() {
       });
     }
   };
+
+  // const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+
+  //   if (!selectedDriver) {
+  //     return;
+  //   }
+  //   if (!newPassword.trim()) {
+  //     // alert("Please enter a new password.");
+  //     toast.toast({
+  //       title: "Please enter a new password.",
+  //       // description: succeesMessage,
+  //     });
+  //     return;
+  //   }
+  //   try {
+  //     dispatch(
+  //       resetDriverPassword({
+  //         email: selectedDriver.email,
+  //         newPassword,
+  //       })
+  //     );
+
+  //     if (success) {
+  //       toast.toast({
+  //         title: "Password Update Successfully",
+  //         // description: succeesMessage,
+  //       });
+  //       dispatch(fetchdriverdetails());
+  //     }
+  //     setNewPassword("");
+  //   } catch (isError) {
+  //     toast.toast({
+  //       title: "Error",
+  //       description: `Failed to Update the Password ${isError}`,
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
 
   return (
     <DashboardLayout>
@@ -228,22 +278,24 @@ export default function DriverList() {
           <Table>
             <TableHeader>
               <TableRow className="text-center border border-[#F5EF1B]">
-                
-                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Name
                 </TableHead>
-                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Email
                 </TableHead>
-                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Phone Number
                 </TableHead>
-                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                {/* <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   License Number
-                </TableHead>
-                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                </TableHead> */}
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Actions
                 </TableHead>
+                {/* <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                  Reset Passsword
+                </TableHead> */}
               </TableRow>
             </TableHeader>
 
@@ -256,8 +308,8 @@ export default function DriverList() {
                 </TableRow>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-red-500">
-                    Error: {error}
+                  <TableCell colSpan={5} className="text-center text-white">
+                    {error}
                   </TableCell>
                 </TableRow>
               ) : filteredDrivers.length === 0 ? (
@@ -272,20 +324,20 @@ export default function DriverList() {
                     className="text-center border border-[#F5EF1B]"
                     key={driver._id}
                   >
-                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
-                    {highlightMatch(driver.drivername, debouncedSearch)}
+                    <TableCell className="text-white text-xs sm:text-sm">
+                      {highlightMatch(driver.drivername, debouncedSearch)}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    <TableCell className="text-white text-xs sm:text-sm">
                       {driver.email}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    <TableCell className="text-white text-xs sm:text-sm">
                       <a href={`tel:${driver.phoneNumber}`}>
                         {driver.phoneNumber}
                       </a>
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    {/* <TableCell className="text-center text-white">
                       {driver.driversLicenseNumber}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className="text-center">
                       <Dialog>
                         <DialogTrigger asChild className="text-white">
@@ -297,51 +349,43 @@ export default function DriverList() {
                             <Eye className="h-4 w-4 text-[#F5EF1B]" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px] bg-[#F5EF1B] border-none">
+                        <DialogContent className="sm:max-w-xl bg-[#F5EF1B] border-none rounded-2xl shadow-lg">
                           <DialogHeader>
-                            <DialogTitle>Driver Details</DialogTitle>
+                            <DialogTitle className="text-3xl font-bold text-zinc-900 text-center">
+                              🧑‍✈️ Driver Details
+                            </DialogTitle>
                           </DialogHeader>
-                          <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label className="text-right text-lg font-medium text-zinc-800">
-                                Driver ID
-                              </Label>
-                              <div className="col-span-3 text-lg font-medium text-zinc-800">
-                                {selectedDriver?.driverId}
+
+                          <div className="grid gap-5 mt-6 px-2">
+                            {[
+                              {
+                                label: "Name",
+                                value: selectedDriver?.drivername,
+                              },
+                              { label: "Email", value: selectedDriver?.email },
+                              {
+                                label: "Phone",
+                                value: selectedDriver?.phoneNumber,
+                              },
+                              {
+                                label: "License No.",
+                                value:
+                                  selectedDriver?.driversLicenseNumber ||
+                                  "Not Provided",
+                              },
+                            ].map(({ label, value }, idx) => (
+                              <div
+                                key={idx}
+                                className="flex justify-between items-center border-b border-black pb-2"
+                              >
+                                <span className="text-lg font-medium text-zinc-700">
+                                  {label}
+                                </span>
+                                <span className="text-lg font-semibold text-zinc-900">
+                                  {value}
+                                </span>
                               </div>
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label className="text-right text-lg font-medium text-zinc-800">
-                                Name
-                              </Label>
-                              <div className="col-span-3 text-lg font-medium text-zinc-800">
-                                {selectedDriver?.drivername}
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label className="text-right text-lg font-medium text-zinc-800">
-                                Email
-                              </Label>
-                              <div className="col-span-3 text-lg font-medium text-zinc-800">
-                                {selectedDriver?.email}
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label className="text-right text-lg font-medium text-zinc-800">
-                                Phone
-                              </Label>
-                              <div className="col-span-3 text-lg font-medium text-zinc-800">
-                                {selectedDriver?.phoneNumber}
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label className="text-right text-lg font-medium text-zinc-800">
-                                License
-                              </Label>
-                              <div className="col-span-3 text-lg font-medium text-zinc-800">
-                                {selectedDriver?.driversLicenseNumber}
-                              </div>
-                            </div>
+                            ))}
                           </div>
                         </DialogContent>
                       </Dialog>
@@ -358,7 +402,7 @@ export default function DriverList() {
 
                         <DialogContent className="bg-[#F5EF1B] border-none">
                           <DialogHeader>
-                            <DialogTitle className="text-lg text-zinc-800">
+                            <DialogTitle className="  text-zinc-800">
                               Edit Driver
                             </DialogTitle>
                           </DialogHeader>
@@ -372,7 +416,7 @@ export default function DriverList() {
                               <div className="grid grid-cols-4 items-center gap-4">
                                 <Label
                                   htmlFor="drivername"
-                                  className="text-right text-lg font-medium text-zinc-800"
+                                  className="text-right     text-zinc-800"
                                 >
                                   Driver Name
                                 </Label>
@@ -387,14 +431,14 @@ export default function DriverList() {
                                       drivername: e.target.value,
                                     })
                                   }
-                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800  "
                                 />
                               </div>
 
                               <div className="grid grid-cols-4 items-center gap-4">
                                 <Label
                                   htmlFor="email"
-                                  className="text-right text-lg font-medium text-zinc-800"
+                                  className="text-right     text-zinc-800"
                                 >
                                   Email
                                 </Label>
@@ -408,14 +452,14 @@ export default function DriverList() {
                                       email: e.target.value,
                                     })
                                   }
-                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800  "
                                 />
                               </div>
 
                               <div className="grid grid-cols-4 items-center gap-4">
                                 <Label
                                   htmlFor="phoneNumber"
-                                  className="text-right text-lg font-medium text-zinc-800"
+                                  className="text-right     text-zinc-800"
                                 >
                                   Phone Number
                                 </Label>
@@ -424,14 +468,14 @@ export default function DriverList() {
                                   placeholder="Enter Phone Number"
                                   value={formData.phoneNumber}
                                   onChange={handlePhoneNumberChange}
-                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800  "
                                 />
                               </div>
 
                               <div className="grid grid-cols-4 items-center gap-4">
                                 <Label
                                   htmlFor="driversLicenseNumber"
-                                  className="text-right text-lg font-medium text-zinc-800"
+                                  className="text-right     text-zinc-800"
                                 >
                                   License No.
                                 </Label>
@@ -445,8 +489,45 @@ export default function DriverList() {
                                       driversLicenseNumber: e.target.value,
                                     })
                                   }
-                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                  className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800  "
                                 />
+                              </div>
+
+                              <h1 className="text-zinc-800">Update Password For {driver.drivername}</h1>
+                              <div className="grid grid-cols-4 items-center gap-4 relative">
+                                <Label
+                                  htmlFor="password"
+                                  className="text-right text-zinc-800"
+                                >
+                                  Password
+                                </Label>
+                                <div className="col-span-3 relative">
+                                  <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter Updated Password"
+                                    value={formData.password}
+                                    onChange={(e) =>
+                                      setFormData({
+                                        ...formData,
+                                        password: e.target.value,
+                                      })
+                                    }
+                                    className="w-full border border-zinc-800 rounded-lg text-zinc-800 pr-10"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
+                                    className="absolute top-1/2 right-2 transform -translate-y-1/2 text-zinc-600 hover:text-zinc-800"
+                                  >
+                                    {showPassword ? (
+                                      <EyeOff size={18} />
+                                    ) : (
+                                      <Eye size={18} />
+                                    )}
+                                  </button>
+                                </div>
                               </div>
                             </div>
 
@@ -487,6 +568,73 @@ export default function DriverList() {
                         </AlertDialogContent>
                       </AlertDialog>
                     </TableCell>
+
+                    {/* <TableCell className="text-center">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            className="w-full sm:w-auto text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+                            onClick={() => setSelectedDriver(driver)}
+                          >
+                            Reset Password
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md bg-[#F5EF1B] border-none">
+                          <DialogHeader>
+                            <DialogTitle className="text-2xl font-semibold text-zinc-800">
+                              Reset Password
+                            </DialogTitle>
+                          </DialogHeader>
+
+                          <form
+                            onSubmit={handleResetPassword}
+                            className="grid gap-3 mt-4"
+                          >
+                            <div className="grid grid-cols-4 items-center gap-4 relative">
+                              <Label
+                                htmlFor="new-password"
+                                className="text-right text-zinc-800"
+                              >
+                                New Password
+                              </Label>
+                              <div className="col-span-3 relative">
+                                <input
+                                  id="new-password"
+                                  type={showPassword ? "text" : "password"}
+                                  className="w-full px-3 py-2 pr-10 bg-white rounded-md border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-700"
+                                  placeholder="Enter new password"
+                                  value={newPassword}
+                                  onChange={(e) =>
+                                    setNewPassword(e.target.value)
+                                  }
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute top-1/2 right-3 transform -translate-y-1/2 text-zinc-500 hover:text-zinc-800"
+                                  tabIndex={-1}
+                                >
+                                  {showPassword ? (
+                                    <EyeOff size={18} />
+                                  ) : (
+                                    <Eye size={18} />
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="flex justify-end">
+                              <button
+                                type="submit"
+                                className="px-4 py-2 bg-zinc-800 text-white rounded-md hover:bg-zinc-700 transition"
+                              >
+                                Reset Password
+                              </button>
+                            </div>
+                          </form>
+                        </DialogContent>
+                      </Dialog>
+                    </TableCell> */}
                   </TableRow>
                 ))
               )}
@@ -516,9 +664,6 @@ export default function DriverList() {
     </DashboardLayout>
   );
 }
-
-
-
 
 const highlightMatch = (text: string, term: string) => {
   const regex = new RegExp(`(${term})`, "gi");

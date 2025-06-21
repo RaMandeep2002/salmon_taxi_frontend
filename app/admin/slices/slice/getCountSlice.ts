@@ -38,7 +38,7 @@ export const fetchDashboardStats = createAsyncThunk(
             // @ts-expect-error this is giving no import error
             if (axios.isAxiosError(error)) {
                 // @ts-expect-error this is giving no import error
-                return rejectWithValue(error.response?.data?.message || "API Error");
+                return rejectWithValue(error.response?.data?.message || "Failed To Get Count");
             }
 
             if (error instanceof Error) {

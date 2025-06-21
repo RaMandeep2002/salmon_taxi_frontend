@@ -74,7 +74,7 @@ export default function Settings() {
         )}
 
         {error && (
-          <div className="bg-red-100 text-red-700 px-4 py-2 rounded-md mb-4">
+          <div className="text-white mb-4">
             {error}
           </div>
         )}

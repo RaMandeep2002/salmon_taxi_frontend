@@ -67,9 +67,7 @@ export default function VechicleList() {
     error,
   } = useSelector((state: RootState) => state.detailWithVehicle);
 
-  const { iserror } = useSelector(
-    (state: RootState) => state.updateVehcile
-  );
+  const { iserror } = useSelector((state: RootState) => state.updateVehcile);
   const { isDeleteting, succeesMessage } = useSelector(
     (state: RootState) => state.deleteVehicle
   );
@@ -147,15 +145,14 @@ export default function VechicleList() {
       ).unwrap();
 
       // if (isUpdating === true) {
-        toast.toast({
-          title: "Vehicle Updated Successfully",
-        });
-        dispatch(fetchDetailWithVehicle());
+      toast.toast({
+        title: "Vehicle Updated Successfully",
+      });
+      dispatch(fetchDetailWithVehicle());
       // }
     } catch (error) {
       alert(`Failed to delete driver. Please try again. ${error}`);
-    }
-    finally {
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -184,10 +181,10 @@ export default function VechicleList() {
       <div className="p-8">
         <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">Vehicle List</h1>
         <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
             <Input
               placeholder="Search by name or email..."
-               className="w-full sm:w-72 text-white border border-[#F5EF1B] placeholder-white"
+              className="w-full sm:w-72 text-white border border-[#F5EF1B] placeholder-white"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -230,7 +227,7 @@ export default function VechicleList() {
 
           <div>
             <Button
-            className="w-full sm:w-auto text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
+              className="w-full sm:w-auto text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B]"
               type="submit"
               onClick={() => router.push("/admin/dashboard/RegsiterVehicle")}
             >
@@ -249,22 +246,22 @@ export default function VechicleList() {
                 {/*    <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Registration Number
                 </TableHead> */}
-                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Company
                 </TableHead>
-                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Vehicle Model
                 </TableHead>
-                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Year
                 </TableHead>
-                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Vehcile Plate Number
                 </TableHead>
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Status
                 </TableHead> */}
-                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Actions
                 </TableHead>
               </TableRow>
@@ -278,8 +275,8 @@ export default function VechicleList() {
                 </TableRow>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-red-500">
-                    Error: {error}
+                  <TableCell colSpan={8} className="text-center text-white">
+                    {error}
                   </TableCell>
                 </TableRow>
               ) : Vehicles?.length === 0 ? (
@@ -301,16 +298,16 @@ export default function VechicleList() {
                     {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                       {vehicle.registrationNumber}
                     </TableCell> */}
-                  <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {highlightMatch(vehicle?.company, debouncedsearch)}
                     </TableCell>
-                  <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {vehicle?.vehicleModel}
                     </TableCell>
-                  <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {vehicle?.year}
                     </TableCell>
-                  <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
                       {vehicle?.vehicle_plate_number
                         ? vehicle.vehicle_plate_number
                         : "Not Set"}
@@ -328,7 +325,7 @@ export default function VechicleList() {
                         {vehicle?.status}
                       </span>
                     </TableCell> */}
-                    <TableCell>
+                    <TableCell className="text-center">
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button
@@ -340,63 +337,39 @@ export default function VechicleList() {
                           </Button>
                         </DialogTrigger>
 
-                        <DialogContent className="bg-[#F5EF1B] border-none rounded-2xl shadow-xl max-w-2xl px-6 py-6">
+                        <DialogContent className="sm:max-w-xl bg-[#F5EF1B] border-none rounded-2xl shadow-lg">
                           <DialogHeader>
-                            <DialogTitle className="text-2xl font-semibold text-zinc-800">
-                              Vehicle Detail
+                            <DialogTitle className="text-3xl font-bold text-zinc-900 text-center">
+                              🚗 Vehicle Details
                             </DialogTitle>
                           </DialogHeader>
 
-                          <div className="grid gap-y-4 mt-4">
+                          <div className="grid gap-5 mt-6 px-2">
                             {[
-                              // {
-                              //   label: "Registration Number",
-                              //   value: vehicle.registrationNumber,
-                              // },
-                              { label: "Company", value: vehicle.company },
+                              { label: "Company", value: vehicle?.company },
                               {
                                 label: "Vehicle Model",
-                                value: vehicle.vehicleModel,
+                                value: vehicle?.vehicleModel,
                               },
-                              { label: "Year", value: vehicle.year },
+                              { label: "Year", value: vehicle?.year },
                               {
-                                label: "Vehicle Plate Number",
+                                label: "Plate Number",
                                 value:
-                                  vehicle.vehicle_plate_number || "Not Set",
+                                  vehicle?.vehicle_plate_number || "Not Set",
                               },
-                            ].map((item, index) => (
+                            ].map(({ label, value }, idx) => (
                               <div
-                                key={index}
-                                className="grid grid-cols-4 items-center gap-2 py-2 border-b last:border-none"
+                                key={idx}
+                                className="flex justify-between items-center border-b border-black pb-2"
                               >
-                                <Label className="col-span-1 text-right text-sm font-medium text-zinc-600">
-                                  {item.label}
-                                </Label>
-                                <div className="col-span-3 text-base font-semibold text-zinc-800">
-                                  {item.value}
-                                </div>
+                                <span className="text-lg font-medium text-zinc-700">
+                                  {label}
+                                </span>
+                                <span className="text-lg font-semibold text-zinc-900">
+                                  {value}
+                                </span>
                               </div>
                             ))}
-
-                            {/* Uncomment if you want to add status badge again */}
-                            {/* <div className="grid grid-cols-4 items-center gap-2 py-2">
-        <Label className="text-right text-sm font-medium text-zinc-600">
-          Status
-        </Label>
-        <div className="col-span-3">
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-              vehicle.status === "active"
-                ? "bg-green-100 text-green-800"
-                : vehicle.status === "free"
-                ? "bg-yellow-100 text-yellow-800"
-                : "bg-red-100 text-red-800"
-            }`}
-          >
-            {vehicle.status}
-          </span>
-        </div>
-      </div> */}
                           </div>
                         </DialogContent>
                       </Dialog>
@@ -537,7 +510,9 @@ export default function VechicleList() {
                               </div>
                             </div>
                             <DialogFooter>
-                              <Button type="submit" disabled={isSubmitting}>Update Vehicle</Button>
+                              <Button type="submit" disabled={isSubmitting}>
+                                Update Vehicle
+                              </Button>
                             </DialogFooter>
                           </form>
                         </DialogContent>
@@ -601,9 +576,6 @@ export default function VechicleList() {
     </DashboardLayout>
   );
 }
-
-
-
 
 const highlightMatch = (text: string, term: string) => {
   const regex = new RegExp(`(${term})`, "gi");

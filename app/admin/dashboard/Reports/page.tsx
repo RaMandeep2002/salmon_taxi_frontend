@@ -166,8 +166,8 @@ export default function Reports() {
                 </TableRow>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-red-500">
-                    Error: {error}
+                  <TableCell colSpan={8} className="text-center py-8 text-white">
+                     {error}
                   </TableCell>
                 </TableRow>
               ) : paginatedBookings.length === 0 ? (

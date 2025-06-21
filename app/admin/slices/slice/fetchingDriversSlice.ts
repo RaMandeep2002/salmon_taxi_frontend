@@ -40,7 +40,7 @@ export const fetchdriverdetails = createAsyncThunk(
     } catch (error) {
       console.error(error);
       return rejectWithValue(
-        "Failed to fetch admin info",
+        "Failed to Get Drivers Data",
       );
     }
   },

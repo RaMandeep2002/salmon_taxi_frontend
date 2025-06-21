@@ -180,7 +180,7 @@ export default function ShiftsAndVehicle() {
                 </TableRow>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-red-500">
+                  <TableCell colSpan={6} className="text-center text-white">
                     {error}
                   </TableCell>
                 </TableRow>

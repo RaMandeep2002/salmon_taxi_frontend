@@ -69,33 +69,35 @@ export default function DashboardPage() {
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-[#F5EF1B]">
           Welcome Admin
         </h1>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          {iserror && (
-            <p className="text-red-500 text-center text-sm sm:text-base col-span-3">
-              Error: {iserror}
+        <div className="mb-5">
+          {iserror ? (
+            <p className="text-white text-center text-sm sm:text-base col-span-3">
+              {iserror}
             </p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <StatCard
+                title="Total Drivers"
+                value={data.driverCount}
+                icon={<Users className="h-6 w-6" />}
+              />
+              <StatCard
+                title="Total Vehicles"
+                value={data.vehicleCount}
+                icon={<Car className="h-6 w-6" />}
+              />
+              <StatCard
+                title="Total Rides"
+                value={data.bookingCount}
+                icon={<Route className="h-6 w-6" />}
+              />
+              <StatCard
+                title="Total Shifts"
+                value={data.shiftsCount}
+                icon={<BookText className="h-6 w-6" />}
+              />
+            </div>
           )}
-          <StatCard
-            title="Total Drivers"
-            value={data.driverCount}
-            icon={<Users className="h-6 w-6" />}
-          />
-          <StatCard
-            title="Total Vehicles"
-            value={data.vehicleCount}
-            icon={<Car className="h-6 w-6" />}
-          />
-          <StatCard
-            title="Total Rides"
-            value={data.bookingCount}
-            icon={<Route className="h-6 w-6" />}
-          />
-          <StatCard
-            title="Total Shifts"
-            value={data.shiftsCount}
-            icon={<BookText className="h-6 w-6" />}
-          />
         </div>
 
         <h4 className="text-xl sm:text-xl font-bold mb-4 sm:mb-6 text-[#F5EF1B]">
@@ -135,8 +137,8 @@ export default function DashboardPage() {
                   </TableRow>
                 ) : error ? (
                   <TableRow>
-                    <TableCell colSpan={8} className="text-center text-red-500">
-                      Error: {error}
+                    <TableCell colSpan={8} className="text-center text-white">
+                      {error}
                     </TableCell>
                   </TableRow>
                 ) : (

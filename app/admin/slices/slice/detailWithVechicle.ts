@@ -27,7 +27,7 @@ export const fetchDetailWithVehicle = createAsyncThunk<Vehicle[]>(
       return response.data.vehicles;
     } catch (error) {
       console.error(error);
-      return rejectWithValue("Failed to fetch vehicle data");
+      return rejectWithValue("Failed to Get vehicle data");
     }
   }
 );
