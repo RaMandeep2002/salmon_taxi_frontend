@@ -192,7 +192,7 @@ export default function ShiftsAndVehicle() {
                 </TableRow>
               ) : (
                 paginatedShifts.map((shift, index) => (
-                  <TableRow key={index} className="text-center text-white">
+                  <TableRow key={index} className="text-center text-white border border-[#F5EF1B]">
                     <TableCell>{highlightMatch(shift.driver.drivername, debouncedSearch)}</TableCell>
                     <TableCell>{shift.vehicle.vehicleModel}</TableCell>
                     <TableCell>

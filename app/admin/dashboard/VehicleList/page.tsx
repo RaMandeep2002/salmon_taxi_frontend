@@ -288,7 +288,7 @@ export default function VechicleList() {
               ) : (
                 paginatedVehicles.map((vehicle) => (
                   <TableRow
-                    className="border border-[#F5EF1B]"
+                    className="text-white text-center font-medium border border-[#F5EF1B]"
                     key={vehicle._id}
                   >
                     {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
@@ -298,16 +298,12 @@ export default function VechicleList() {
                     {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                       {vehicle.registrationNumber}
                     </TableCell> */}
-                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    <TableCell>
                       {highlightMatch(vehicle?.company, debouncedsearch)}
                     </TableCell>
-                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
-                      {vehicle?.vehicleModel}
-                    </TableCell>
-                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
-                      {vehicle?.year}
-                    </TableCell>
-                    <TableCell className="font-medium w-[100px] text-center text-white text-base">
+                    <TableCell>{vehicle?.vehicleModel}</TableCell>
+                    <TableCell>{vehicle?.year}</TableCell>
+                    <TableCell>
                       {vehicle?.vehicle_plate_number
                         ? vehicle.vehicle_plate_number
                         : "Not Set"}

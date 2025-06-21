@@ -174,7 +174,7 @@ export default function BookingHistory() {
               ) : ( 
                 paginatedBookings.map((booking) => (
                   <TableRow
-                    className="text-center border border-[#F5EF1B]"
+                    className="text-center text-white border border-[#F5EF1B]"
                     key={booking.bookingId}
                   >
                     {/* <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg ">
@@ -183,19 +183,19 @@ export default function BookingHistory() {
                     <TableCell className="font-medium w-[100px] h-[50px] text-center text-white text-lg">
                       {booking.customerName}
                     </TableCell> */}
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell  >
                       {`${booking.pickupDate}`}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell  >
                       {`${booking.pickuptime}`}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell  >
                       
                        {highlightMatch(!booking.driver?.drivername
                         ? "No driver assign"
                         : booking.driver?.drivername, debouncedSearch)}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell  >
                     {(() => {
                       const fare = booking.totalFare;
                       const fareStr = `$${fare}`;
@@ -206,23 +206,23 @@ export default function BookingHistory() {
                       return fareStr;
                     })()}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell  >
                       {booking.distance}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell  >
                       {booking.wating_time_formated}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell  >
                       {/* {`${booking.pickup.latitude}, ${booking.pickup.longitude}`} */}
                      
                       {highlightMatch(`${booking.pickup.address}`, debouncedSearch)}
                     </TableCell>
-                    <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    <TableCell  >
                       {/* {`${booking.dropOff.latitude}, ${booking.dropOff.longitude}`} */}
                       {`${booking.dropOff.address}`}
                     </TableCell>
 
-                    {/* <TableCell className="text-center w-[100px] h-[50px]  text-white text-lg">
+                    {/* <TableCell  >
                       {booking.paymentStatus}
                     </TableCell> */}
                     {/* <TableCell className="text-center">{booking.totalFare}</TableCell> */}
