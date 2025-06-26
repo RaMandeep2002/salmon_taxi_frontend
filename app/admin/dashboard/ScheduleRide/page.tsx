@@ -15,8 +15,10 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
 import { scheduleRide } from "../../slices/slice/scheduleRideSlice";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ScheduleRide() {
+  const toast = useToast();
   const dispatch = useDispatch<AppDispatch>();
   const [customerName, setCustomerName] = useState("");
   const [customer_phone_number, setcustomer_phone_number] = useState("");
@@ -40,7 +42,7 @@ export default function ScheduleRide() {
     const formattedDate = pickupDate ? format(pickupDate, "MM/dd/yyyy") : "";
     const formattedTime = pickupTime ? format(pickupTime, "hh:mma") : "";
 
-    dispatch(
+    const resultAction = await dispatch(
       scheduleRide({
         customerName,
         customer_phone_number,
@@ -50,6 +52,12 @@ export default function ScheduleRide() {
         dropOffAddress
       })
     );
+    if (scheduleRide.fulfilled.match(resultAction)) {
+      toast.toast({
+        title: "Ride Scheduled",
+        description: "The ride has been scheduled successfully.",
+      });
+    }
   };
 
   return (
@@ -62,7 +70,7 @@ export default function ScheduleRide() {
         <div className="max-w-2xl mx-auto bg-[#F5EF1B] p-6 sm:p-8 shadow-xl rounded-md">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {success && (
-              <p className="text-green-600">Ride scheduled successfully!</p>
+              <p className="text-black">Ride scheduled successfully!</p>
             )}
             {error && <p className="text-red-600">{error}</p>}
             {/* Customer Name */}

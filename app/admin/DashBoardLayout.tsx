@@ -52,7 +52,7 @@ export default function DashboardLayout({
                     href={path} 
                     className="hover:text-[#F5EF1B] capitalize transition-colors"
                   >
-                    {segment}
+                    {segment.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}
                   </Link>
                 </li>
               );

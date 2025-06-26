@@ -321,7 +321,7 @@ export default function DriverList() {
               ) : (
                 paginatedDrivers.map((driver) => (
                   <TableRow
-                    className="text-center border border-[#F5EF1B]"
+                    className="text-center border text-yellow-400 border-[#F5EF1B]"
                     key={driver._id}
                   >
                     <TableCell className="text-white text-xs sm:text-sm">
