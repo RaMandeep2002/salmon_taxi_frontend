@@ -48,19 +48,22 @@ export default function Reports() {
   };
   const formattedFromDate = convertDateFormat(fromDate);
   const formattedToDate = convertDateFormat(toDate);
- 
+
   const filteredBookings =
     bookings?.filter((booking) => {
       const bookingDate = booking.pickupDate;
 
-
       const isDriverMatch = debouncedDriverSearch
-      ? booking.driver?.drivername?.toLowerCase().includes(debouncedDriverSearch.toLowerCase())
-      : true;
-    
-    const isPickupMatch = debouncedPickupSearch
-      ? booking.pickup?.address?.toLowerCase().includes(debouncedPickupSearch.toLowerCase())
-      : true;
+        ? booking.driver?.drivername
+            ?.toLowerCase()
+            .includes(debouncedDriverSearch.toLowerCase())
+        : true;
+
+      const isPickupMatch = debouncedPickupSearch
+        ? booking.pickup?.address
+            ?.toLowerCase()
+            .includes(debouncedPickupSearch.toLowerCase())
+        : true;
 
       const isFromDateMatch = fromDate
         ? new Date(bookingDate) >= new Date(formattedFromDate)
@@ -85,8 +88,14 @@ export default function Reports() {
 
   const handleDownload = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(getBookingReport({  fromDate: formattedFromDate,
-      toDate: formattedToDate, pickup, drivername }));
+    dispatch(
+      getBookingReport({
+        fromDate: formattedFromDate,
+        toDate: formattedToDate,
+        pickup,
+        drivername,
+      })
+    );
   };
 
   return (
@@ -150,7 +159,10 @@ export default function Reports() {
                   "Pickup",
                   "Drop Off",
                 ].map((header) => (
-                  <TableHead key={header} className="min-w-[120px] h-[50px] text-[#F5EF1B]">
+                  <TableHead
+                    key={header}
+                    className="min-w-[120px] h-[50px] text-[#F5EF1B]"
+                  >
                     {header}
                   </TableHead>
                 ))}
@@ -160,19 +172,28 @@ export default function Reports() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-white">
+                  <TableCell
+                    colSpan={8}
+                    className="text-center py-8 text-white"
+                  >
                     Loading...
                   </TableCell>
                 </TableRow>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-white">
-                     {error}
+                  <TableCell
+                    colSpan={8}
+                    className="text-center py-8 text-white"
+                  >
+                    {error}
                   </TableCell>
                 </TableRow>
               ) : paginatedBookings.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-white">
+                  <TableCell
+                    colSpan={8}
+                    className="text-center py-8 text-white"
+                  >
                     No bookings found
                   </TableCell>
                 </TableRow>
@@ -195,24 +216,32 @@ export default function Reports() {
                       {booking.distance}
                     </TableCell>
                     <TableCell className="text-white">
-                      {booking.wating_time}
+                      {booking.wating_time_formated
+                        ? booking.wating_time_formated
+                        : "00:00:00"}
                     </TableCell>
                     <TableCell className="text-white">
-                    {(() => {
-                      const fare = booking.totalFare;
-                      const fareStr = `$${fare}`;
-                      const decimalPart = fare.toString().split(".")[1];
-                      if (decimalPart && decimalPart.length === 1) {
-                        return fareStr + "0";
-                      }
-                      return fareStr;
-                    })()}
+                      {(() => {
+                        const fare = booking.totalFare;
+                        const fareStr = `$${fare}`;
+                        const decimalPart = fare.toString().split(".")[1];
+                        if (decimalPart && decimalPart.length === 1) {
+                          return fareStr + "0";
+                        }
+                        return fareStr;
+                      })()}
                     </TableCell>
                     <TableCell className="text-white">
                       {booking.pickup?.address}
                     </TableCell>
                     <TableCell className="text-white">
-                      {booking.dropOff?.address}
+                      {booking.dropOff?.address ? (
+                        `${booking.dropOff.address}`
+                      ) : (
+                        <span className="text-gray-400 italic">
+                          No address provided
+                        </span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))

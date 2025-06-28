@@ -210,7 +210,7 @@ export default function BookingHistory() {
                       {booking.distance}
                     </TableCell>
                     <TableCell  >
-                      {booking.wating_time_formated}
+                      {booking.wating_time_formated ? booking.wating_time_formated : "00:00:00"}
                     </TableCell>
                     <TableCell  >
                       {/* {`${booking.pickup.latitude}, ${booking.pickup.longitude}`} */}
@@ -219,7 +219,10 @@ export default function BookingHistory() {
                     </TableCell>
                     <TableCell  >
                       {/* {`${booking.dropOff.latitude}, ${booking.dropOff.longitude}`} */}
-                      {`${booking.dropOff.address}`}
+                      {booking.dropOff?.address
+                        ? `${booking.dropOff.address}`
+                        : <span className="text-gray-400 italic">No address provided</span>
+                      }
                     </TableCell>
 
                     {/* <TableCell  >
