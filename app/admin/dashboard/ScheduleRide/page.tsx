@@ -40,7 +40,9 @@ export default function ScheduleRide() {
     }
 
     const formattedDate = pickupDate ? format(pickupDate, "MM/dd/yyyy") : "";
+    console.log("formattedDate ===> ", formattedDate);
     const formattedTime = pickupTime ? format(pickupTime, "hh:mma") : "";
+    console.log("formattedTime ===> ", formattedTime);
 
     const resultAction = await dispatch(
       scheduleRide({
@@ -167,7 +169,7 @@ export default function ScheduleRide() {
                   <TimePicker
                     value={pickupTime}
                     onChange={setPickupTime}
-                    ampm
+                    // ampm
                     slotProps={{
                       textField: {
                         fullWidth: true,

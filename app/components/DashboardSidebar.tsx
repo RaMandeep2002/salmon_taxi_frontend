@@ -11,7 +11,7 @@ import {
   Clock,
   CarTaxiFront,
   SquareChartGantt,
-  Clock10
+  AlarmClock
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -78,7 +78,7 @@ export default function DashboardSidebar() {
         />
        
         <MenuItem
-          icon={Clock10}
+          icon={AlarmClock}
           label={isCollapsed ? "" : "Schedule Ride"}
           onClick={() => handleNavigation("/admin/dashboard/ScheduleRide")}
           isCollapsed={isCollapsed}

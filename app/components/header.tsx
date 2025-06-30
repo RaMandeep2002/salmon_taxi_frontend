@@ -17,7 +17,7 @@ import {
   Clock,
   CarTaxiFront,
   SquareChartGantt,
-  Clock10,
+  AlarmClock,
 } from "lucide-react"; // Import icons for mobile menu
 
 import { useState } from "react";
@@ -133,7 +133,7 @@ export default function HeaderDashboard() {
                 isCollapsed={false}
               />
               <MenuItem
-                icon={Clock10}
+                icon={AlarmClock}
                 label="Schedule Ride"
                 onClick={() =>
                   handleNavigation("/admin/dashboard/ScheduleRide")
