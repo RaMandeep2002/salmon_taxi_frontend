@@ -236,7 +236,7 @@ export default function ShiftsAndVehicle() {
                           ? (shift.vehicle.isAssigned ? "Assigned" : "Free")
                           : (
                               shift.vehicle.isAssigned
-                                ? "Should be Free"
+                                ? "Free"
                                 : "Free"
                             )
                         }
