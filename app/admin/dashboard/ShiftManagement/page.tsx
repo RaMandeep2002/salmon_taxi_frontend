@@ -220,12 +220,26 @@ export default function ShiftsAndVehicle() {
                     <TableCell>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          shift.vehicle.isAssigned
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                          shift.isActive
+                            ? (shift.vehicle.isAssigned
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800")
+                            : (
+                                // If shift is ended, but vehicle is still assigned elsewhere, show "Should be Free"
+                                shift.vehicle.isAssigned
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                              )
                         }`}
                       >
-                        {shift.vehicle.isAssigned ? "Assigned" : "Free"}
+                        {shift.isActive
+                          ? (shift.vehicle.isAssigned ? "Assigned" : "Free")
+                          : (
+                              shift.vehicle.isAssigned
+                                ? "Should be Free"
+                                : "Free"
+                            )
+                        }
                       </span>
                     </TableCell>
                     <TableCell>
