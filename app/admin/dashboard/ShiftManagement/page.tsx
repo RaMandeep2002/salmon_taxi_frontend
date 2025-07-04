@@ -166,6 +166,9 @@ export default function ShiftsAndVehicle() {
                   Shift Status
                 </TableHead>
                 <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
+                  Vehicle Status
+                </TableHead>
+                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Action
                 </TableHead>
               </TableRow>
