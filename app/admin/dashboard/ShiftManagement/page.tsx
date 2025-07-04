@@ -215,6 +215,17 @@ export default function ShiftsAndVehicle() {
                       </span>
                     </TableCell>
                     <TableCell>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          shift.vehicle.isAssigned
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {shift.vehicle.isAssigned ? "Assigned" : "Free"}
+                      </span>
+                    </TableCell>
+                    <TableCell>
                       <Button
                         size="sm"
                         className="bg-red-600 hover:bg-red-700"
