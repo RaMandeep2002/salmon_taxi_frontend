@@ -11,7 +11,9 @@ import {
   Clock,
   CarTaxiFront,
   SquareChartGantt,
-  AlarmClock
+  AlarmClock,
+  UserRoundCog,
+  UserPlus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -124,6 +126,18 @@ export default function DashboardSidebar() {
           icon={ListChecksIcon}
           label={isCollapsed ? "" : "Reports"}
           onClick={() => handleNavigation("/admin/dashboard/Reports/")}
+          isCollapsed={isCollapsed}
+        />
+        <MenuItem
+          icon={UserPlus}
+          label={isCollapsed ? "" : "Add Admins"}
+          onClick={() => handleNavigation("/admin/dashboard/AddAdmin")}
+          isCollapsed={isCollapsed}
+        />
+        <MenuItem
+          icon={UserRoundCog}
+          label={isCollapsed ? "" : "Admins"}
+          onClick={() => handleNavigation("/admin/dashboard/AdminList")}
           isCollapsed={isCollapsed}
         />
         <MenuItem

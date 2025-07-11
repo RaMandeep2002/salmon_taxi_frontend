@@ -18,6 +18,8 @@ import {
   CarTaxiFront,
   SquareChartGantt,
   AlarmClock,
+  UserRoundCog,
+  UserPlus,
 } from "lucide-react"; // Import icons for mobile menu
 
 import { useState } from "react";
@@ -184,6 +186,18 @@ export default function HeaderDashboard() {
                 icon={ListChecksIcon}
                 label="Reports"
                 onClick={() => handleNavigation("/admin/dashboard/Reports/")}
+                isCollapsed={false}
+              />
+                 <MenuItem
+                icon={UserPlus}
+                label="Add Admins"
+                onClick={() => handleNavigation("/admin/dashboard/AddAdmin")}
+                isCollapsed={false}
+              />
+                 <MenuItem
+                icon={UserRoundCog}
+                label="Admins"
+                onClick={() => handleNavigation("/admin/dashboard/AdminList")}
                 isCollapsed={false}
               />
               <MenuItem

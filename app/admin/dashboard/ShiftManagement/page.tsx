@@ -21,6 +21,8 @@ import {
 } from "../../slices/slice/stopShiftsDriver";
 import { useToast } from "@/hooks/use-toast";
 import { useDebounce } from "@/lib/useDebounce";
+import { Ban } from "lucide-react";
+import { stopAllShiftByAdmin } from "../../slices/slice/stopAllShiftSlice";
 
 export default function ShiftsAndVehicle() {
   const { toast: showToast } = useToast(); // rename to avoid shadowing
@@ -42,6 +44,9 @@ export default function ShiftsAndVehicle() {
     message,
     shiftDuration,
   } = useSelector((state: RootState) => state.shiftActions);
+  const { ismessage, stoppedShifts } = useSelector(
+    (state: RootState) => state.stopAllShift
+  );
 
   useEffect(() => {
     dispatch(fetchShiftsWithVehicles());
@@ -49,7 +54,9 @@ export default function ShiftsAndVehicle() {
 
   const filteredShifts =
     shifts?.filter((shift) =>
-      shift.driver.drivername.toLowerCase().includes(debouncedSearch.toLowerCase())
+      shift.driver.drivername
+        .toLowerCase()
+        .includes(debouncedSearch.toLowerCase())
     ) || [];
 
   const totalPages = Math.ceil(filteredShifts.length / itemsPerPage);
@@ -102,7 +109,7 @@ export default function ShiftsAndVehicle() {
     const endTime = now
       .toLocaleTimeString("en-US", {
         hour: "numeric",
-        minute: "2-digit"
+        minute: "2-digit",
       })
       .replace(/\s?([AP]M)$/i, (match, p1) => p1.toLowerCase());
 
@@ -124,6 +131,42 @@ export default function ShiftsAndVehicle() {
     }
   };
 
+  const handleStopAllShiftDriver = async () => {
+    const now = new Date();
+    const endDate = now.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric",
+    });
+
+    const endTime = now
+      .toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+      })
+      .replace(/\s?([AP]M)$/i, (match, p1) => p1.toLowerCase());
+
+    try {
+      await dispatch(
+        stopAllShiftByAdmin({
+          endTime,
+          endDate,
+        })
+      );
+      showToast({
+        title: ismessage || "All Shift stopped successfully!",
+        description: stoppedShifts ? `No of Shifts : ${stoppedShifts}` : "",
+      });
+      dispatch(fetchShiftsWithVehicles());
+    } catch (err) {
+      showToast({
+        title: "Error",
+        description: `Failed to stop shift: ${err}`,
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="p-8">
@@ -134,7 +177,7 @@ export default function ShiftsAndVehicle() {
         <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
             <Input
-            autoFocus
+              autoFocus
               placeholder="Search by driver name..."
               className="w-full sm:w-72 text-white border border-[#F5EF1B] placeholder-white"
               value={searchTerm}
@@ -143,6 +186,17 @@ export default function ShiftsAndVehicle() {
                 setCurrentPage(1);
               }}
             />
+          </div>
+          <div className="w-full sm:w-auto flex justify-end">
+            <Button
+              className="w-full sm:w-auto text-white bg-red-600 hover:bg-red-700 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+              onClick={handleStopAllShiftDriver}
+            >
+              <span className="animate-pulse">
+                <Ban className="mr-2 h-4 w-4" />
+              </span>
+              Stop All Shift
+            </Button>
           </div>
         </div>
 
@@ -195,8 +249,13 @@ export default function ShiftsAndVehicle() {
                 </TableRow>
               ) : (
                 paginatedShifts.map((shift, index) => (
-                  <TableRow key={index} className="text-center text-white border border-[#F5EF1B]">
-                    <TableCell>{highlightMatch(shift.driver.drivername, debouncedSearch)}</TableCell>
+                  <TableRow
+                    key={index}
+                    className="text-center text-white border border-[#F5EF1B]"
+                  >
+                    <TableCell>
+                      {highlightMatch(shift.driver.drivername, debouncedSearch)}
+                    </TableCell>
                     <TableCell>{shift.vehicle.vehicleModel}</TableCell>
                     <TableCell>
                       {`${shift.startTime} - ${shift.startDate}`}
@@ -221,25 +280,22 @@ export default function ShiftsAndVehicle() {
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           shift.isActive
-                            ? (shift.vehicle.isAssigned
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800")
-                            : (
-                                // If shift is ended, but vehicle is still assigned elsewhere, show "Should be Free"
-                                shift.vehicle.isAssigned
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-red-100 text-red-800"
-                              )
+                            ? shift.vehicle.isAssigned
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                            : // If shift is ended, but vehicle is still assigned elsewhere, show "Should be Free"
+                            shift.vehicle.isAssigned
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
                         }`}
                       >
                         {shift.isActive
-                          ? (shift.vehicle.isAssigned ? "Assigned" : "Free")
-                          : (
-                              shift.vehicle.isAssigned
-                                ? "Free"
-                                : "Free"
-                            )
-                        }
+                          ? shift.vehicle.isAssigned
+                            ? "Assigned"
+                            : "Free"
+                          : shift.vehicle.isAssigned
+                          ? "Free"
+                          : "Free"}
                       </span>
                     </TableCell>
                     <TableCell>
@@ -285,8 +341,6 @@ export default function ShiftsAndVehicle() {
     </DashboardLayout>
   );
 }
-
-
 
 const highlightMatch = (text: string, term: string) => {
   const regex = new RegExp(`(${term})`, "gi");
