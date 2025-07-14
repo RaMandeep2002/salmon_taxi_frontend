@@ -402,8 +402,13 @@ export default function DriverList() {
 
                         <DialogContent className="bg-[#F5EF1B] border-none">
                           <DialogHeader>
-                            <DialogTitle className="  text-zinc-800">
-                              Edit Driver
+                            <DialogTitle className="text-zinc-800">
+                              <span className="text-zinc-800 text-xl font-semibold">
+                                Update Data for{" "}
+                                <span className="font-bold">
+                                  {driver.drivername}
+                                </span>
+                              </span>
                             </DialogTitle>
                           </DialogHeader>
                           {iserror && (
@@ -493,7 +498,9 @@ export default function DriverList() {
                                 />
                               </div>
 
-                              <h1 className="text-zinc-800">Update Password For {driver.drivername}</h1>
+                              {/* <h1 className="text-zinc-800">
+                                Update Password For {driver.drivername}
+                              </h1> */}
                               <div className="grid grid-cols-4 items-center gap-4 relative">
                                 <Label
                                   htmlFor="password"

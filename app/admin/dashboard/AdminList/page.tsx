@@ -313,7 +313,12 @@ export default function AdminList() {
                         <DialogContent className="bg-[#F5EF1B] border-none">
                           <DialogHeader>
                             <DialogTitle className="  text-zinc-800">
-                              Edit Driver
+                              {/* Edit Driver */}
+                              <h1 className="text-zinc-800">
+                                <span className="text-zinc-900">
+                                  Update Data for <span className="font-bold">{admin.name}</span>
+                                </span>
+                              </h1>
                             </DialogTitle>
                           </DialogHeader>
                           {iserror && (
@@ -368,9 +373,11 @@ export default function AdminList() {
                                 />
                               </div>
 
-                              <h1 className="text-zinc-800">
-                                Update Password For {admin.name}
-                              </h1>
+                              {/* <h1 className="text-zinc-800">
+                                <span className="bg-yellow-200 px-2 py-1 rounded text-zinc-900">
+                                  Update Password for <span className="font-bold">{admin.name}</span>
+                                </span>
+                              </h1> */}
                               <div className="grid grid-cols-4 items-center gap-4 relative">
                                 <Label
                                   htmlFor="password"
@@ -413,8 +420,7 @@ export default function AdminList() {
                                 type="submit"
                                 disabled={isProcessing}
                               >
-                                {isProcessing ? "Updating..." : "update Admin"}
-                                
+                                {isProcessing ? "Updating..." : "Update Admin"} 
                               </Button>
                             </DialogFooter>
                           </form>
