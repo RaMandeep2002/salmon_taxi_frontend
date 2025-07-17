@@ -151,7 +151,8 @@ export default function Reports() {
               <TableRow className=" border-b border-[#F5EF1B] text-[#F5EF1B] text-base">
                 {[
                   "Booking Date",
-                  "Booking Time",
+                  "Pickup Time",
+                  "Drop-Off Time",
                   "Driver",
                   "Distance",
                   "Waiting Time",
@@ -208,6 +209,9 @@ export default function Reports() {
                     </TableCell>
                     <TableCell className="text-white">
                       {booking.pickuptime}
+                    </TableCell>
+                    <TableCell className="text-white">
+                      {booking.dropdownTime}
                     </TableCell>
                     <TableCell className="text-white">
                       {booking.driver?.drivername || "No driver assigned"}
