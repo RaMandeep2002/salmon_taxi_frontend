@@ -295,7 +295,8 @@ export default function BookingHistory() {
 
 
 
-const highlightMatch = (text: string, term: string) => {
+const highlightMatch = (text: string, term: string) => { 
+  if(!text) retrun text;
   const regex = new RegExp(`(${term})`, "gi");
   return (
     <span
