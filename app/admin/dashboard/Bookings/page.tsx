@@ -2,7 +2,7 @@
 import DashboardLayout from "../../DashBoardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -17,6 +17,9 @@ import { AppDispatch, RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
 import { fetchBookingHistory } from "@/app/admin/slices/slice/booingHistorySlice";
 import { useDebounce } from "@/lib/useDebounce";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
+// import ServerTime from "@/app/components/LocalTime";
 // import ServerTime from "@/app/components/LocalTime";
 
 export default function BookingHistory() {
@@ -27,6 +30,8 @@ export default function BookingHistory() {
   const debouncedSearch = useDebounce(searchTerm, 500);
   const itemsPerPage = 15;
 
+  const [filterStatus, setFilterStatus] = useState("All");
+
 
   const {
     bookings: bookings,
@@ -34,8 +39,11 @@ export default function BookingHistory() {
     error,
   } = useSelector((state: RootState) => state.fetchBookingHistory);
   useEffect(() => {
-    dispatch(fetchBookingHistory());
+    dispatch(fetchBookingHistory());  
   }, [dispatch]);
+
+
+  const matchesStatus = ["All", ...new Set(bookings.map(b => b.driver?.drivername || "No driver assign"))];
 
   const filteredBookings =
   bookings?.filter((booking) => {
@@ -43,9 +51,10 @@ export default function BookingHistory() {
     booking.driver?.drivername?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
     booking.pickup.address.toLowerCase().includes(debouncedSearch.toLowerCase()) 
 
-    // const matchesStatus =
-    //   filterStatus === "All" || driver.status === filterStatus;
-    return matchesSearch;
+    const matchesFilterStatus =
+    filterStatus === "All" || booking.driver?.drivername === filterStatus;
+
+  return matchesSearch && matchesFilterStatus;
   }) || [];
 
 
@@ -56,7 +65,7 @@ export default function BookingHistory() {
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  // const [filterStatus, setFilterStatus] = useState("All");
+
   return (
     <DashboardLayout>
       <div className="p-8">
@@ -64,52 +73,50 @@ export default function BookingHistory() {
           Booking History
         </h1>
 
-        <div className="mb-6 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+        <div className="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto">
             <Input
               placeholder="Search by Driver Name, Pickup..."
-              className="w-64 text-white border border-[#F5EF1B] placeholder-white"
+              className="w-full sm:w-64 text-white border border-[#F5EF1B] placeholder-white"
               onChange={(e) => setSearchTerm(e.target.value)}
             />
 
-            <Button
+            {/* <Button
               variant="outline"
               size="icon"
-              className="bg-zinc-800 hover:bg-zinc-800 border border-[#F5EF1B]"
+              className="bg-zinc-800 hover:bg-zinc-800 border border-[#F5EF1B] flex-shrink-0"
             >
               <Search className="h-4 w-4 text-[#F5EF1B]" />
-            </Button>
+            </Button> */}
           </div>
 
-
-          {/* <div className="text-white">
-          <ServerTime />
-          </div> */}
-          {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild className="text-white bg-zinc-800 border border-[#F5EF1B]">
-              <Button
-                variant="outline"
-                className="bg-zinc-800 hover:bg-zinc-800 text-white hover:text-white"
-              >
-                {filterStatus === "All" ? "Filter by Status" : filterStatus}
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="bg-zinc-800 hover:bg-zinc-800 text-white hover:text-white border border-[#F5EF1B]"
-            >
-              {["All", "completed", "busy", "not working"].map((status) => (
-                <DropdownMenuCheckboxItem
-                  key={status}
-                  checked={filterStatus === status}
-                  onCheckedChange={() => setFilterStatus(status)}
+          <div className="w-full md:w-auto flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="bg-zinc-800 hover:bg-zinc-800 text-white border border-[#F5EF1B] w-full md:w-auto"
                 >
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu> */}
+                  {filterStatus === "All" ? "Drivers" : filterStatus}
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="bg-zinc-800 text-white border border-[#F5EF1B]"
+              >
+                {matchesStatus.map((status) => (
+                  <DropdownMenuCheckboxItem
+                    key={status}
+                    checked={filterStatus === status}
+                    onCheckedChange={() => setFilterStatus(status)}
+                  >
+                    {status}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
         <div className="border border-[#F5EF1B] rounded-lg overflow-hidden">
@@ -126,7 +133,10 @@ export default function BookingHistory() {
                   Booking Date
                 </TableHead>
                 <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Booking Time
+                  Pickup Time
+                </TableHead>
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                  DropOff Time
                 </TableHead>
                 <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Driver
@@ -190,6 +200,9 @@ export default function BookingHistory() {
                       {`${booking.pickuptime}`}
                     </TableCell>
                     <TableCell  >
+                      {`${booking.dropdownTime}`}
+                    </TableCell>
+                    <TableCell  >
                       
                        {highlightMatch(!booking.driver?.drivername
                         ? "No driver assign"
@@ -219,7 +232,7 @@ export default function BookingHistory() {
                     </TableCell>
                     <TableCell  >
                       {/* {`${booking.dropOff.latitude}, ${booking.dropOff.longitude}`} */}
-                      {booking.dropOff?.address
+                      {booking.dropOff?.address 
                         ? `${booking.dropOff.address}`
                         : <span className="text-gray-400 italic">No address provided</span>
                       }
