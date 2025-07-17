@@ -33,9 +33,9 @@ export default function AppDownloadSection(){
                     />
                   </Link>
                 </div>
-              </div>
+              </div>  
               <div className="flex justify-center">
-              <img
+              <Image
                  src="https://i.postimg.cc/Y9MJSmtD/salmon-logo-final.jpg"
                  alt="Professional taxi service"
                  className="w-48 h-48 sm:rounded-full object-cover"

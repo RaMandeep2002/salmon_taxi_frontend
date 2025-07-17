@@ -1,6 +1,7 @@
 import { Mail, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import * as motion from "motion/react-client"
+import Image from "next/image";
 
 
 export default function Footer(){
@@ -16,9 +17,11 @@ export default function Footer(){
                 viewport={{ once: true }}
               className="space-y-4">
                 <div className="flex items-center gap-2">
-                  <img
-                    src="https://i.postimg.cc/Y9MJSmtD/salmon-logo-final.jpg"
+                  <Image
+                    src="/salmon-logo-final.jpg"
                     alt="Salmon Arm Taxi Logo"
+                    width={40}
+                    height={40}
                     className="h-10 w-10 object-contain rounded-full"
                   />
                   <span className="text-lg font-bold">Salmon Arm Taxi</span>

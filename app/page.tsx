@@ -19,7 +19,7 @@ export default function Home() {
       {/* HeroSection */}
       <main className="flex-1">
         <Navbar />
-        
+
         <HeroSection />
 
         <WelcomeSection />
