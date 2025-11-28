@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
-import { fetchBookingHistory } from "../../slices/slice/booingHistorySlice";
+import { fetchBookingHistory, setPage } from "../../slices/slice/booingHistorySlice";
 import { getBookingReport } from "../../slices/slice/getReportSlice";
 import { useDebounce } from "@/lib/useDebounce";
 
@@ -22,14 +22,14 @@ export default function Reports() {
   const [toDate, setToDate] = useState("");
   const [pickup, setPickup] = useState("");
   const [drivername, setDrivername] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 15;
 
   const debouncedDriverSearch = useDebounce(drivername, 300);
   const debouncedPickupSearch = useDebounce(pickup, 300);
 
   const dispatch = useDispatch<AppDispatch>();
-  const { bookings, loading, error } = useSelector(
+  const { bookings, loading, error, page, limit,hasMore, totalPages } = useSelector(
     (state: RootState) => state.fetchBookingHistory
   );
   const { isDownloading, iserror } = useSelector(
@@ -37,8 +37,8 @@ export default function Reports() {
   );
 
   useEffect(() => {
-    dispatch(fetchBookingHistory());
-  }, [dispatch]);
+    dispatch(fetchBookingHistory({ page, limit }));
+  }, [dispatch, page, limit]);
 
   // Convert YYYY-MM-DD to MM/DD/YYYY for comparison
   const convertDateFormat = (dateString: string) => {
@@ -76,15 +76,14 @@ export default function Reports() {
       return isDriverMatch && isPickupMatch && isFromDateMatch && isToDateMatch;
     }) || [];
 
-  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
-  const paginatedBookings = filteredBookings.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  // const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+  // const paginatedBookings = filteredBookings.slice(
+  //   (currentPage - 1) * itemsPerPage,
+  //   currentPage * itemsPerPage
+  // );
 
-  const handleNext = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () => dispatch(setPage(page + 1));
+  const handlePrev = () => dispatch(setPage(Math.max(page - 1, 1)));
 
   const handleDownload = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,8 +105,11 @@ export default function Reports() {
         </h1>
 
         {/* Filter & Download Form */}
-        <form onSubmit={handleDownload} className="w-full mb-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <form
+          onSubmit={handleDownload}
+          className="w-full mb-8"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
             <input
               type="date"
               value={fromDate}
@@ -139,6 +141,19 @@ export default function Reports() {
             >
               <Download size={16} />
               {isDownloading ? "Downloading..." : "Download CSV"}
+            </button>
+            <button
+              type="button"
+              className="px-2 py-2 bg-gray-500 hover:bg-gray-700 text-white rounded-md transition-colors"
+              onClick={() => {
+                setFromDate("");
+                setToDate("");
+                setPickup("");
+                setDrivername("");
+              }}
+              disabled={isDownloading}
+            >
+              Clear
             </button>
           </div>
           {iserror && <p className="text-red-500 text-sm mt-2">{iserror}</p>}
@@ -189,7 +204,7 @@ export default function Reports() {
                     {error}
                   </TableCell>
                 </TableRow>
-              ) : paginatedBookings.length === 0 ? (
+              ) : filteredBookings.length === 0 ? (
                 <TableRow>
                   <TableCell
                     colSpan={8}
@@ -199,7 +214,7 @@ export default function Reports() {
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedBookings.map((booking) => (
+                filteredBookings.map((booking) => (
                   <TableRow
                     key={booking.bookingId}
                     className="border-b border-[#F5EF1B]"
@@ -256,19 +271,19 @@ export default function Reports() {
 
         {/* Pagination */}
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
-          <Button
+        <Button
             onClick={handlePrev}
-            disabled={currentPage === 1}
+            disabled={page === 1}
             className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Previous
           </Button>
           <span className="text-sm text-[#F5EF1B]">
-            Page {currentPage} of {totalPages}
+            Page {page} - {totalPages}
           </span>
           <Button
-            onClick={handleNext}
-            disabled={currentPage === totalPages}
+        onClick={handleNext}
+        disabled={!hasMore || loading}
             className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Next

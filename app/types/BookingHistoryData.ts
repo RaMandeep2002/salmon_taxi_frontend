@@ -28,6 +28,11 @@ export interface BookingHistory {
 
 export interface BookingState {
     bookings: BookingHistory[];
+    page:number;
+    limit:number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
     loading: boolean;
     error: string | null;
 }
