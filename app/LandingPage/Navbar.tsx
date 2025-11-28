@@ -51,7 +51,7 @@ export default function Navbar() {
             transition={{
               duration: 1.5,
             }}
-            src="https://i.postimg.cc/Y9MJSmtD/salmon-logo-final.jpg"
+             src="/salmon-logo-final.jpg"
             alt="SpeedyTaxi Logo"
             className="h-12 w-12 object-contain"
           />
