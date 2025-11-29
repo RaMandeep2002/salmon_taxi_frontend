@@ -24,15 +24,15 @@ type StatCardProps = {
 
 function StatCard({ title, value, icon }: StatCardProps) {
   return (
-    <div className=" bg-[#F5EF1B] shadow-xl rounded-xl p-6 flex items-center transition-all duration-300 hover:scale-105 hover:shadow-2xl border border-yellow-300/70">
-      <div className="rounded-full shadow-md p-4 mr-5 flex justify-center items-center border-2 border-[#F5EF1B]/60">
-        <span className="text-yellow-600 text-3xl">{icon}</span>
+    <div className="bg-[#F5EF1B] shadow-xl rounded-xl p-6 flex items-center transition-all duration-300 hover:scale-105 hover:shadow-2xl border border-yellow-300/70 hover:shadow-yellow-500/50">
+      <div className="p-4 mr-5 flex justify-center items-center border-2 border-[#F5EF1B]/60">
+        <span className="text-4xl">{icon}</span>
       </div>
       <div>
-        <p className="text-xs font-semibold uppercase text-yellow-900 mb-1 tracking-wider">{title}</p>
-        <p className="text-3xl font-extrabold text-yellow-900 drop-shadow-sm">{value}</p>
+        <p className="text-xs font-semibold uppercase text-black mb-1 tracking-wider">{title}</p>
+        <p className="text-3xl font-extrabold text-black drop-shadow-sm">{value}</p>
       </div>
-    </div>
+    </div>  
   );
 }
 

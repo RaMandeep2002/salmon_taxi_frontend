@@ -60,7 +60,7 @@ export default function DashboardLayout({
           </ul>
         </nav>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-zinc-800">
+        <main className="flex-1 overflow-y-auto p-4 md:p-4 bg-zinc-800">
           <div className="max-w-full mx-auto space-y-6">{children}</div>
         </main>
       </div>
