@@ -7,6 +7,7 @@ export interface Vehicle {
   vehicleModel: string;
   year: number;
   vehicle_plate_number:string;
+  vehRegJur?:string;
   status: string;
   isAssigned: boolean;
 }

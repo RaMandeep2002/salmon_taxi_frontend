@@ -287,9 +287,12 @@ export default function DriverList() {
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Phone Number
                 </TableHead>
-                {/* <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   License Number
-                </TableHead> */}
+                </TableHead>
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                Province/State Codes
+                </TableHead>
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Actions
                 </TableHead>
@@ -335,9 +338,12 @@ export default function DriverList() {
                         {driver.phoneNumber}
                       </a>
                     </TableCell>
-                    {/* <TableCell className="text-center text-white">
+                    <TableCell className="text-center text-white">
                       {driver.driversLicenseNumber}
-                    </TableCell> */}
+                    </TableCell>
+                    <TableCell className="text-center text-white">
+                      {driver.driversLicJur ? driver.driversLicJur : "N/A"}
+                    </TableCell>
                     <TableCell className="text-center">
                       <Dialog>
                         <DialogTrigger asChild className="text-white">

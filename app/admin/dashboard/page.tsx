@@ -124,11 +124,21 @@ export default function DashboardPage() {
 
               <TableBody>
                 {loading ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center">
-                      Loading...
-                    </TableCell>
-                  </TableRow>
+                    // <TableRow>
+                    //   <TableCell colSpan={8} className="text-center">
+                    //     Loading...
+                    //   </TableCell>
+                    // </TableRow>
+
+                   [...Array(5)].map((_, idx) => (
+                      <TableRow key={idx} className="text-center border border-[#F5EF1B]">
+                        {Array.from({ length: 8 }).map((__, i) => (
+                          <TableCell key={i} className="text-xs sm:text-sm">
+                            <div className="animate-pulse bg-gray-700 rounded h-6 w-full mx-auto"></div>
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
                 ) : error ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center text-white">
@@ -166,7 +176,7 @@ export default function DashboardPage() {
                         </TableCell>
                       </TableRow>
                     ))
-                  ) : (
+                  ): (
                     <TableRow>
                       <TableCell colSpan={8} className="text-center text-white">
                         No bookings found.

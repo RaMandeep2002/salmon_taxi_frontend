@@ -243,9 +243,9 @@ export default function VechicleList() {
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Driver ID
                 </TableHead> */}
-                {/*    <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                   <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Registration Number
-                </TableHead> */}
+                </TableHead>
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Company
                 </TableHead>
@@ -257,6 +257,9 @@ export default function VechicleList() {
                 </TableHead>
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Vehcile Plate Number
+                </TableHead>
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                Province/State Codes
                 </TableHead>
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Status
@@ -295,9 +298,11 @@ export default function VechicleList() {
                           {driver.driverId}
                         </TableCell> */}
 
-                    {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
-                      {vehicle.registrationNumber}
-                    </TableCell> */}
+                    <TableCell>
+                      {vehicle.registrationNumber && vehicle.registrationNumber.length > 12
+                        ? `${vehicle.registrationNumber.slice(0, 4)}****${vehicle.registrationNumber.slice(-4)}`
+                        : vehicle.registrationNumber}
+                    </TableCell>
                     <TableCell>
                       {highlightMatch(vehicle?.company, debouncedsearch)}
                     </TableCell>
@@ -306,6 +311,11 @@ export default function VechicleList() {
                     <TableCell>
                       {vehicle?.vehicle_plate_number
                         ? vehicle.vehicle_plate_number
+                        : "Not Set"}
+                    </TableCell>
+                    <TableCell>
+                      {vehicle?.vehRegJur
+                        ? vehicle.vehRegJur
                         : "Not Set"}
                     </TableCell>
                     {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">

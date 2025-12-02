@@ -24,6 +24,7 @@ export const fetchDetailWithVehicle = createAsyncThunk<Vehicle[]>(
       const response = await axios.get<VehicleResponse>(
         `${API_URL}/api/driver/getDriverVechile`,
       );
+      console.log("data ======> ", response.data.vehicles);
       return response.data.vehicles;
     } catch (error) {
       console.error(error);
