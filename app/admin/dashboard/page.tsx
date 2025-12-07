@@ -40,12 +40,12 @@ export default function DashboardPage() {
   const dispatch = useDispatch<AppDispatch>();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 15;
 
 
-    const { bookings, loading, error } = useSelector(
-      (state: RootState) => state.fetchBookingHistory
-    );
+  const { bookings, loading, error } = useSelector(
+    (state: RootState) => state.fetchBookingHistory
+  );
   const { data, iserror } = useSelector(
     (state: RootState) => state.dashboardStats
   );
@@ -57,6 +57,7 @@ export default function DashboardPage() {
 
 
 
+ 
   const totalPages = Math.ceil(bookings.length / itemsPerPage);
   const paginatedBookings = bookings.slice(
     (currentPage - 1) * itemsPerPage,
@@ -66,7 +67,6 @@ export default function DashboardPage() {
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
 
   return (
     <DashboardLayout>
@@ -151,43 +151,35 @@ export default function DashboardPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  paginatedBookings.length > 0 ? (
-                    bookings.map((booking) => (
-                      <TableRow
-                        className="text-center border border-[#F5EF1B]"
-                        key={booking.bookingId}
-                      >
-                        <TableCell className="text-white text-xs sm:text-sm">
-                          {booking.pickupDate || "N/A"}
-                        </TableCell>
-                        <TableCell className="text-white text-xs sm:text-sm">
-                          {booking.pickuptime || "N/A"}
-                        </TableCell>
-                        <TableCell className="text-white text-xs sm:text-sm">
-                          {booking.driver?.drivername || "No driver assigned"}
-                        </TableCell>
-                        <TableCell className="text-white text-xs sm:text-sm">
-                          {booking.distance || "0"}
-                        </TableCell>
-                        <TableCell className="text-white text-xs sm:text-sm">
-                          {booking.wating_time_formated || "0"}
-                        </TableCell>
-                        <TableCell className="text-white text-xs sm:text-sm">{`$${booking.totalFare}`}</TableCell>
-                        <TableCell className="text-white text-xs sm:text-sm">
-                          {booking.pickup?.address || "N/A"}
-                        </TableCell>
-                        <TableCell className="text-white text-xs sm:text-sm">
-                          {booking.dropOff?.address || "N/A"}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center text-white">
-                        No bookings found.
+                  paginatedBookings.map((booking) => (
+                    <TableRow
+                      className="text-center border border-[#F5EF1B]"
+                      key={booking.bookingId}
+                    >
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.pickupDate || "N/A"}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.pickuptime || "N/A"}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.driver?.drivername || "No driver assigned"}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.distance || "0"}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.wating_time_formated || "0"}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">{`$${booking.totalFare}`}</TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.pickup?.address || "N/A"}
+                      </TableCell>
+                      <TableCell className="text-white text-xs sm:text-sm">
+                        {booking.dropOff?.address || "N/A"}
                       </TableCell>
                     </TableRow>
-                  )
+                  ))
                 )}
               </TableBody>
             </Table>

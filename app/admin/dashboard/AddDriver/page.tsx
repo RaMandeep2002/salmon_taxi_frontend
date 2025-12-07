@@ -4,8 +4,8 @@ import { addDriver } from "@/app/admin/slices/slice/addDriverSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PhoneInput from "react-phone-number-Input";
-import "react-phone-number-Input/style.css";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import {
   Dialog,
   DialogContent,
