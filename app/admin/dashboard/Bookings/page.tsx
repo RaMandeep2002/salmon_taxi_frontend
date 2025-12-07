@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { useSelector } from "react-redux";
-import { fetchBookingHistory, setPage } from "@/app/admin/slices/slice/booingHistorySlice";
+import { fetchBookingHistory } from "@/app/admin/slices/slice/booingHistorySlice";
 import { useDebounce } from "@/lib/useDebounce";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -25,10 +25,10 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 export default function BookingHistory() {
   const dispatch = useDispatch<AppDispatch>();
 
-  // const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 500);
-  // const itemsPerPage = 15;
+  const itemsPerPage = 15;
 
   const [filterStatus, setFilterStatus] = useState("All");
 
@@ -37,12 +37,11 @@ export default function BookingHistory() {
     bookings: bookings,
     loading,
     error,
-    page,limit,hasMore, totalPages 
   } = useSelector((state: RootState) => state.fetchBookingHistory);
 
   useEffect(() => {
-    dispatch(fetchBookingHistory({page, limit}));  
-  }, [dispatch, page, limit]);
+    dispatch(fetchBookingHistory());  
+  }, [dispatch]);
 
 
   const matchesStatus = ["All", ...new Set(bookings.map(b => b.driver?.drivername || "No driver assign"))];
@@ -59,13 +58,19 @@ export default function BookingHistory() {
   return matchesSearch && matchesFilterStatus;
   }) || [];
 
+  const totalPages = Math.ceil(bookings.length / itemsPerPage);
+
+  const paginatedBookings = filteredBookings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
 
   // const totalPages = Math.ceil(bookings.length / itemsPerPage);
 
   // const paginatedBookings = filteredBookings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const handleNext = () => dispatch(setPage(page + 1));
-  const handlePrev = () => dispatch(setPage(Math.max(page - 1, 1)));
+
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   return (
     <DashboardLayout>
@@ -183,7 +188,7 @@ export default function BookingHistory() {
                   </TableCell>
                 </TableRow>
               ) : ( 
-                filteredBookings.map((booking) => (
+                paginatedBookings.map((booking) => (
                   <TableRow
                     className="text-center text-white border border-[#F5EF1B]"
                     key={booking.bookingId}
@@ -273,20 +278,20 @@ export default function BookingHistory() {
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
-            disabled={page === 1 || loading}
+            disabled={currentPage === 1}
             className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Previous
           </Button>
           <span className="text-sm text-[#F5EF1B]">
-          Page {page} - {totalPages}
+            Page {currentPage} of {totalPages}
           </span>
           <Button
-        onClick={handleNext}
-        disabled={!hasMore || loading}
+            onClick={handleNext}
+            disabled={currentPage === totalPages}
             className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
-            Next  
+            Next
           </Button>
         </div>
       </div>

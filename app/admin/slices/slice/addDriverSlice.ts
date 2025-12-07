@@ -7,14 +7,20 @@ interface Driver {
   drivername: string;
   email: string;
   driversLicenseNumber: string;
+  driversLicJur?: string;
   phoneNumber: string;
   password: string;
+}
+interface ValidationError {
+  field: string;
+  message: string;
 }
 
 interface DriverState {
   driver: Driver | null;
   isLoading: boolean;
   error: string | null;
+  validationErrors: ValidationError[];
   successMessage: string | null;
 }
 
@@ -23,10 +29,20 @@ interface DriverResponse {
   driver: Driver;
 }
 
+interface ApiErrorResponse {
+  error?: string;
+  message?: string;
+  errors?: ValidationError[];
+  validationErrors?: ValidationError[];
+}
+
+
+
 const initialState: DriverState = {
   driver: null,
   isLoading: false,
   error: null,
+  validationErrors: [],
   successMessage: null,
 };
 
@@ -34,7 +50,7 @@ const initialState: DriverState = {
 export const addDriver = createAsyncThunk<
   DriverResponse,                      // ✅ Return type on success
   Driver,                              // ✅ Argument type passed to the thunk
-  { rejectValue: string }              // ✅ Custom reject type
+  { rejectValue: ApiErrorResponse }              // ✅ Custom reject type
 >(
   "driver/addDriver",
   async (driverData, { rejectWithValue }) => {
@@ -42,7 +58,7 @@ export const addDriver = createAsyncThunk<
       const token = localStorage.getItem("token");
 
       if (!token) {
-        return rejectWithValue("No authentication token found.");
+        return rejectWithValue({ error: "No authentication token found." });
       }
 
       const response = await axios.post<DriverResponse>(
@@ -59,17 +75,30 @@ export const addDriver = createAsyncThunk<
       return response.data;
       
     } catch (error:unknown) {
-      // @ts-expect-error this is giving no import error
+     // @ts-expect-error error type
       if (axios.isAxiosError(error)) {
-        // @ts-expect-error this is giving no import error
-        return rejectWithValue(error.response?.data?.message || "API Error");
+        // @ts-expect-error error type
+        const data = error.response?.data as ApiErrorResponse;
+
+        // Handle validation errors from backend
+        if (data?.errors) {
+          return rejectWithValue({ validationErrors: data.errors });
+        }
+        if (data?.validationErrors) {
+          return rejectWithValue({ validationErrors: data.validationErrors });
+        }
+
+        // Handle other API errors
+        const errorMessage = data?.message || data?.error || "API Error";
+        return rejectWithValue({ error: errorMessage });
       }
-    
+
+      // Handle non-Axios errors
       if (error instanceof Error) {
-        return rejectWithValue(error.message);
+        return rejectWithValue({ error: error.message });
       }
-    
-      return rejectWithValue("An unknown error occurred");
+
+      return rejectWithValue({ error: "An unknown error occurred" });
     }
   }
 );
@@ -81,6 +110,7 @@ const driverSlice = createSlice({
     clearDriverState: (state) => {
       state.driver = null;
       state.error = null;
+      state.validationErrors = [];
       state.successMessage = "";
     },
   },
@@ -89,6 +119,7 @@ const driverSlice = createSlice({
       .addCase(addDriver.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.validationErrors = [];
         state.successMessage = null;
       })
       .addCase(
@@ -97,11 +128,34 @@ const driverSlice = createSlice({
           state.isLoading = false;
           state.driver = action.payload.driver;
           state.successMessage = action.payload.message;
+          state.error = null;
+          state.validationErrors = [];
         }
       )
       .addCase(addDriver.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload || "Unknown error occurred.";
+           const payload = action.payload as ApiErrorResponse;
+        
+        // Handle validation errors
+        if (payload?.validationErrors) {
+          state.validationErrors = payload.validationErrors;
+          state.error = "Some required fields are invalid. Please review and update them before submitting.";
+        } 
+        // Handle regular error messages
+        else if (payload?.error) {
+          state.error = payload.error;
+          state.validationErrors = [];
+        } 
+        // Handle other error formats
+        else if (payload?.message) {
+          state.error = payload.message;
+          state.validationErrors = [];
+        }
+        // Fallback for unknown errors
+        else {
+          state.error = action.error.message || "Unknown error occurred";
+          state.validationErrors = [];
+        }
       });
   },
 });

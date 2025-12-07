@@ -4,58 +4,111 @@ import { addDriver } from "@/app/admin/slices/slice/addDriverSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-Input";
+import "react-phone-number-Input/style.css";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+// import { toast } from "sonner";
 
 export default function AddDriver() {
+  const toast = useToast();
   const [drivername, setDrivername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [driversLicenseNumber, setDriversLicenseNumber] = useState<string>("");
+  const [driversLicJur, setdriversLicJur] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
+  const [success, setSuccess] = useState(false);
 
-  const { isLoading, error, successMessage } = useSelector(
+  const { isLoading, error, validationErrors, successMessage } = useSelector(
     (state: RootState) => state.addDriver
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccess(false);
+
+    console.log({
+      drivername,
+      email,
+      driversLicenseNumber,
+      driversLicJur,
+      phoneNumber: String(phoneNumber),
+      password,
+    });
+
+    // console.log(drivername, email, driversLicenseNumber, driversLicJur);
     if (phoneNumber === undefined) {
       alert("Please enter a valid phone number.");
       return;
     }
-    const resultAction = dispatch(
-      addDriver({
-        drivername,
-        email,
-        driversLicenseNumber,
-        phoneNumber: String(phoneNumber),
-        password,
-      })
-    );
-    if (addDriver.fulfilled.match(resultAction)) {
-      setDrivername("");
-      setEmail("");
-      setDriversLicenseNumber("");
-      setPhoneNumber("");
-      setPassword("");
+
+    try {
+      const resultAction = await dispatch(
+        addDriver({
+          drivername,
+          email,
+          driversLicenseNumber,
+          driversLicJur,
+          phoneNumber: String(phoneNumber),
+          password,
+        })
+      );
+      // toast.success("Driver added successfully!");
+
+      if (addDriver.fulfilled.match(resultAction)) {
+        setSuccess(true);
+        setDrivername("");
+        setEmail("");
+        setDriversLicenseNumber("");
+        setdriversLicJur("");
+        setPhoneNumber("");
+        setPassword("");
+        toast.toast({
+          title: "Driver added successfully!",
+          variant: "default",
+        });
+        // router.push("/admin/dashboard/DriverList")
+      } else if (addDriver.rejected.match(resultAction)) {
+        // Show error from payload if available
+        const errorMsg =
+          resultAction.payload?.message || "Failed to add driver.";
+        toast.toast({
+          title: "Error",
+          description: errorMsg,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast.toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : String(error) || "An unexpected error occurred.",
+        variant: "destructive",
+      });
     }
   };
-
-  // const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   let value = e.target.value;
-  //   const cleanedValue = value.replace(/[^\d+\s()-]/g, "");
-
-  //   if (value.includes("+")) {
-  //     value = "+" + value.replace(/\+/g, "").trim();
-  //   } else {
-  //     value = "+" + value.trim();
-  //   }
-
-  //   setPhoneNumber(cleanedValue);
-  // };
 
   const generatePassword = () => {
     const length = 8;
@@ -83,63 +136,347 @@ export default function AddDriver() {
           className="max-w-2xl w-full mx-auto bg-[#F5EF1B] p-4 sm:p-6 md:p-8 mt-6 sm:mt-12 rounded-md
         "
         >
-          {error && (
-            <p className="text-red-500 text-center text-sm sm:text-base">
-              {error}
-            </p>
-          )}
           {successMessage && (
-            <p className="text-green-600 text-center text-sm sm:text-base font-semibold">
-              {successMessage}
-            </p>
+            <Dialog open={success} onOpenChange={setSuccess}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="text-green-600 dark:text-yellow-300 text-center">
+                    New Driver added successfully!
+                  </DialogTitle>
+                  <DialogDescription className="text-center">
+                    The new Driver has been added.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex justify-center mt-4">
+                  <Button onClick={() => setSuccess(false)} autoFocus>
+                    Close
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+            // <p>{successMessage}</p>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-4">
+            {error && (
+              <div className="flex items-center justify-center mb-4">
+                <div className="bg-red-100 border border-red-400 text-red-700 px-3 py-3 rounded-lg flex items-center gap-2 shadow-sm w-full max-w-full">
+                  <svg
+                    className="w-5 h-5 text-red-500 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v2m0 4h.01M21 12A9 9 0 1 1 3 12a9 9 0 0 1 18 0ZM12 7v4m0 4h.01"
+                    />
+                  </svg>
+                  <span className="text-sm sm:text-sm font-medium">
+                    {error}
+                  </span>
+                </div>
+              </div>
+            )}
             <div>
               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Driver name
               </label>
-              <input
+              <Input
                 type="text"
                 name="name"
                 autoComplete="off"
                 placeholder="Enter the name of Driver"
                 value={drivername}
                 onChange={(e) => setDrivername(e.target.value)}
-                required
-                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
+                className="w-full py-5 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-500 rounded-md"
               />
+              {validationErrors
+                .filter((err) => err.field === "drivername")
+                .map((err, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 mt-1 text-sm text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                      />
+                    </svg>
+                    <span>{err.message}</span>
+                  </div>
+                ))}
             </div>
 
             <div>
               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Email
               </label>
-              <input
+              <Input
                 type="email"
                 name="email"
                 autoComplete="off"
                 placeholder="Enter the Email of Driver"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
+             className="w-full py-5 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-500 rounded-md"
               />
+              {validationErrors
+                .filter((err) => err.field === "email")
+                .map((err, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 mt-1 text-sm text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                      />
+                    </svg>
+                    <span>{err.message}</span>
+                  </div>
+                ))}
             </div>
             <div>
               <label className="block text-base sm:text-lg font-medium text-zinc-800">
                 Drivers License Number
               </label>
-              <input
+              <Input
                 type="text"
                 name="driversLicenseNumber"
                 autoComplete="off"
                 placeholder="Enter the Drivers License Number of Driver"
                 value={driversLicenseNumber}
                 onChange={(e) => setDriversLicenseNumber(e.target.value)}
-                required
-                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
+              className="w-full py-5 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-500 rounded-md"
               />
+              {validationErrors
+                .filter((err) => err.field === "driversLicenseNumber")
+                .map((err, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 mt-1 text-sm text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                      />
+                    </svg>
+                    <span>{err.message}</span>
+                  </div>
+                ))}
+            </div>
+            <div>
+              <label className="block text-base sm:text-lg font-medium text-zinc-800">
+                Driver License Jurisdiction
+              </label>
+              <Select
+                value={driversLicJur}
+                onValueChange={setdriversLicJur}
+              >
+                <SelectTrigger className="w-full py-5 px-4 border border-zinc-800 text-zinc-800  placeholder:text-zinc-500 rounded-lg shadow-sm">
+                  <SelectValue placeholder="Select the Drivers License Jurisdiction" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {/* <SelectLabel>Fruits</SelectLabel> */}
+                    <SelectItem value="AB">Alberta</SelectItem>
+                    <SelectItem value="AK">Alaska</SelectItem>
+                    <SelectItem value="AL">Alabama</SelectItem>
+                    <SelectItem value="AR">Arkansas</SelectItem>
+                    <SelectItem value="AZ">Arizona</SelectItem>
+                    <SelectItem value="BC">British Columbia</SelectItem>
+                    <SelectItem value="CA">California</SelectItem>
+                    <SelectItem value="CO">Colorado</SelectItem>
+                    <SelectItem value="CT">Connecticut</SelectItem>
+                    <SelectItem value="DC">District of Columbia</SelectItem>
+                    <SelectItem value="DE">Delaware</SelectItem>
+                    <SelectItem value="FL">Florida</SelectItem>
+                    <SelectItem value="GA">Georgia</SelectItem>
+                    <SelectItem value="HI">Hawaii</SelectItem>
+                    <SelectItem value="IA">Iowa</SelectItem>
+                    <SelectItem value="ID">Idaho</SelectItem>
+                    <SelectItem value="IL">Illinois</SelectItem>
+                    <SelectItem value="IN">Indiana</SelectItem>
+                    <SelectItem value="KS">Kansas</SelectItem>
+                    <SelectItem value="KY">Kentucky</SelectItem>
+                    <SelectItem value="LA">Louisiana</SelectItem>
+                    <SelectItem value="MA">Massachusetts</SelectItem>
+                    <SelectItem value="MB">Manitoba</SelectItem>
+                    <SelectItem value="MD">Maryland</SelectItem>
+                    <SelectItem value="ME">Maine</SelectItem>
+                    <SelectItem value="MI">Michigan</SelectItem>
+                    <SelectItem value="MN">Minnesota</SelectItem>
+                    <SelectItem value="MO">Missouri</SelectItem>
+                    <SelectItem value="MS">Mississippi</SelectItem>
+                    <SelectItem value="MT">Montana</SelectItem>
+                    <SelectItem value="NB">New Brunswick</SelectItem>
+                    <SelectItem value="NC">North Carolina</SelectItem>
+                    <SelectItem value="ND">North Dakota</SelectItem>
+                    <SelectItem value="NE">Nebraska</SelectItem>
+                    <SelectItem value="NH">New Hampshire</SelectItem>
+                    <SelectItem value="NL">
+                      Newfoundland and Labrador
+                    </SelectItem>
+                    <SelectItem value="NM">New Mexico</SelectItem>
+                    <SelectItem value="NS">Nova Scotia</SelectItem>
+                    <SelectItem value="NU">Nunavut</SelectItem>
+                    <SelectItem value="NV">Nevada</SelectItem>
+                    <SelectItem value="NY">New York</SelectItem>
+                    <SelectItem value="OH">Ohio</SelectItem>
+                    <SelectItem value="OK">Oklahoma</SelectItem>
+                    <SelectItem value="ON">Ontario</SelectItem>
+                    <SelectItem value="OR">Oregon</SelectItem>
+                    <SelectItem value="OTH">Other</SelectItem>
+                    <SelectItem value="PA">Pennsylvania</SelectItem>
+                    <SelectItem value="PE">Prince Edward Island</SelectItem>
+                    <SelectItem value="QC">Quebec</SelectItem>
+                    <SelectItem value="RI">Rhode Island</SelectItem>
+                    <SelectItem value="SC">South Carolina</SelectItem>
+                    <SelectItem value="SD">South Dakota</SelectItem>
+                    <SelectItem value="SK">Saskatchewan</SelectItem>
+                    <SelectItem value="TN">Tennessee</SelectItem>
+                    <SelectItem value="TX">Texas</SelectItem>
+                    <SelectItem value="UT">Utah</SelectItem>
+                    <SelectItem value="VA">Virginia</SelectItem>
+                    <SelectItem value="VT">Vermont</SelectItem>
+                    <SelectItem value="WA">Washington</SelectItem>
+                    <SelectItem value="WI">Wisconsin</SelectItem>
+                    <SelectItem value="WV">West Virginia</SelectItem>
+                    <SelectItem value="WY">Wyoming</SelectItem>
+                    <SelectItem value="XX">Unknown</SelectItem>
+                    <SelectItem value="YT">Yukon Territory</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {/* <select
+                name="driversLicJur"
+                value={driversLicJur}
+                onChange={(e) => setdriversLicJur(e.target.value)}
+                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-500 rounded-md"
+              >
+                <SelectItem value="" disabled>
+                  Select the Drivers License Jurisdiction
+                </SelectItem>
+                <SelectItem value="AB">Alberta</SelectItem>
+                <SelectItem value="AK">Alaska</SelectItem>
+                <SelectItem value="AL">Alabama</SelectItem>
+                <SelectItem value="AR">Arkansas</SelectItem>
+                <SelectItem value="AZ">Arizona</SelectItem>
+                <SelectItem value="BC">British Columbia</SelectItem>
+                <SelectItem value="CA">California</SelectItem>
+                <SelectItem value="CO">Colorado</SelectItem>
+                <SelectItem value="CT">Connecticut</SelectItem>
+                <SelectItem value="DC">District of Columbia</SelectItem>
+                <SelectItem value="DE">Delaware</SelectItem>
+                <SelectItem value="FL">Florida</SelectItem>
+                <SelectItem value="GA">Georgia</SelectItem>
+                <SelectItem value="HI">Hawaii</SelectItem>
+                <SelectItem value="IA">Iowa</SelectItem>
+                <SelectItem value="ID">Idaho</SelectItem>
+                <SelectItem value="IL">Illinois</SelectItem>
+                <SelectItem value="IN">Indiana</SelectItem>
+                <SelectItem value="KS">Kansas</SelectItem>
+                <SelectItem value="KY">Kentucky</SelectItem>
+                <SelectItem value="LA">Louisiana</SelectItem>
+                <SelectItem value="MA">Massachusetts</SelectItem>
+                <SelectItem value="MB">Manitoba</SelectItem>
+                <SelectItem value="MD">Maryland</SelectItem>
+                <SelectItem value="ME">Maine</SelectItem>
+                <SelectItem value="MI">Michigan</SelectItem>
+                <SelectItem value="MN">Minnesota</SelectItem>
+                <SelectItem value="MO">Missouri</SelectItem>
+                <SelectItem value="MS">Mississippi</SelectItem>
+                <SelectItem value="MT">Montana</SelectItem>
+                <SelectItem value="NB">New Brunswick</SelectItem>
+                <SelectItem value="NC">North Carolina</SelectItem>
+                <SelectItem value="ND">North Dakota</SelectItem>
+                <SelectItem value="NE">Nebraska</SelectItem>
+                <SelectItem value="NH">New Hampshire</SelectItem>
+                <SelectItem value="NL">Newfoundland and Labrador</SelectItem>
+                <SelectItem value="NM">New Mexico</SelectItem>
+                <SelectItem value="NS">Nova Scotia</SelectItem>
+                <SelectItem value="NU">Nunavut</SelectItem>
+                <SelectItem value="NV">Nevada</SelectItem>
+                <SelectItem value="NY">New York</SelectItem>
+                <SelectItem value="OH">Ohio</SelectItem>
+                <SelectItem value="OK">Oklahoma</SelectItem>
+                <SelectItem value="ON">Ontario</SelectItem>
+                <SelectItem value="OR">Oregon</SelectItem>
+                <SelectItem value="OTH">Other</SelectItem>
+                <SelectItem value="PA">Pennsylvania</SelectItem>
+                <SelectItem value="PE">Prince Edward Island</SelectItem>
+                <SelectItem value="QC">Quebec</SelectItem>
+                <SelectItem value="RI">Rhode Island</SelectItem>
+                <SelectItem value="SC">South Carolina</SelectItem>
+                <SelectItem value="SD">South Dakota</SelectItem>
+                <SelectItem value="SK">Saskatchewan</SelectItem>
+                <SelectItem value="TN">Tennessee</SelectItem>
+                <SelectItem value="TX">Texas</SelectItem>
+                <SelectItem value="UT">Utah</SelectItem>
+                <SelectItem value="VA">Virginia</SelectItem>
+                <SelectItem value="VT">Vermont</SelectItem>
+                <SelectItem value="WA">Washington</SelectItem>
+                <SelectItem value="WI">Wisconsin</SelectItem>
+                <SelectItem value="WV">West Virginia</SelectItem>
+                <SelectItem value="WY">Wyoming</SelectItem>
+                <SelectItem value="XX">Unknown</SelectItem>
+                <SelectItem value="YT">Yukon Territory</SelectItem>
+              </select> */}
+              {validationErrors
+                .filter((err) => err.field === "driversLicJur")
+                .map((err, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 mt-1 text-sm text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                      />
+                    </svg>
+                    <span>{err.message}</span>
+                  </div>
+                ))}
             </div>
 
             <div>
@@ -152,8 +489,33 @@ export default function AddDriver() {
                 placeholder="Enter phone number"
                 value={phoneNumber}
                 onChange={(value) => setPhoneNumber(value || "")}
-                className="PhoneInputInput w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
+                className="PhoneInputInput w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-500 rounded-md"
+                
               />
+              {validationErrors
+                .filter((err) => err.field === "phoneNumber")
+                .map((err, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 mt-1 text-sm text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                      />
+                    </svg>
+                    <span>{err.message}</span>
+                  </div>
+                ))}
             </div>
 
             <div>
@@ -162,14 +524,13 @@ export default function AddDriver() {
               </label>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                 <div className="relative flex-1">
-                  <input
+                  <Input
                     type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Enter the Password for Driver"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
+                  className="w-full py-5 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-500 rounded-md"
                   />
                   <button
                     type="button"
@@ -187,6 +548,30 @@ export default function AddDriver() {
                   Generate Password
                 </button>
               </div>
+              {validationErrors
+                .filter((err) => err.field === "password")
+                .map((err, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 mt-1 text-sm text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                      />
+                    </svg>
+                    <span>{err.message}</span>
+                  </div>
+                ))}
             </div>
 
             <button

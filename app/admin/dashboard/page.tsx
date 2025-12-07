@@ -1,7 +1,7 @@
 "use client";
 import DashboardLayout from "../DashBoardLayout";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AppDispatch, RootState } from "@/app/store/store";
 import {
   Table,
@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { fetchBookingHistory, setPage } from "../slices/slice/booingHistorySlice";
+import { fetchBookingHistory } from "../slices/slice/booingHistorySlice";
 import { Button } from "@/components/ui/button";
 import { BookText, Car, Route, Users } from "lucide-react";
 import { fetchDashboardStats } from "../slices/slice/getCountSlice";
@@ -39,7 +39,11 @@ function StatCard({ title, value, icon }: StatCardProps) {
 export default function DashboardPage() {
   const dispatch = useDispatch<AppDispatch>();
 
-    const { bookings, loading, error, page, limit,hasMore, totalPages } = useSelector(
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+
+    const { bookings, loading, error } = useSelector(
       (state: RootState) => state.fetchBookingHistory
     );
   const { data, iserror } = useSelector(
@@ -48,14 +52,21 @@ export default function DashboardPage() {
 
   useEffect(() => {
     dispatch(fetchDashboardStats());
+    dispatch(fetchBookingHistory());
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchBookingHistory({ page, limit }));
-  }, [dispatch, page, limit]);
 
-  const handleNext = () => dispatch(setPage(page + 1));
-  const handlePrev = () => dispatch(setPage(Math.max(page - 1, 1)));
+
+  const totalPages = Math.ceil(bookings.length / itemsPerPage);
+  const paginatedBookings = bookings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNext = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+
 
   return (
     <DashboardLayout>
@@ -140,7 +151,7 @@ export default function DashboardPage() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  bookings.length > 0 ? (
+                  paginatedBookings.length > 0 ? (
                     bookings.map((booking) => (
                       <TableRow
                         className="text-center border border-[#F5EF1B]"
@@ -186,17 +197,17 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
-            disabled={page === 1 || loading}
+            disabled={currentPage === 1}
             className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Previous
           </Button>
           <span className="text-sm text-[#F5EF1B]">
-            Page {page} - {totalPages}
+            Page {currentPage} of {totalPages}
           </span>
           <Button
             onClick={handleNext}
-            disabled={!hasMore || loading}
+            disabled={currentPage === totalPages}
             className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Next
