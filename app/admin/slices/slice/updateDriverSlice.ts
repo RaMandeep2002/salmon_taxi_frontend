@@ -8,6 +8,7 @@ interface Driver {
   drivername: string;
   email: string;
   driversLicenseNumber: string;
+  driversLicJur: string;
   phoneNumber: string;
   password:string;
 }
@@ -35,6 +36,7 @@ export const updateDriver = createAsyncThunk(
       drivername: string;
       email: string;
       driversLicenseNumber: string;
+      driversLicJur: string;
       phoneNumber: string;
       password:string;
     };

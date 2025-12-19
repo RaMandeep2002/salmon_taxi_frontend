@@ -43,6 +43,14 @@ import { useRouter } from "next/navigation";
 import { updateDriver } from "../../slices/slice/updateDriverSlice";
 import { deleteDriver } from "../../slices/slice/deleteDriverSlice";
 import { useDebounce } from "@/lib/useDebounce";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 // import { resetDriverPassword } from "../../slices/slice/resetPasswordSlice";
 
 interface FormData {
@@ -50,6 +58,7 @@ interface FormData {
   email: string;
   phoneNumber: string;
   driversLicenseNumber: string;
+  driversLicJur: string;
   password: string;
 }
 
@@ -85,6 +94,7 @@ export default function DriverList() {
     email: "",
     phoneNumber: "",
     driversLicenseNumber: "",
+    driversLicJur: "",
     password: "",
   });
 
@@ -101,6 +111,7 @@ export default function DriverList() {
         email: selectedDriver.email,
         phoneNumber: selectedDriver.phoneNumber.toString(),
         driversLicenseNumber: selectedDriver.driversLicenseNumber,
+        driversLicJur: selectedDriver.driversLicJur,
         password: "",
       });
     }
@@ -162,6 +173,7 @@ export default function DriverList() {
             drivername: formData.drivername,
             email: formData.email,
             driversLicenseNumber: formData.driversLicenseNumber,
+            driversLicJur: formData.driversLicJur,
             phoneNumber: formData.phoneNumber,
             password: formData.password,
           },
@@ -287,9 +299,12 @@ export default function DriverList() {
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Phone Number
                 </TableHead>
-                {/* <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   License Number
-                </TableHead> */}
+                </TableHead>
+                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                Driver License Jurisdiction
+                </TableHead>
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Actions
                 </TableHead>
@@ -335,9 +350,12 @@ export default function DriverList() {
                         {driver.phoneNumber}
                       </a>
                     </TableCell>
-                    {/* <TableCell className="text-center text-white">
+                    <TableCell className="text-center text-white">
                       {driver.driversLicenseNumber}
-                    </TableCell> */}
+                    </TableCell>
+                    <TableCell className="text-center text-white">
+                      {driver.driversLicJur ? driver.driversLicJur : 'N/A'}
+                    </TableCell>  
                     <TableCell className="text-center">
                       <Dialog>
                         <DialogTrigger asChild className="text-white">
@@ -496,6 +514,198 @@ export default function DriverList() {
                                   }
                                   className="col-span-3 border border-zinc-800 rounded-lg text-zinc-800  "
                                 />
+                              </div>
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <Label
+                                  htmlFor="driversLicJur"
+                                  className="text-right     text-zinc-800"
+                                >
+                                  Driver License Jurisdiction
+                                </Label>
+                                <Select
+                                  value={formData.driversLicJur}
+                                  onValueChange={(value) =>
+                                    setFormData({
+                                      ...formData,
+                                      driversLicJur: value,
+                                    })
+                                  }
+                                >
+                                  <SelectTrigger className="w-full py-5 px-4 border border-zinc-800 text-zinc-800  placeholder:text-zinc-500 rounded-lg shadow-sm">
+                                    <SelectValue placeholder="Select the Drivers License Jurisdiction" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      {/* <SelectLabel>Fruits</SelectLabel> */}
+                                      <SelectItem value="AB">
+                                        Alberta
+                                      </SelectItem>
+                                      <SelectItem value="AK">Alaska</SelectItem>
+                                      <SelectItem value="AL">
+                                        Alabama
+                                      </SelectItem>
+                                      <SelectItem value="AR">
+                                        Arkansas
+                                      </SelectItem>
+                                      <SelectItem value="AZ">
+                                        Arizona
+                                      </SelectItem>
+                                      <SelectItem value="BC">
+                                        British Columbia
+                                      </SelectItem>
+                                      <SelectItem value="CA">
+                                        California
+                                      </SelectItem>
+                                      <SelectItem value="CO">
+                                        Colorado
+                                      </SelectItem>
+                                      <SelectItem value="CT">
+                                        Connecticut
+                                      </SelectItem>
+                                      <SelectItem value="DC">
+                                        District of Columbia
+                                      </SelectItem>
+                                      <SelectItem value="DE">
+                                        Delaware
+                                      </SelectItem>
+                                      <SelectItem value="FL">
+                                        Florida
+                                      </SelectItem>
+                                      <SelectItem value="GA">
+                                        Georgia
+                                      </SelectItem>
+                                      <SelectItem value="HI">Hawaii</SelectItem>
+                                      <SelectItem value="IA">Iowa</SelectItem>
+                                      <SelectItem value="ID">Idaho</SelectItem>
+                                      <SelectItem value="IL">
+                                        Illinois
+                                      </SelectItem>
+                                      <SelectItem value="IN">
+                                        Indiana
+                                      </SelectItem>
+                                      <SelectItem value="KS">Kansas</SelectItem>
+                                      <SelectItem value="KY">
+                                        Kentucky
+                                      </SelectItem>
+                                      <SelectItem value="LA">
+                                        Louisiana
+                                      </SelectItem>
+                                      <SelectItem value="MA">
+                                        Massachusetts
+                                      </SelectItem>
+                                      <SelectItem value="MB">
+                                        Manitoba
+                                      </SelectItem>
+                                      <SelectItem value="MD">
+                                        Maryland
+                                      </SelectItem>
+                                      <SelectItem value="ME">Maine</SelectItem>
+                                      <SelectItem value="MI">
+                                        Michigan
+                                      </SelectItem>
+                                      <SelectItem value="MN">
+                                        Minnesota
+                                      </SelectItem>
+                                      <SelectItem value="MO">
+                                        Missouri
+                                      </SelectItem>
+                                      <SelectItem value="MS">
+                                        Mississippi
+                                      </SelectItem>
+                                      <SelectItem value="MT">
+                                        Montana
+                                      </SelectItem>
+                                      <SelectItem value="NB">
+                                        New Brunswick
+                                      </SelectItem>
+                                      <SelectItem value="NC">
+                                        North Carolina
+                                      </SelectItem>
+                                      <SelectItem value="ND">
+                                        North Dakota
+                                      </SelectItem>
+                                      <SelectItem value="NE">
+                                        Nebraska
+                                      </SelectItem>
+                                      <SelectItem value="NH">
+                                        New Hampshire
+                                      </SelectItem>
+                                      <SelectItem value="NL">
+                                        Newfoundland and Labrador
+                                      </SelectItem>
+                                      <SelectItem value="NM">
+                                        New Mexico
+                                      </SelectItem>
+                                      <SelectItem value="NS">
+                                        Nova Scotia
+                                      </SelectItem>
+                                      <SelectItem value="NU">
+                                        Nunavut
+                                      </SelectItem>
+                                      <SelectItem value="NV">Nevada</SelectItem>
+                                      <SelectItem value="NY">
+                                        New York
+                                      </SelectItem>
+                                      <SelectItem value="OH">Ohio</SelectItem>
+                                      <SelectItem value="OK">
+                                        Oklahoma
+                                      </SelectItem>
+                                      <SelectItem value="ON">
+                                        Ontario
+                                      </SelectItem>
+                                      <SelectItem value="OR">Oregon</SelectItem>
+                                      <SelectItem value="OTH">Other</SelectItem>
+                                      <SelectItem value="PA">
+                                        Pennsylvania
+                                      </SelectItem>
+                                      <SelectItem value="PE">
+                                        Prince Edward Island
+                                      </SelectItem>
+                                      <SelectItem value="QC">Quebec</SelectItem>
+                                      <SelectItem value="RI">
+                                        Rhode Island
+                                      </SelectItem>
+                                      <SelectItem value="SC">
+                                        South Carolina
+                                      </SelectItem>
+                                      <SelectItem value="SD">
+                                        South Dakota
+                                      </SelectItem>
+                                      <SelectItem value="SK">
+                                        Saskatchewan
+                                      </SelectItem>
+                                      <SelectItem value="TN">
+                                        Tennessee
+                                      </SelectItem>
+                                      <SelectItem value="TX">Texas</SelectItem>
+                                      <SelectItem value="UT">Utah</SelectItem>
+                                      <SelectItem value="VA">
+                                        Virginia
+                                      </SelectItem>
+                                      <SelectItem value="VT">
+                                        Vermont
+                                      </SelectItem>
+                                      <SelectItem value="WA">
+                                        Washington
+                                      </SelectItem>
+                                      <SelectItem value="WI">
+                                        Wisconsin
+                                      </SelectItem>
+                                      <SelectItem value="WV">
+                                        West Virginia
+                                      </SelectItem>
+                                      <SelectItem value="WY">
+                                        Wyoming
+                                      </SelectItem>
+                                      <SelectItem value="XX">
+                                        Unknown
+                                      </SelectItem>
+                                      <SelectItem value="YT">
+                                        Yukon Territory
+                                      </SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
                               </div>
 
                               {/* <h1 className="text-zinc-800">

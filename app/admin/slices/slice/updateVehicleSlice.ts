@@ -5,10 +5,14 @@ import axios from "axios";
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface Vehicle {
+    id: string;
+    registrationNumber: string;
     company: string;
     vehicleModel: string;
     year: number;
     vehicle_plate_number: string;
+    vehRegJur: string;
+    tripTypeCd: string;
 }
 
 interface VehicleState {
@@ -26,15 +30,18 @@ const initialState: VehicleState = {
 export const updateVehicle = createAsyncThunk(
     "driver/vehicle-driver",
     async ({
-        registrationNumber,
+        id,
         vehicleData,
     }: {
-        registrationNumber: string;
+        id: string;
         vehicleData: {
+            registrationNumber:string;
             company: string;
             vehicleModel: string;
             year: number;
             vehicle_plate_number: string;
+            vehRegJur: string;
+            tripTypeCd: string;
         };
     },
         { rejectWithValue }
@@ -47,7 +54,7 @@ export const updateVehicle = createAsyncThunk(
             }
 
             const response = await axios.put<Vehicle>(
-                `${API_URL}/admin/update-vehicle/${registrationNumber}`,
+                `${API_URL}/admin/update-vehicle/${id}`,
                 vehicleData,
                 {
                     headers: {

@@ -11,6 +11,7 @@ export interface Drivers {
   email: string;
   phoneNumber: number;
   driversLicenseNumber: string;
+  driversLicJur: string;
   vehicle: []; // Replace `any` with a specific type if needed
   password: string;
   status: string;

@@ -17,6 +17,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 // import {
 //   DropdownMenu,
 //   DropdownMenuCheckboxItem,
@@ -30,6 +38,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -88,18 +97,24 @@ export default function VechicleList() {
     dispatch(fetchDetailWithVehicle());
   }, [dispatch]);
   const [formData, setFormData] = useState({
+    registrationNumber: selectedVehicle?.registrationNumber || "",
     company: selectedVehicle?.company || "",
     vehicleModel: selectedVehicle?.vehicleModel || "",
     year: selectedVehicle?.year || 0,
     vehicle_plate_number: selectedVehicle?.vehicle_plate_number || "",
+    vehRegJur: selectedVehicle?.vehRegJur || "",
+    tripTypeCd: selectedVehicle?.tripTypeCd || "",
   });
   useEffect(() => {
     if (selectedVehicle) {
       setFormData({
+        registrationNumber: selectedVehicle?.registrationNumber || "",
         company: selectedVehicle.company || "",
         vehicleModel: selectedVehicle.vehicleModel || "",
         year: selectedVehicle.year || 0,
         vehicle_plate_number: selectedVehicle.vehicle_plate_number || "",
+        vehRegJur: selectedVehicle?.vehRegJur,
+        tripTypeCd: selectedVehicle?.tripTypeCd,
       });
     }
   }, [selectedVehicle]);
@@ -134,12 +149,15 @@ export default function VechicleList() {
     try {
       await dispatch(
         updateVehicle({
-          registrationNumber: selectedVehicle!.registrationNumber,
+          id: selectedVehicle!._id,
           vehicleData: {
+            registrationNumber: formData.registrationNumber,
             company: formData.company,
             vehicleModel: formData.vehicleModel,
             year: formData.year,
             vehicle_plate_number: formData.vehicle_plate_number,
+            vehRegJur: formData.vehRegJur,
+            tripTypeCd: formData.tripTypeCd,
           },
         })
       ).unwrap();
@@ -243,9 +261,9 @@ export default function VechicleList() {
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Driver ID
                 </TableHead> */}
-                {/*    <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Registration Number
-                </TableHead> */}
+                </TableHead>
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Company
                 </TableHead>
@@ -257,6 +275,12 @@ export default function VechicleList() {
                 </TableHead>
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Vehcile Plate Number
+                </TableHead>
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                  Vehicle Jurisdiction
+                </TableHead>
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                  Type
                 </TableHead>
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Status
@@ -295,9 +319,7 @@ export default function VechicleList() {
                           {driver.driverId}
                         </TableCell> */}
 
-                    {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
-                      {vehicle.registrationNumber}
-                    </TableCell> */}
+                    <TableCell>{vehicle.registrationNumber}</TableCell>
                     <TableCell>
                       {highlightMatch(vehicle?.company, debouncedsearch)}
                     </TableCell>
@@ -307,6 +329,12 @@ export default function VechicleList() {
                       {vehicle?.vehicle_plate_number
                         ? vehicle.vehicle_plate_number
                         : "Not Set"}
+                    </TableCell>
+                    <TableCell>
+                      {vehicle?.vehRegJur ? vehicle.vehRegJur : "Not Set"}
+                    </TableCell>
+                    <TableCell>
+                      {vehicle?.tripTypeCd ? vehicle.tripTypeCd : "Not Set"}
                     </TableCell>
                     {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                       <span
@@ -380,133 +408,355 @@ export default function VechicleList() {
                             <Pencil className="h-4 w-4" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-[#F5EF1B] border-none">
+                        <DialogContent className="bg-[#F5EF1B] border-none rounded-2xl shadow-xl p-6">
                           <DialogHeader>
-                            <DialogTitle className="text-lg text-zinc-800">
+                            <DialogTitle className="text-xl font-semibold text-zinc-900">
                               Edit Vehicle
                             </DialogTitle>
+                            <DialogDescription className="text-sm text-zinc-500">
+                              Update vehicle details and save changes.
+                            </DialogDescription>
                           </DialogHeader>
+
                           {iserror && (
-                            <p className="text-red-500 text-center">
+                            <p className="bg-red-100 border border-red-400 rounded-md text-red-600 text-center text-sm py-2 mt-3">
                               {iserror}
                             </p>
                           )}
+
                           <form
-                            onSubmit={handleSubmit} // Uncomment when ready to use
+                            onSubmit={handleSubmit}
+                            className="mt-4 space-y-5"
                           >
-                            <div className="grid gap-4 py-4">
-                              {/* <div className="grid grid-cols-4 items-center gap-4">
+                            <div className="grid grid-cols-4 items-center gap-3">
                               <Label
-                                htmlFor="driverId"
-                                className="text-right text-lg font-medium text-zinc-800"
+                                htmlFor="registrationNumber"
+                                className="text-right font-medium text-zinc-700"
                               >
-                                Driver ID
+                                Registration No.
                               </Label>
                               <Input
-                                id="driverId"
-                                // defaultValue={driver.driverId}
-                                className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                id="registrationNumber"
+                                value={formData.registrationNumber}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    registrationNumber: e.target.value,
+                                  })
+                                }
+                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
                               />
                             </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
+
+                            <div className="grid grid-cols-4 items-center gap-3">
                               <Label
-                                htmlFor="driverName"
-                                className="text-right text-lg font-medium text-zinc-800"
+                                htmlFor="company"
+                                className="text-right font-medium text-zinc-700"
                               >
-                                Driver Name
+                                Company
                               </Label>
                               <Input
-                                id="driverName"
-                                // defaultValue={driver.drivername}
-                                className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
+                                id="company"
+                                value={formData.company}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    company: e.target.value,
+                                  })
+                                }
+                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
                               />
-                            </div> */}
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label
-                                  htmlFor="company"
-                                  className="text-right text-lg font-medium text-zinc-800"
-                                >
-                                  Company
-                                </Label>
-                                <Input
-                                  id="company"
-                                  type="text"
-                                  value={formData.company}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      company: e.target.value,
-                                    })
-                                  }
-                                  className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                                />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label
-                                  htmlFor="vehicleModel"
-                                  className="text-right text-lg font-medium text-zinc-800"
-                                >
-                                  Vehicle Model
-                                </Label>
-                                <Input
-                                  id="vehicleModel"
-                                  type="text"
-                                  value={formData.vehicleModel}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      vehicleModel: e.target.value,
-                                    })
-                                  }
-                                  // defaultValue={vehicle.vehicleModel}
-                                  className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                                />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label
-                                  htmlFor="year"
-                                  className="text-right text-lg font-medium text-zinc-800"
-                                >
-                                  Year
-                                </Label>
-                                <Input
-                                  id="year"
-                                  type="number"
-                                  value={formData.year}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      year: Number(e.target.value),
-                                    })
-                                  }
-                                  // defaultValue={vehicle.year}
-                                  className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                                />
-                              </div>
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label
-                                  htmlFor="Plate-Number"
-                                  className="text-right text-lg font-medium text-zinc-800"
-                                >
-                                  Vehicle Plate Number
-                                </Label>
-                                <Input
-                                  id="vehicle_plate_number"
-                                  type="text"
-                                  value={formData.vehicle_plate_number}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      vehicle_plate_number: e.target.value,
-                                    })
-                                  }
-                                  // defaultValue={vehicle.vehicle_plate_number}
-                                  className="flex h-9 w-full bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm col-span-3 border border-zinc-800 rounded-lg text-zinc-800 text-lg"
-                                />
-                              </div>
                             </div>
+
+                            <div className="grid grid-cols-4 items-center gap-3">
+                              <Label
+                                htmlFor="vehicleModel"
+                                className="text-right font-medium text-zinc-700"
+                              >
+                                Model
+                              </Label>
+                              <Input
+                                id="vehicleModel"
+                                value={formData.vehicleModel}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    vehicleModel: e.target.value,
+                                  })
+                                }
+                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-4 items-center gap-3">
+                              <Label
+                                htmlFor="year"
+                                className="text-right font-medium text-zinc-700"
+                              >
+                                Year
+                              </Label>
+                              <Input
+                                id="year"
+                                type="number"
+                                value={formData.year}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    year: Number(e.target.value),
+                                  })
+                                }
+                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-4 items-center gap-3">
+                              <Label
+                                htmlFor="vehicle_plate_number"
+                                className="text-right font-medium text-zinc-700"
+                              >
+                                Plate Number
+                              </Label>
+                              <Input
+                                id="vehicle_plate_number"
+                                value={formData.vehicle_plate_number}
+                                onChange={(e) =>
+                                  setFormData({
+                                    ...formData,
+                                    vehicle_plate_number: e.target.value,
+                                  })
+                                }
+                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
+                              />
+                            </div>
+
+                            <div className="grid grid-cols-4 items-center gap-3">
+                              <Label
+                                htmlFor="vehRegJur"
+                                className="text-right font-medium text-zinc-700"
+                              >
+                                Jurisdiction
+                              </Label>
+                              <Select
+                                  value={formData.vehRegJur}
+                                  onValueChange={(value) =>
+                                    setFormData({
+                                      ...formData,
+                                      vehRegJur: value,
+                                    })
+                                  }
+                                >
+                                  <SelectTrigger className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800">
+                                    <SelectValue placeholder="Select the Drivers License Jurisdiction" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      {/* <SelectLabel>Fruits</SelectLabel> */}
+                                      <SelectItem value="AB">
+                                        Alberta
+                                      </SelectItem>
+                                      <SelectItem value="AK">Alaska</SelectItem>
+                                      <SelectItem value="AL">
+                                        Alabama
+                                      </SelectItem>
+                                      <SelectItem value="AR">
+                                        Arkansas
+                                      </SelectItem>
+                                      <SelectItem value="AZ">
+                                        Arizona
+                                      </SelectItem>
+                                      <SelectItem value="BC">
+                                        British Columbia
+                                      </SelectItem>
+                                      <SelectItem value="CA">
+                                        California
+                                      </SelectItem>
+                                      <SelectItem value="CO">
+                                        Colorado
+                                      </SelectItem>
+                                      <SelectItem value="CT">
+                                        Connecticut
+                                      </SelectItem>
+                                      <SelectItem value="DC">
+                                        District of Columbia
+                                      </SelectItem>
+                                      <SelectItem value="DE">
+                                        Delaware
+                                      </SelectItem>
+                                      <SelectItem value="FL">
+                                        Florida
+                                      </SelectItem>
+                                      <SelectItem value="GA">
+                                        Georgia
+                                      </SelectItem>
+                                      <SelectItem value="HI">Hawaii</SelectItem>
+                                      <SelectItem value="IA">Iowa</SelectItem>
+                                      <SelectItem value="ID">Idaho</SelectItem>
+                                      <SelectItem value="IL">
+                                        Illinois
+                                      </SelectItem>
+                                      <SelectItem value="IN">
+                                        Indiana
+                                      </SelectItem>
+                                      <SelectItem value="KS">Kansas</SelectItem>
+                                      <SelectItem value="KY">
+                                        Kentucky
+                                      </SelectItem>
+                                      <SelectItem value="LA">
+                                        Louisiana
+                                      </SelectItem>
+                                      <SelectItem value="MA">
+                                        Massachusetts
+                                      </SelectItem>
+                                      <SelectItem value="MB">
+                                        Manitoba
+                                      </SelectItem>
+                                      <SelectItem value="MD">
+                                        Maryland
+                                      </SelectItem>
+                                      <SelectItem value="ME">Maine</SelectItem>
+                                      <SelectItem value="MI">
+                                        Michigan
+                                      </SelectItem>
+                                      <SelectItem value="MN">
+                                        Minnesota
+                                      </SelectItem>
+                                      <SelectItem value="MO">
+                                        Missouri
+                                      </SelectItem>
+                                      <SelectItem value="MS">
+                                        Mississippi
+                                      </SelectItem>
+                                      <SelectItem value="MT">
+                                        Montana
+                                      </SelectItem>
+                                      <SelectItem value="NB">
+                                        New Brunswick
+                                      </SelectItem>
+                                      <SelectItem value="NC">
+                                        North Carolina
+                                      </SelectItem>
+                                      <SelectItem value="ND">
+                                        North Dakota
+                                      </SelectItem>
+                                      <SelectItem value="NE">
+                                        Nebraska
+                                      </SelectItem>
+                                      <SelectItem value="NH">
+                                        New Hampshire
+                                      </SelectItem>
+                                      <SelectItem value="NL">
+                                        Newfoundland and Labrador
+                                      </SelectItem>
+                                      <SelectItem value="NM">
+                                        New Mexico
+                                      </SelectItem>
+                                      <SelectItem value="NS">
+                                        Nova Scotia
+                                      </SelectItem>
+                                      <SelectItem value="NU">
+                                        Nunavut
+                                      </SelectItem>
+                                      <SelectItem value="NV">Nevada</SelectItem>
+                                      <SelectItem value="NY">
+                                        New York
+                                      </SelectItem>
+                                      <SelectItem value="OH">Ohio</SelectItem>
+                                      <SelectItem value="OK">
+                                        Oklahoma
+                                      </SelectItem>
+                                      <SelectItem value="ON">
+                                        Ontario
+                                      </SelectItem>
+                                      <SelectItem value="OR">Oregon</SelectItem>
+                                      <SelectItem value="OTH">Other</SelectItem>
+                                      <SelectItem value="PA">
+                                        Pennsylvania
+                                      </SelectItem>
+                                      <SelectItem value="PE">
+                                        Prince Edward Island
+                                      </SelectItem>
+                                      <SelectItem value="QC">Quebec</SelectItem>
+                                      <SelectItem value="RI">
+                                        Rhode Island
+                                      </SelectItem>
+                                      <SelectItem value="SC">
+                                        South Carolina
+                                      </SelectItem>
+                                      <SelectItem value="SD">
+                                        South Dakota
+                                      </SelectItem>
+                                      <SelectItem value="SK">
+                                        Saskatchewan
+                                      </SelectItem>
+                                      <SelectItem value="TN">
+                                        Tennessee
+                                      </SelectItem>
+                                      <SelectItem value="TX">Texas</SelectItem>
+                                      <SelectItem value="UT">Utah</SelectItem>
+                                      <SelectItem value="VA">
+                                        Virginia
+                                      </SelectItem>
+                                      <SelectItem value="VT">
+                                        Vermont
+                                      </SelectItem>
+                                      <SelectItem value="WA">
+                                        Washington
+                                      </SelectItem>
+                                      <SelectItem value="WI">
+                                        Wisconsin
+                                      </SelectItem>
+                                      <SelectItem value="WV">
+                                        West Virginia
+                                      </SelectItem>
+                                      <SelectItem value="WY">
+                                        Wyoming
+                                      </SelectItem>
+                                      <SelectItem value="XX">
+                                        Unknown
+                                      </SelectItem>
+                                      <SelectItem value="YT">
+                                        Yukon Territory
+                                      </SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-3">
+                              <Label
+                                htmlFor="type"
+                                className="text-right font-medium text-zinc-700"
+                              >
+                                Type
+                              </Label>
+                              <Select
+                                  value={formData.tripTypeCd}
+                                  onValueChange={(value) =>
+                                    setFormData({
+                                      ...formData,
+                                      tripTypeCd: value,
+                                    })
+                                  }
+                                >
+                                  <SelectTrigger  className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800">
+                                    <SelectValue placeholder="Select the Drivers License Jurisdiction" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      {/* <SelectLabel>Fruits</SelectLabel> */}
+                                      <SelectItem value="ACCES">
+                                      Accessible
+                                      </SelectItem>
+                                      <SelectItem value="CNVTL">Conventional</SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                            </div>
+
                             <DialogFooter>
-                              <Button type="submit" disabled={isSubmitting}>
+                              <Button
+                                disabled={isSubmitting}
+                                className="w-full rounded-xl py-2 font-semibold"
+                              >
                                 Update Vehicle
                               </Button>
                             </DialogFooter>
