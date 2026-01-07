@@ -12,18 +12,34 @@ export interface Driver {
 export interface BookingHistory {
     bookingId: string;
     customerName: string;
-    pickupDate: string;
-    pickuptime: string;
-    dropdownTime: string;
-    totalFare: number;
-    distance:number;
-    wating_time:number;
-    wating_time_formated:string;
-    paymentStatus: string;
-    status: string;
+    phoneNumber: number;
     pickup: Location;
     dropOff: Location;
-    driver?: Driver;
+    pickuptime: string;
+    pickupDate: string;
+    pickupTimeFormatted: string;
+    dropdownDate: string;
+    dropdownTime: string;
+    dropoffTimeFormatted?:string;
+    arrived: boolean;
+    pickupMonth: string;
+    pickupWeek: number;
+    fareAmount: number;
+    distance: number;
+    totalFare: number;
+    original_Fare_before_round:number;
+    discount_price : number;
+    after_discount_price: number;
+    wating_time : number;
+    wating_time_formated: string;
+    totalDuration?:string;
+    driver: Driver;
+    vehAssgnmtDt:string;
+    tripDurationMins:number;
+    isSvcAnimalYN : boolean;
+    paymentStatus: "pending" | "paid";
+    paymentMethod: "cash" | "card" | "online";
+    status: "pending" | "accepted" | "ongoing" | "completed" | "cancelled";
 }
 
 export interface BookingState {

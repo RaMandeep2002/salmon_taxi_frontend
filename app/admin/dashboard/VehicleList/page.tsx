@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pencil, Trash2, Eye, Plus } from "lucide-react";
+import { Pencil, Trash2, Eye, Plus, List } from "lucide-react";
 
 import { fetchDetailWithVehicle } from "@/app/admin/slices/slice/detailWithVechicle";
 import { AppDispatch, RootState } from "@/app/store/store";
@@ -58,6 +58,7 @@ import { Vehicle } from "@/app/types/DriverVechicleData";
 import { useToast } from "@/hooks/use-toast";
 import { deleteVehicle } from "../../slices/slice/deleteVehicleSlice";
 import { useDebounce } from "@/lib/useDebounce";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function VechicleList() {
   // const [company, setCompany] = useState<string | "">("");
@@ -197,7 +198,82 @@ export default function VechicleList() {
   return (
     <DashboardLayout>
       <div className="p-8">
-        <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">Vehicle List</h1>
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-white text-2xl sm:text-3xl font-bold flex items-center gap-2">
+              <span>
+                <List />
+              </span>
+              <span>Vehicle List</span>
+            </h1>
+            <p className="text-gray-200 dark:text-white mt-1">
+              Manage your taxi fleet and vehicle information
+            </p>
+            <div className="h-1 w-50 bg-[#F5EF1B] rounded mt-2" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          <Card className="shadow-xl border border-[#F5EF1B] bg-transparent transition-all hover:scale-[1.03]">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-[#F5EF1B] bg-opacity-20 rounded-full p-2">
+                <svg
+                  className="h-6 w-6 text-yellow-600 dark:text-yellow-300"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 0V4m0 16v-4" />
+                </svg>
+              </div>
+              <CardTitle className="text-lg font-semibold text-[#F5EF1B]">
+                Total Vehicles
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-white dark:text-[#F5EF1B]">
+                {paginatedVehicles.length}
+              </div>
+              <p className="text-xs text-[#F5EF1B] mt-1 font-medium">
+                {paginatedVehicles.length > 0
+                  ? `+${Math.floor(paginatedVehicles.length * 0.12)} this month`
+                  : "No new vehicles"}
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-xl border border-[#F5EF1B] bg-transparent transition-all hover:scale-[1.03]">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-[#F5EF1B] bg-opacity-20 rounded-full p-2">
+                <svg
+                  className="h-6 w-6 text-[#F5EF1B] dark:text-[#F5EF1B]"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <CardTitle className="text-sm font-semibold text-[#F5EF1B]">
+                Active
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-white dark:text-[#F5EF1B]">
+                {paginatedVehicles.length}
+              </div>
+              <p className="text-xs text-[#F5EF1B] mt-1 font-medium">
+                {paginatedVehicles.length > 0
+                  ? `${Math.round(
+                      (paginatedVehicles.length / paginatedVehicles.length) *
+                        100
+                    )}% of fleet`
+                  : "No active vehicles"}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
         <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
             <Input
@@ -279,9 +355,9 @@ export default function VechicleList() {
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Vehicle Jurisdiction
                 </TableHead>
-                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                {/* <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Type
-                </TableHead>
+                </TableHead> */}
                 {/* <TableHead className="w-[100px] h-[50px] text-[#F5EF1B] text-lg ">
                   Status
                 </TableHead> */}
@@ -333,9 +409,9 @@ export default function VechicleList() {
                     <TableCell>
                       {vehicle?.vehRegJur ? vehicle.vehRegJur : "Not Set"}
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       {vehicle?.tripTypeCd ? vehicle.tripTypeCd : "Not Set"}
-                    </TableCell>
+                    </TableCell> */}
                     {/* <TableCell className="font-medium w-[100px] h-[50px] text-white text-lg">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -426,12 +502,12 @@ export default function VechicleList() {
 
                           <form
                             onSubmit={handleSubmit}
-                            className="mt-4 space-y-5"
+                            className="space-y-4 sm:space-y-2"
                           >
-                            <div className="grid grid-cols-4 items-center gap-3">
+                            <div>
                               <Label
                                 htmlFor="registrationNumber"
-                                className="text-right font-medium text-zinc-700"
+                                className="text-right text-lg font-medium text-zinc-700"
                               >
                                 Registration No.
                               </Label>
@@ -444,14 +520,14 @@ export default function VechicleList() {
                                     registrationNumber: e.target.value,
                                   })
                                 }
-                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
+                                className="col-span-3 rounded-xl border border-black focus:border-zinc-700 text-zinc-800"
                               />
                             </div>
 
-                            <div className="grid grid-cols-4 items-center gap-3">
+                            <div>
                               <Label
                                 htmlFor="company"
-                                className="text-right font-medium text-zinc-700"
+                                className="text-right text-lg font-medium text-zinc-700"
                               >
                                 Company
                               </Label>
@@ -464,14 +540,14 @@ export default function VechicleList() {
                                     company: e.target.value,
                                   })
                                 }
-                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
+                                className="col-span-3 rounded-xl text-zinc-800  border-black focus:border-zinc-700"
                               />
                             </div>
 
-                            <div className="grid grid-cols-4 items-center gap-3">
+                            <div>
                               <Label
                                 htmlFor="vehicleModel"
-                                className="text-right font-medium text-zinc-700"
+                                className="text-right text-lg font-medium text-zinc-700"
                               >
                                 Model
                               </Label>
@@ -484,14 +560,14 @@ export default function VechicleList() {
                                     vehicleModel: e.target.value,
                                   })
                                 }
-                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
+                                className="col-span-3 rounded-xl text-zinc-800  border-black focus:border-zinc-700"
                               />
                             </div>
 
-                            <div className="grid grid-cols-4 items-center gap-3">
+                            <div>
                               <Label
                                 htmlFor="year"
-                                className="text-right font-medium text-zinc-700"
+                                className="text-right text-lg font-medium text-zinc-700"
                               >
                                 Year
                               </Label>
@@ -505,14 +581,14 @@ export default function VechicleList() {
                                     year: Number(e.target.value),
                                   })
                                 }
-                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
+                                className="col-span-3 rounded-xl text-zinc-800  border-black focus:border-zinc-700"
                               />
                             </div>
 
-                            <div className="grid grid-cols-4 items-center gap-3">
+                            <div>
                               <Label
                                 htmlFor="vehicle_plate_number"
-                                className="text-right font-medium text-zinc-700"
+                                className="text-right text-lg font-medium text-zinc-700"
                               >
                                 Plate Number
                               </Label>
@@ -525,237 +601,189 @@ export default function VechicleList() {
                                     vehicle_plate_number: e.target.value,
                                   })
                                 }
-                                className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800"
+                                className="col-span-3 rounded-xl text-zinc-800  border-black focus:border-zinc-700"
                               />
                             </div>
 
-                            <div className="grid grid-cols-4 items-center gap-3">
+                            <div>
                               <Label
                                 htmlFor="vehRegJur"
-                                className="text-right font-medium text-zinc-700"
+                                className="text-right text-lg font-medium text-zinc-700"
                               >
                                 Jurisdiction
                               </Label>
                               <Select
-                                  value={formData.vehRegJur}
-                                  onValueChange={(value) =>
-                                    setFormData({
-                                      ...formData,
-                                      vehRegJur: value,
-                                    })
-                                  }
-                                >
-                                  <SelectTrigger className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800">
-                                    <SelectValue placeholder="Select the Drivers License Jurisdiction" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectGroup>
-                                      {/* <SelectLabel>Fruits</SelectLabel> */}
-                                      <SelectItem value="AB">
-                                        Alberta
-                                      </SelectItem>
-                                      <SelectItem value="AK">Alaska</SelectItem>
-                                      <SelectItem value="AL">
-                                        Alabama
-                                      </SelectItem>
-                                      <SelectItem value="AR">
-                                        Arkansas
-                                      </SelectItem>
-                                      <SelectItem value="AZ">
-                                        Arizona
-                                      </SelectItem>
-                                      <SelectItem value="BC">
-                                        British Columbia
-                                      </SelectItem>
-                                      <SelectItem value="CA">
-                                        California
-                                      </SelectItem>
-                                      <SelectItem value="CO">
-                                        Colorado
-                                      </SelectItem>
-                                      <SelectItem value="CT">
-                                        Connecticut
-                                      </SelectItem>
-                                      <SelectItem value="DC">
-                                        District of Columbia
-                                      </SelectItem>
-                                      <SelectItem value="DE">
-                                        Delaware
-                                      </SelectItem>
-                                      <SelectItem value="FL">
-                                        Florida
-                                      </SelectItem>
-                                      <SelectItem value="GA">
-                                        Georgia
-                                      </SelectItem>
-                                      <SelectItem value="HI">Hawaii</SelectItem>
-                                      <SelectItem value="IA">Iowa</SelectItem>
-                                      <SelectItem value="ID">Idaho</SelectItem>
-                                      <SelectItem value="IL">
-                                        Illinois
-                                      </SelectItem>
-                                      <SelectItem value="IN">
-                                        Indiana
-                                      </SelectItem>
-                                      <SelectItem value="KS">Kansas</SelectItem>
-                                      <SelectItem value="KY">
-                                        Kentucky
-                                      </SelectItem>
-                                      <SelectItem value="LA">
-                                        Louisiana
-                                      </SelectItem>
-                                      <SelectItem value="MA">
-                                        Massachusetts
-                                      </SelectItem>
-                                      <SelectItem value="MB">
-                                        Manitoba
-                                      </SelectItem>
-                                      <SelectItem value="MD">
-                                        Maryland
-                                      </SelectItem>
-                                      <SelectItem value="ME">Maine</SelectItem>
-                                      <SelectItem value="MI">
-                                        Michigan
-                                      </SelectItem>
-                                      <SelectItem value="MN">
-                                        Minnesota
-                                      </SelectItem>
-                                      <SelectItem value="MO">
-                                        Missouri
-                                      </SelectItem>
-                                      <SelectItem value="MS">
-                                        Mississippi
-                                      </SelectItem>
-                                      <SelectItem value="MT">
-                                        Montana
-                                      </SelectItem>
-                                      <SelectItem value="NB">
-                                        New Brunswick
-                                      </SelectItem>
-                                      <SelectItem value="NC">
-                                        North Carolina
-                                      </SelectItem>
-                                      <SelectItem value="ND">
-                                        North Dakota
-                                      </SelectItem>
-                                      <SelectItem value="NE">
-                                        Nebraska
-                                      </SelectItem>
-                                      <SelectItem value="NH">
-                                        New Hampshire
-                                      </SelectItem>
-                                      <SelectItem value="NL">
-                                        Newfoundland and Labrador
-                                      </SelectItem>
-                                      <SelectItem value="NM">
-                                        New Mexico
-                                      </SelectItem>
-                                      <SelectItem value="NS">
-                                        Nova Scotia
-                                      </SelectItem>
-                                      <SelectItem value="NU">
-                                        Nunavut
-                                      </SelectItem>
-                                      <SelectItem value="NV">Nevada</SelectItem>
-                                      <SelectItem value="NY">
-                                        New York
-                                      </SelectItem>
-                                      <SelectItem value="OH">Ohio</SelectItem>
-                                      <SelectItem value="OK">
-                                        Oklahoma
-                                      </SelectItem>
-                                      <SelectItem value="ON">
-                                        Ontario
-                                      </SelectItem>
-                                      <SelectItem value="OR">Oregon</SelectItem>
-                                      <SelectItem value="OTH">Other</SelectItem>
-                                      <SelectItem value="PA">
-                                        Pennsylvania
-                                      </SelectItem>
-                                      <SelectItem value="PE">
-                                        Prince Edward Island
-                                      </SelectItem>
-                                      <SelectItem value="QC">Quebec</SelectItem>
-                                      <SelectItem value="RI">
-                                        Rhode Island
-                                      </SelectItem>
-                                      <SelectItem value="SC">
-                                        South Carolina
-                                      </SelectItem>
-                                      <SelectItem value="SD">
-                                        South Dakota
-                                      </SelectItem>
-                                      <SelectItem value="SK">
-                                        Saskatchewan
-                                      </SelectItem>
-                                      <SelectItem value="TN">
-                                        Tennessee
-                                      </SelectItem>
-                                      <SelectItem value="TX">Texas</SelectItem>
-                                      <SelectItem value="UT">Utah</SelectItem>
-                                      <SelectItem value="VA">
-                                        Virginia
-                                      </SelectItem>
-                                      <SelectItem value="VT">
-                                        Vermont
-                                      </SelectItem>
-                                      <SelectItem value="WA">
-                                        Washington
-                                      </SelectItem>
-                                      <SelectItem value="WI">
-                                        Wisconsin
-                                      </SelectItem>
-                                      <SelectItem value="WV">
-                                        West Virginia
-                                      </SelectItem>
-                                      <SelectItem value="WY">
-                                        Wyoming
-                                      </SelectItem>
-                                      <SelectItem value="XX">
-                                        Unknown
-                                      </SelectItem>
-                                      <SelectItem value="YT">
-                                        Yukon Territory
-                                      </SelectItem>
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
+                                value={formData.vehRegJur}
+                                onValueChange={(value) =>
+                                  setFormData({
+                                    ...formData,
+                                    vehRegJur: value,
+                                  })
+                                }
+                              >
+                                <SelectTrigger className="col-span-3 rounded-xl text-zinc-800  border-black focus:border-zinc-700">
+                                  <SelectValue placeholder="Select the Drivers License Jurisdiction" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    {/* <SelectLabel>Fruits</SelectLabel> */}
+                                    <SelectItem value="AB">Alberta</SelectItem>
+                                    <SelectItem value="AK">Alaska</SelectItem>
+                                    <SelectItem value="AL">Alabama</SelectItem>
+                                    <SelectItem value="AR">Arkansas</SelectItem>
+                                    <SelectItem value="AZ">Arizona</SelectItem>
+                                    <SelectItem value="BC">
+                                      British Columbia
+                                    </SelectItem>
+                                    <SelectItem value="CA">
+                                      California
+                                    </SelectItem>
+                                    <SelectItem value="CO">Colorado</SelectItem>
+                                    <SelectItem value="CT">
+                                      Connecticut
+                                    </SelectItem>
+                                    <SelectItem value="DC">
+                                      District of Columbia
+                                    </SelectItem>
+                                    <SelectItem value="DE">Delaware</SelectItem>
+                                    <SelectItem value="FL">Florida</SelectItem>
+                                    <SelectItem value="GA">Georgia</SelectItem>
+                                    <SelectItem value="HI">Hawaii</SelectItem>
+                                    <SelectItem value="IA">Iowa</SelectItem>
+                                    <SelectItem value="ID">Idaho</SelectItem>
+                                    <SelectItem value="IL">Illinois</SelectItem>
+                                    <SelectItem value="IN">Indiana</SelectItem>
+                                    <SelectItem value="KS">Kansas</SelectItem>
+                                    <SelectItem value="KY">Kentucky</SelectItem>
+                                    <SelectItem value="LA">
+                                      Louisiana
+                                    </SelectItem>
+                                    <SelectItem value="MA">
+                                      Massachusetts
+                                    </SelectItem>
+                                    <SelectItem value="MB">Manitoba</SelectItem>
+                                    <SelectItem value="MD">Maryland</SelectItem>
+                                    <SelectItem value="ME">Maine</SelectItem>
+                                    <SelectItem value="MI">Michigan</SelectItem>
+                                    <SelectItem value="MN">
+                                      Minnesota
+                                    </SelectItem>
+                                    <SelectItem value="MO">Missouri</SelectItem>
+                                    <SelectItem value="MS">
+                                      Mississippi
+                                    </SelectItem>
+                                    <SelectItem value="MT">Montana</SelectItem>
+                                    <SelectItem value="NB">
+                                      New Brunswick
+                                    </SelectItem>
+                                    <SelectItem value="NC">
+                                      North Carolina
+                                    </SelectItem>
+                                    <SelectItem value="ND">
+                                      North Dakota
+                                    </SelectItem>
+                                    <SelectItem value="NE">Nebraska</SelectItem>
+                                    <SelectItem value="NH">
+                                      New Hampshire
+                                    </SelectItem>
+                                    <SelectItem value="NL">
+                                      Newfoundland and Labrador
+                                    </SelectItem>
+                                    <SelectItem value="NM">
+                                      New Mexico
+                                    </SelectItem>
+                                    <SelectItem value="NS">
+                                      Nova Scotia
+                                    </SelectItem>
+                                    <SelectItem value="NU">Nunavut</SelectItem>
+                                    <SelectItem value="NV">Nevada</SelectItem>
+                                    <SelectItem value="NY">New York</SelectItem>
+                                    <SelectItem value="OH">Ohio</SelectItem>
+                                    <SelectItem value="OK">Oklahoma</SelectItem>
+                                    <SelectItem value="ON">Ontario</SelectItem>
+                                    <SelectItem value="OR">Oregon</SelectItem>
+                                    <SelectItem value="OTH">Other</SelectItem>
+                                    <SelectItem value="PA">
+                                      Pennsylvania
+                                    </SelectItem>
+                                    <SelectItem value="PE">
+                                      Prince Edward Island
+                                    </SelectItem>
+                                    <SelectItem value="QC">Quebec</SelectItem>
+                                    <SelectItem value="RI">
+                                      Rhode Island
+                                    </SelectItem>
+                                    <SelectItem value="SC">
+                                      South Carolina
+                                    </SelectItem>
+                                    <SelectItem value="SD">
+                                      South Dakota
+                                    </SelectItem>
+                                    <SelectItem value="SK">
+                                      Saskatchewan
+                                    </SelectItem>
+                                    <SelectItem value="TN">
+                                      Tennessee
+                                    </SelectItem>
+                                    <SelectItem value="TX">Texas</SelectItem>
+                                    <SelectItem value="UT">Utah</SelectItem>
+                                    <SelectItem value="VA">Virginia</SelectItem>
+                                    <SelectItem value="VT">Vermont</SelectItem>
+                                    <SelectItem value="WA">
+                                      Washington
+                                    </SelectItem>
+                                    <SelectItem value="WI">
+                                      Wisconsin
+                                    </SelectItem>
+                                    <SelectItem value="WV">
+                                      West Virginia
+                                    </SelectItem>
+                                    <SelectItem value="WY">Wyoming</SelectItem>
+                                    <SelectItem value="XX">Unknown</SelectItem>
+                                    <SelectItem value="YT">
+                                      Yukon Territory
+                                    </SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
                             </div>
-                            <div className="grid grid-cols-4 items-center gap-3">
+                            <div>
                               <Label
                                 htmlFor="type"
-                                className="text-right font-medium text-zinc-700"
+                                className="text-right text-lg font-medium text-zinc-700"
                               >
                                 Type
                               </Label>
                               <Select
-                                  value={formData.tripTypeCd}
-                                  onValueChange={(value) =>
-                                    setFormData({
-                                      ...formData,
-                                      tripTypeCd: value,
-                                    })
-                                  }
-                                >
-                                  <SelectTrigger  className="col-span-3 border border-zinc-300 rounded-xl focus:ring-2 focus:ring-zinc-700 text-zinc-800">
-                                    <SelectValue placeholder="Select the Drivers License Jurisdiction" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectGroup>
-                                      {/* <SelectLabel>Fruits</SelectLabel> */}
-                                      <SelectItem value="ACCES">
+                                value={formData.tripTypeCd}
+                                onValueChange={(value) =>
+                                  setFormData({
+                                    ...formData,
+                                    tripTypeCd: value,
+                                  })
+                                }
+                              >
+                                <SelectTrigger className="col-span-3 rounded-xl text-zinc-800  border-black focus:border-zinc-700">
+                                  <SelectValue placeholder="Select the Drivers License Jurisdiction" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    {/* <SelectLabel>Fruits</SelectLabel> */}
+                                    <SelectItem value="ACCES">
                                       Accessible
-                                      </SelectItem>
-                                      <SelectItem value="CNVTL">Conventional</SelectItem>
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
+                                    </SelectItem>
+                                    <SelectItem value="CNVTL">
+                                      Conventional
+                                    </SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
                             </div>
 
-                            <DialogFooter>
+                            <DialogFooter className="mt-4">
                               <Button
                                 disabled={isSubmitting}
-                                className="w-full rounded-xl py-2 font-semibold"
+                                className=" rounded-xl py-2 font-semibold mt-4"
                               >
                                 Update Vehicle
                               </Button>

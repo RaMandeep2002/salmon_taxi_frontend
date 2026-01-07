@@ -29,6 +29,7 @@ import resetPasswordReducer from "../admin/slices/slice/resetPasswordSlice";
 import updateAdminReducer from "../admin/slices/slice/updateUserSlice";
 import deleteAdminsReducer from "../admin/slices/slice/deleteAdminSlice";
 import stopAllShiftReducer from "../admin/slices/slice/stopAllShiftSlice";
+import updatedStatusDataReducer from "../admin/slices/slice/setAnimalstatus"
 
 // Configure the Redux store with all the imported reducers
 export const store = configureStore({
@@ -58,6 +59,7 @@ export const store = configureStore({
     dashboardStats: dashboardStatsReducer, // Handles dashboard statistics
     resetPassword: resetPasswordReducer, // Handles password reset
     stopAllShift : stopAllShiftReducer,
+    updatedStatusData: updatedStatusDataReducer
   },
 });
 

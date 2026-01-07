@@ -2,7 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pencil, Trash2, Eye, Plus, EyeOff } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Eye,
+  Plus,
+  EyeOff,
+  List,
+  User,
+  BadgeCheck,
+} from "lucide-react";
 
 import { fetchdriverdetails } from "@/app/admin/slices/slice/fetchingDriversSlice";
 import { AppDispatch, RootState } from "@/app/store/store";
@@ -51,6 +60,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 // import { resetDriverPassword } from "../../slices/slice/resetPasswordSlice";
 
 interface FormData {
@@ -256,7 +271,77 @@ export default function DriverList() {
   return (
     <DashboardLayout>
       <div className="p-8">
-        <h1 className="text-3xl font-bold mb-6 text-[#F5EF1B]">Driver List</h1>
+        <div className="mb-5">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2">
+            <span>
+              <List />
+            </span>
+            <span>Driver List</span>
+          </h1>
+          <p className="text-gray-300 mt-1">
+            Manage your taxi drivers and their performance
+          </p>
+          <div className="h-1 w-50 bg-[#F5EF1B] rounded mt-2" />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 mb-8">
+          {/* Total Drivers */}
+          {/* <Card className="shadow-xl border-0 bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900 dark:to-yellow-800 transition-all hover:scale-[1.03]"> */}
+          <Card className="shadow-xl border border-[#F5EF1B] bg-transparent transition-all hover:scale-[1.03]">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-[#F5EF1B] bg-opacity-20 rounded-full p-2">
+                <User className="h-6 w-6 text-[#F5EF1B] dark:text-[#F5EF1B]" />
+              </div>
+              <CardTitle className="text-sm font-semibold text-[#F5EF1B]">
+                Total Drivers
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-extrabold text-white dark:text-[#F5EF1B]">
+                {filteredDrivers.length}
+              </div>
+              <p className="text-xs text-[#F5EF1B] mt-1 font-medium">
+                {filteredDrivers.length > 0
+                  ? `+${Math.floor(filteredDrivers.length * 0.12)} this month`
+                  : "No new drivers"}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Active Now */}
+          <Card className="shadow-xl border border-[#F5EF1B] bg-transparent transition-all hover:scale-[1.03]">
+            <CardHeader className="pb-2 flex flex-row items-center gap-3">
+              <div className="bg-[#F5EF1B] bg-opacity-20 rounded-full p-2">
+                <BadgeCheck className="h-6 w-6 text-[#F5EF1B] dark:text-[#F5EF1B]" />
+              </div>
+              <CardTitle className="text-sm font-semibold text-[#F5EF1B]">
+                Active Now
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+            <div className="text-3xl font-extrabold text-white dark:text-[#F5EF1B]">
+            {filteredDrivers.length}
+                {filteredDrivers.filter((d) => d.status === "available").length}
+              </div>
+              <p className="text-xs text-[#F5EF1B] mt-1 font-medium">
+                {filteredDrivers.length > 0
+                  ? `${Math.round(
+                      (filteredDrivers.filter((d) => d.status === "available")
+                        .length /
+                        filteredDrivers.length) *
+                        100
+                    )}% of total`
+                  : "No active drivers"}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Total Earnings */}
+        </div>
+
+        <div>
+          
+        </div>
 
         <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 w-full sm:w-auto">
@@ -299,11 +384,11 @@ export default function DriverList() {
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Phone Number
                 </TableHead>
-                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   License Number
                 </TableHead>
-                <TableHead  className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
-                Driver License Jurisdiction
+                <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
+                  Driver License Jurisdiction
                 </TableHead>
                 <TableHead className="w-[100px] text-center text-[#F5EF1B] text-xs sm:text-sm">
                   Actions
@@ -354,8 +439,8 @@ export default function DriverList() {
                       {driver.driversLicenseNumber}
                     </TableCell>
                     <TableCell className="text-center text-white">
-                      {driver.driversLicJur ? driver.driversLicJur : 'N/A'}
-                    </TableCell>  
+                      {driver.driversLicJur ? driver.driversLicJur : "N/A"}
+                    </TableCell>
                     <TableCell className="text-center">
                       <Dialog>
                         <DialogTrigger asChild className="text-white">

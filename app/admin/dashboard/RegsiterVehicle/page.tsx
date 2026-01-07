@@ -14,6 +14,7 @@ export default function RegisterVehicle() {
   const [year, setYear] = useState<number | "">("");
   const [vehicle_plate_number, setVehiclePlateNumber] = useState<string>("");
   const [vehRegJur, setVehRegJur] = useState<string>("");
+  // const [tripTypeCd, setTripTypeCd] = useState<string>("");
   // const [status, setStatus] = useState("active");
 
   const dispatch = useDispatch<AppDispatch>();
@@ -32,6 +33,7 @@ export default function RegisterVehicle() {
       year: Number(year),
       vehicle_plate_number,
       vehRegJur,
+      // tripTypeCd,
     });
 
     try {
@@ -43,6 +45,7 @@ export default function RegisterVehicle() {
           year: Number(year),
           vehicle_plate_number,
           vehRegJur,
+          // tripTypeCd,
         })
       )
         .unwrap()
@@ -54,6 +57,7 @@ export default function RegisterVehicle() {
           setYear("");
           setVehiclePlateNumber("");
           setVehRegJur("");
+          // setTripTypeCd("");
           toast.toast({
             title: "Vehicle added successfully!",
             variant: "default",
@@ -317,7 +321,7 @@ export default function RegisterVehicle() {
                 className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
               >
                 <option value="" disabled>
-                  Select the Drivers License Jurisdiction (e.g. ON, CA)
+                  Select the Vehicle Jurisdiction (e.g. ON, CA)
                 </option>
                 <option value="AB">Alberta</option>
                 <option value="AK">Alaska</option>
@@ -409,6 +413,48 @@ export default function RegisterVehicle() {
                   </div>
                 ))}
             </div>
+            {/* <div>
+              <label className="block text-base sm:text-lg font-medium text-zinc-800">
+                Vehicle Type
+              </label>
+              <select
+                name="driversLicJur"
+                value={tripTypeCd}
+                onChange={(e) => setTripTypeCd(e.target.value)}
+                className="w-full px-2 py-3 sm:px-4 sm:py-3 border border-zinc-800 text-zinc-800 text-base sm:text-lg bg-transparent placeholder:text-zinc-800 rounded-md"
+              >
+                <option value="" disabled>
+                  Select the Vehicle Type (e.g. ACCES, CNVTL)
+                </option>
+                <option value="ACCES">Alberta</option>
+                <option value="CNVTL">Conventional</option>
+                
+              </select>
+              {validationErrors
+                .filter((err) => err.field === "tripTypeCd")
+                .map((err, i) => (
+                     <div
+                    key={i}
+                    className="flex items-center gap-2 mt-1 text-sm text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"
+                      />
+                    </svg>
+                    <span>{err.message}</span>
+                  </div>
+                ))}
+            </div> */}
 
             {/* <div>
                <label className="block text-base sm:text-lg font-medium text-zinc-800">
