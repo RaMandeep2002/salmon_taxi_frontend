@@ -320,7 +320,7 @@ export default function DriverList() {
             </CardHeader>
             <CardContent>
             <div className="text-3xl font-extrabold text-white dark:text-[#F5EF1B]">
-            {filteredDrivers.length}
+            {/* {filteredDrivers.length} */}
                 {filteredDrivers.filter((d) => d.status === "available").length}
               </div>
               <p className="text-xs text-[#F5EF1B] mt-1 font-medium">
