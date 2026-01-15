@@ -13,7 +13,6 @@ import {
   Search,
   Trash,
   Mail,
-  Phone,
   MoreHorizontal,
 } from "lucide-react";
 // import { Badge } from "@/components/ui/badge";
