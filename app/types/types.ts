@@ -11,16 +11,22 @@ export interface Drivers {
   email: string;
   phoneNumber: number;
   driversLicenseNumber: string;
-  driversLicJur: string;
   vehicle: []; // Replace `any` with a specific type if needed
   password: string;
   status: string;
+  totalEarnings: number;
+  totalTrips: number;
   shifts: []; // Replace `any` with a specific type if needed
   createdAt: string;
   updatedAt: string;
   isActive: boolean;
+  driversLicJur: string;
+  licenseState?: string;
+  licenseExpiryDate?: string;
+  licenseClass?: string;
   __v: number;
 }
+
 
 export interface DriversResponse {
   success: boolean;

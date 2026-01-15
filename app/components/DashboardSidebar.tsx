@@ -122,12 +122,12 @@ export default function DashboardSidebar() {
           onClick={() => handleNavigation("/admin/dashboard/Bookings")}
           isCollapsed={isCollapsed}
         />
-        <MenuItem
+        {/* <MenuItem
           icon={ListChecksIcon} // ListChecksIcon is a good fit for "status"/progress
           label={isCollapsed ? "" : "Booking Status"}
           onClick={() => handleNavigation("/admin/dashboard/BookingStatus")}
           isCollapsed={isCollapsed}
-        />
+        /> */}
         <MenuItem
           icon={ListChecksIcon}
           label={isCollapsed ? "" : "Reports"}
