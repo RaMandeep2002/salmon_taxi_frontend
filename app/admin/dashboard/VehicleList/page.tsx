@@ -107,7 +107,7 @@ export default function VechicleList() {
 
   const { iserror } = useSelector((state: RootState) => state.updateVehcile);
   const { isDeleteting, succeesMessage } = useSelector(
-    (state: RootState) => state.deleteVehicle
+    (state: RootState) => state.deleteVehicle,
   );
   // const getsuccessmessage = vehicleinfo.message;
   const [currentPage, setCurrentPage] = useState(1);
@@ -123,7 +123,7 @@ export default function VechicleList() {
   // const [filterStatus, setFilterStatus] = useState("All");
   const handleDialogOpen = (
     vehicle: Vehicle,
-    type: "view" | "edit" | "delete"
+    type: "view" | "edit" | "delete",
   ) => {
     setSelectedVehicle(vehicle);
     setDialogType(type);
@@ -175,7 +175,7 @@ export default function VechicleList() {
 
   const paginatedVehicles = formattedVehicles.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const handleNext = () =>
@@ -195,9 +195,9 @@ export default function VechicleList() {
             vehicleModel: formData.vehicleModel,
             year: formData.year,
             vehicle_plate_number: formData.vehicle_plate_number,
-            vehRegJur: formData.vehRegJur
+            vehRegJur: formData.vehRegJur,
           },
-        })
+        }),
       ).unwrap();
 
       // if (isUpdating === true) {
@@ -207,7 +207,7 @@ export default function VechicleList() {
       dispatch(fetchDetailWithVehicle());
       // }
     } catch (error) {
-      alert(`Failed to delete driver. Please try again. ${error}`);
+      alert(`Failed to Update Vehicle. Please try again. ${error}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -224,7 +224,7 @@ export default function VechicleList() {
         dispatch(fetchDetailWithVehicle());
       }
     } catch (error) {
-      alert(`Failed to delete driver. Please try again. ${error}`);
+      alert(`Failed to delete Vehicle. Please try again. ${error}`);
       toast.toast({
         title: "Error Deleting Vehicle",
         description: "Failed to delete vehicle. Please try again.",
@@ -304,7 +304,7 @@ export default function VechicleList() {
                 {paginatedVehicles.length > 0
                   ? `${Math.round(
                       (paginatedVehicles.length / paginatedVehicles.length) *
-                        100
+                        100,
                     )}% of fleet`
                   : "No active vehicles"}
               </p>
@@ -445,7 +445,7 @@ export default function VechicleList() {
                                 <div className="font-medium text-white">
                                   {highlightMatch(
                                     vehicle?.company,
-                                    debouncedsearch
+                                    debouncedsearch,
                                   )}
                                 </div>
                                 {/* <div className="text-sm text-gray-500">
@@ -485,9 +485,9 @@ export default function VechicleList() {
                                   {vehicle.registrationNumber
                                     ? `${vehicle.registrationNumber.slice(
                                         0,
-                                        4
+                                        4,
                                       )}...${vehicle.registrationNumber.slice(
-                                        -4
+                                        -4,
                                       )}`
                                     : "N/A"}
                                 </span>
@@ -608,7 +608,7 @@ export default function VechicleList() {
                               <span className="font-medium text-gray-200 truncate">
                                 {highlightMatch(
                                   vehicle?.company,
-                                  debouncedsearch
+                                  debouncedsearch,
                                 )}
                               </span>
                               <span className="text-xs text-gray-300 truncate">
@@ -987,7 +987,6 @@ export default function VechicleList() {
                   </SelectContent>
                 </Select>
               </div>
-            
 
               <DialogFooter className="mt-4">
                 <Button
@@ -1022,14 +1021,12 @@ export default function VechicleList() {
                   }
                 }}
               >
-              
                 Delete
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
 
-        
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
