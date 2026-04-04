@@ -144,7 +144,6 @@ export default function VechicleList() {
     year: selectedVehicle?.year || 0,
     vehicle_plate_number: selectedVehicle?.vehicle_plate_number || "",
     vehRegJur: selectedVehicle?.vehRegJur || "",
-    tripTypeCd: selectedVehicle?.tripTypeCd || "",
   });
   useEffect(() => {
     if (selectedVehicle) {
@@ -155,7 +154,6 @@ export default function VechicleList() {
         year: selectedVehicle.year || 0,
         vehicle_plate_number: selectedVehicle.vehicle_plate_number || "",
         vehRegJur: selectedVehicle?.vehRegJur,
-        tripTypeCd: selectedVehicle?.tripTypeCd,
       });
     }
   }, [selectedVehicle]);
@@ -197,8 +195,7 @@ export default function VechicleList() {
             vehicleModel: formData.vehicleModel,
             year: formData.year,
             vehicle_plate_number: formData.vehicle_plate_number,
-            vehRegJur: formData.vehRegJur,
-            tripTypeCd: formData.tripTypeCd,
+            vehRegJur: formData.vehRegJur
           },
         })
       ).unwrap();
@@ -990,34 +987,7 @@ export default function VechicleList() {
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label
-                  htmlFor="type"
-                  className="text-right text-lg font-medium text-zinc-700"
-                >
-                  Type
-                </Label>
-                <Select
-                  value={formData.tripTypeCd}
-                  onValueChange={(value) =>
-                    setFormData({
-                      ...formData,
-                      tripTypeCd: value,
-                    })
-                  }
-                >
-                  <SelectTrigger className="col-span-3 rounded-xl text-zinc-800  border-black focus:border-zinc-700">
-                    <SelectValue placeholder="Select the Drivers License Jurisdiction" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {/* <SelectLabel>Fruits</SelectLabel> */}
-                      <SelectItem value="ACCES">Accessible</SelectItem>
-                      <SelectItem value="CNVTL">Conventional</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+            
 
               <DialogFooter className="mt-4">
                 <Button

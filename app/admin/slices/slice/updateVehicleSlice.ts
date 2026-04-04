@@ -12,7 +12,6 @@ interface Vehicle {
     year: number;
     vehicle_plate_number: string;
     vehRegJur: string;
-    tripTypeCd: string;
 }
 
 interface VehicleState {
@@ -41,7 +40,6 @@ export const updateVehicle = createAsyncThunk(
             year: number;
             vehicle_plate_number: string;
             vehRegJur: string;
-            tripTypeCd: string;
         };
     },
         { rejectWithValue }
