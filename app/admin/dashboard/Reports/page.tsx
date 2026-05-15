@@ -13,91 +13,124 @@ import {
 } from "@/components/ui/table";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
-import { fetchBookingHistory } from "../../slices/slice/booingHistorySlice";
 import { getBookingReport } from "../../slices/slice/getReportSlice";
 import { useDebounce } from "@/lib/useDebounce";
+import { fetchPaginatedBookingHistory, setPage } from "../../slices/slice/paginaatedBookingSlice";
+import { Switch } from "@/components/ui/switch";
+import { updateIsIncludeInReport } from "../../slices/slice/isIncludeInReport";
+import { useToast } from "@/hooks/use-toast";
+
 
 export default function Reports() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [pickup, setPickup] = useState("");
   const [drivername, setDrivername] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 15;
 
-  const debouncedDriverSearch = useDebounce(drivername, 300);
-  const debouncedPickupSearch = useDebounce(pickup, 300);
+  const debouncedDriverSearch = useDebounce(drivername, 500);
+  const debouncedPickupSearch = useDebounce(pickup, 500);
 
   const dispatch = useDispatch<AppDispatch>();
-  const { bookings, loading, error } = useSelector(
-    (state: RootState) => state.fetchBookingHistory
+  const { bookings, loading, error, page, limit, hasMore, totalPages } = useSelector(
+    (state: RootState) => state.fetchPaginatedBookingHistory
   );
   const { isDownloading, iserror } = useSelector(
     (state: RootState) => state.getBookingReport
   );
+  const { toast } = useToast();
 
-  useEffect(() => {
-    dispatch(fetchBookingHistory());
-  }, [dispatch]);
 
-  // Convert YYYY-MM-DD to MM/DD/YYYY for comparison
+  // Convert YYYY-MM-DD to MM/DD/YYYY for comparison and API consistency
   const convertDateFormat = (dateString: string) => {
     if (!dateString) return "";
     const [year, month, day] = dateString.split("-");
+    if(!year || !month || !day) return "";
     return `${month}/${day}/${year}`;
   };
-  const formattedFromDate = convertDateFormat(fromDate);
-  const formattedToDate = convertDateFormat(toDate);
 
-  const filteredBookings =
-    bookings?.filter((booking) => {
-      const bookingDate = booking.pickupDate;
+  useEffect(() => {
+    const formattedFrom = convertDateFormat(fromDate);
+    const formattedTo = convertDateFormat(toDate);
+    
+    dispatch(fetchPaginatedBookingHistory({ 
+      page: page ?? 1, 
+      limit: limit ?? 15,
+      fromDate: formattedFrom,
+      toDate: formattedTo,
+      pickup: debouncedPickupSearch,
+      drivername: debouncedDriverSearch
+    }));
+  }, [dispatch, page, limit, fromDate, toDate, debouncedPickupSearch, debouncedDriverSearch]);
 
-      const isDriverMatch = debouncedDriverSearch
-        ? booking.driver?.drivername
-            ?.toLowerCase()
-            .includes(debouncedDriverSearch.toLowerCase())
-        : true;
+  // Reset page to 1 whenever filters change
+  useEffect(() => {
+    dispatch(setPage(1));
+  }, [dispatch, fromDate, toDate, debouncedPickupSearch, debouncedDriverSearch]);
 
-      const isPickupMatch = debouncedPickupSearch
-        ? booking.pickup?.address
-            ?.toLowerCase()
-            .includes(debouncedPickupSearch.toLowerCase())
-        : true;
-
-      const isFromDateMatch = fromDate
-        ? new Date(bookingDate) >= new Date(formattedFromDate)
-        : true;
-
-      const isToDateMatch = toDate
-        ? new Date(bookingDate) <= new Date(formattedToDate)
-        : true;
-
-      return isDriverMatch && isPickupMatch && isFromDateMatch && isToDateMatch;
-    }) || [];
-
-  const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
-  const paginatedBookings = filteredBookings.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handleNext = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-
+  const handleNext = () => dispatch(setPage((page ?? 1) + 1));
+  const handlePrev = () => dispatch(setPage(Math.max((page ?? 1) - 1, 1)));
 
   const handleDownload = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(
+    // dispatch(
+    //   getBookingReport({
+    //     fromDate: convertDateFormat(fromDate),
+    //     toDate: convertDateFormat(toDate),
+    //     pickup,
+    //     drivername,
+    //   })
+    // );
+
+    try{
+      dispatch(
       getBookingReport({
-        fromDate: formattedFromDate,
-        toDate: formattedToDate,
+        fromDate: convertDateFormat(fromDate),
+        toDate: convertDateFormat(toDate),
         pickup,
         drivername,
       })
-    );
+    ).unwrap();
+    toast({
+      title: "Success",
+      description: "Report downloaded successfully.",
+      variant: "default",
+    });
+    }
+    catch(err: unknown){
+      toast({
+        title: "Error",
+        description: err instanceof Error ? err.message : "Failed to download report.",
+        variant: "destructive",
+      });
+    }
   };
+
+  const handleTogglePTDW = async (bookingId: string, isPTDW: boolean) => {
+    try {
+      await dispatch(updateIsIncludeInReport({ bookingId, isPTDW })).unwrap();
+      
+      // Refresh the data after successful update
+      const formattedFrom = convertDateFormat(fromDate);
+      const formattedTo = convertDateFormat(toDate);
+      
+      dispatch(fetchPaginatedBookingHistory({ 
+        page: page ?? 1, 
+        limit: limit ?? 15,
+        fromDate: formattedFrom,
+        toDate: formattedTo,
+        pickup: debouncedPickupSearch,
+        drivername: debouncedDriverSearch
+      }));
+
+    } catch (err: unknown) {
+      toast({
+        title: "Error",
+        description: err instanceof Error ? err.message : "Failed to update booking status.",
+        variant: "destructive",
+      });
+    }
+  };
+
 
   return (
     <DashboardLayout>
@@ -176,6 +209,7 @@ export default function Reports() {
                   "Total Fare",
                   "Pickup",
                   "Drop Off",
+                  "Off Record"
                 ].map((header) => (
                   <TableHead
                     key={header}
@@ -191,7 +225,7 @@ export default function Reports() {
               {loading ? (
                 <TableRow>
                   <TableCell
-                    colSpan={8}
+                    colSpan={10}
                     className="text-center py-8 text-white"
                   >
                     Loading...
@@ -200,23 +234,23 @@ export default function Reports() {
               ) : error ? (
                 <TableRow>
                   <TableCell
-                    colSpan={8}
+                    colSpan={10}
                     className="text-center py-8 text-white"
                   >
                     {error}
                   </TableCell>
                 </TableRow>
-              ) : filteredBookings.length === 0 ? (
+              ) : bookings.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={8}
+                    colSpan={10}
                     className="text-center py-8 text-white"
                   >
                     No bookings found
                   </TableCell>
                 </TableRow>
               ) : (
-                paginatedBookings.map((booking) => (
+                bookings.map((booking) => (
                   <TableRow
                     key={booking.bookingId}
                     className="border-b border-[#F5EF1B]"
@@ -264,6 +298,15 @@ export default function Reports() {
                         </span>
                       )}
                     </TableCell>
+                    <TableCell>
+                      <Switch
+                        checked={booking.isPTDW}
+                        onCheckedChange={(checked) =>
+                          handleTogglePTDW(booking.bookingId, checked)
+                        }
+                        className="data-[state=checked]:bg-[#F5EF1B] data-[state=unchecked]:bg-zinc-800 border-zinc-700"
+                      />
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -275,17 +318,17 @@ export default function Reports() {
         <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
           <Button
             onClick={handlePrev}
-            disabled={currentPage === 1}
+              disabled={(page ?? 1) === 1}
             className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Previous
           </Button>
           <span className="text-sm text-[#F5EF1B]">
-            Page {currentPage} of {totalPages}
+           Page {page ?? 1} - {totalPages ?? 0}
           </span>
           <Button
             onClick={handleNext}
-            disabled={currentPage === totalPages}
+              disabled={!(hasMore ?? true) || loading}
             className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
           >
             Next

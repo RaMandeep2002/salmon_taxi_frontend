@@ -30,6 +30,9 @@ import updateAdminReducer from "../admin/slices/slice/updateUserSlice";
 import deleteAdminsReducer from "../admin/slices/slice/deleteAdminSlice";
 import stopAllShiftReducer from "../admin/slices/slice/stopAllShiftSlice";
 import updatedStatusDataReducer from "../admin/slices/slice/setAnimalstatus"
+import fetchPaginatedBookingHistoryReducer from "../admin/slices/slice/paginaatedBookingSlice"
+import isIncludeInReportReducer from "../admin/slices/slice/isIncludeInReport";
+
 
 // Configure the Redux store with all the imported reducers
 export const store = configureStore({
@@ -45,6 +48,7 @@ export const store = configureStore({
     detailWithVehicle: detailWithVehicleReducer, // Handles driver details with vehicle info
     registerVehicle: registerVehicleReducer, // Handles vehicle registration
     fetchBookingHistory:fetchBookingHistoryReducer, // Handles booking history
+    fetchPaginatedBookingHistory:fetchPaginatedBookingHistoryReducer, // Handles booking history
     updateDriverinfo : updatedriverReducer, // Handles updating driver info
     deleteDriver: deleteDriverReducer, // Handles deleting drivers
     updateVehcile: updateVehicleReducer, // Handles updating vehicle info
@@ -59,7 +63,9 @@ export const store = configureStore({
     dashboardStats: dashboardStatsReducer, // Handles dashboard statistics
     resetPassword: resetPasswordReducer, // Handles password reset
     stopAllShift : stopAllShiftReducer,
-    updatedStatusData: updatedStatusDataReducer
+    updatedStatusData: updatedStatusDataReducer,
+    isIncludeInReport: isIncludeInReportReducer
+
   },
 });
 

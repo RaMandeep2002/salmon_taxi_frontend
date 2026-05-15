@@ -40,10 +40,16 @@ export interface BookingHistory {
     paymentStatus: "pending" | "paid";
     paymentMethod: "cash" | "card" | "online";
     status: "pending" | "accepted" | "ongoing" | "completed" | "cancelled";
+    isPTDW: boolean;
 }
 
 export interface BookingState {
     bookings: BookingHistory[];
+    page?:number;
+    limit?:number;
+    total?: number;
+    totalPages?: number;
+    hasMore?: boolean;
     loading: boolean;
     error: string | null;
 }
