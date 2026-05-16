@@ -19,21 +19,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { 
-  BookText, 
-  Car, 
-  Route, 
-  Users, 
-  Calendar, 
-  Clock, 
-  User, 
-  Navigation, 
-  Timer, 
-  DollarSign, 
-  MapPin, 
-  ChevronLeft, 
-  ChevronRight, 
-  Hash
+import {
+  BookText,
+  Car,
+  Route,
+  Users,
+  Calendar,
+  Clock,
+  User,
+  Navigation,
+  Timer,
+  DollarSign,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+  Hash,
 } from "lucide-react";
 import { fetchDashboardStats } from "../slices/slice/getCountSlice";
 import {
@@ -145,15 +145,46 @@ export default function DashboardPage() {
             <TableHeader className="bg-zinc-900/50">
               <TableRow className="border-b border-[#F5EF1B]/30 hover:bg-transparent">
                 {[
-                  { label: "Trip ID", icon: <Hash size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Date", icon: <Calendar size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Time", icon: <Clock size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Driver", icon: <User size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Dist.", icon: <Navigation size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Wait", icon: <Timer size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Fare", icon: <DollarSign size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Pickup Address", icon: <MapPin size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Drop Address", icon: <MapPin size={14} className="text-[#F5EF1B]/60" /> }
+                  {
+                    label: "Trip ID",
+                    icon: <Hash size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Date",
+                    icon: <Calendar size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Time",
+                    icon: <Clock size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Driver",
+                    icon: <User size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Dist.",
+                    icon: (
+                      <Navigation size={14} className="text-[#F5EF1B]/60" />
+                    ),
+                  },
+                  {
+                    label: "Wait",
+                    icon: <Timer size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Fare",
+                    icon: (
+                      <DollarSign size={14} className="text-[#F5EF1B]/60" />
+                    ),
+                  },
+                  {
+                    label: "Pickup",
+                    icon: <MapPin size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Drop-off",
+                    icon: <MapPin size={14} className="text-[#F5EF1B]/60" />,
+                  },
                 ].map((header) => (
                   <TableHead
                     key={header.label}
@@ -171,7 +202,10 @@ export default function DashboardPage() {
             <TableBody>
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i} className="border-b border-zinc-800 animate-pulse">
+                  <TableRow
+                    key={i}
+                    className="border-b border-zinc-800 animate-pulse"
+                  >
                     {Array.from({ length: 8 }).map((_, j) => (
                       <TableCell key={j} className="py-4">
                         <div className="h-4 bg-zinc-800 rounded w-full"></div>
@@ -186,7 +220,9 @@ export default function DashboardPage() {
                     className="text-center py-12 text-red-400"
                   >
                     <div className="flex flex-col items-center gap-2">
-                      <span className="text-lg font-medium">Error Loading Data</span>
+                      <span className="text-lg font-medium">
+                        Error Loading Data
+                      </span>
                       <p className="text-sm opacity-70">{error}</p>
                     </div>
                   </TableCell>
@@ -198,7 +234,9 @@ export default function DashboardPage() {
                     className="text-center py-12 text-zinc-500"
                   >
                     <div className="flex flex-col items-center gap-2">
-                      <span className="text-lg font-medium">No bookings found</span>
+                      <span className="text-lg font-medium">
+                        No bookings found
+                      </span>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -223,7 +261,9 @@ export default function DashboardPage() {
                           <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-[#F5EF1B] border border-[#F5EF1B]/20">
                             {booking.driver.drivername.charAt(0).toUpperCase()}
                           </div>
-                          <span className="text-zinc-200">{booking.driver.drivername}</span>
+                          <span className="text-zinc-200">
+                            {booking.driver.drivername}
+                          </span>
                         </div>
                       ) : (
                         <span className="px-2 py-1 rounded bg-zinc-800 text-zinc-500 text-xs border border-zinc-700 italic">
@@ -238,15 +278,24 @@ export default function DashboardPage() {
                       {booking.wating_time_formated || "00:00:00"}
                     </TableCell>
                     <TableCell className="text-[#F5EF1B] font-bold">
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(booking.totalFare || 0)}
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(booking.totalFare || 0)}
                     </TableCell>
                     <TableCell className="max-w-[150px]">
-                      <div className="text-zinc-300 truncate text-sm" title={booking.pickup?.address}>
+                      <div
+                        className="text-zinc-300 truncate text-sm"
+                        title={booking.pickup?.address}
+                      >
                         {booking.pickup?.address || "N/A"}
                       </div>
                     </TableCell>
                     <TableCell className="max-w-[150px]">
-                      <div className="text-zinc-300 truncate text-sm" title={booking.dropOff?.address}>
+                      <div
+                        className="text-zinc-300 truncate text-sm"
+                        title={booking.dropOff?.address}
+                      >
                         {booking.dropOff?.address || "N/A"}
                       </div>
                     </TableCell>
@@ -262,7 +311,10 @@ export default function DashboardPage() {
           {loading ? (
             <div className="space-y-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-16 bg-zinc-900/50 border border-zinc-800 animate-pulse rounded-lg"></div>
+                <div
+                  key={i}
+                  className="h-16 bg-zinc-900/50 border border-zinc-800 animate-pulse rounded-lg"
+                ></div>
               ))}
             </div>
           ) : error ? (
@@ -281,44 +333,153 @@ export default function DashboardPage() {
                   value={booking.bookingId}
                   className="border border-zinc-800 bg-zinc-900/30 rounded-xl px-4 overflow-hidden"
                 >
-                  <AccordionTrigger className="hover:no-underline py-4">
-                    <div className="flex items-center gap-3 text-left">
-                      <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-[#F5EF1B] border border-[#F5EF1B]/20 flex-shrink-0">
-                        {booking.driver?.drivername?.charAt(0).toUpperCase() || "?"}
+                  <AccordionTrigger className="group w-full hover:no-underline px-4 py-4 sm:px-5 sm:py-5">
+                    <div className="w-full min-w-0 space-y-4">
+                      {/* Header */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-wider text-zinc-500">
+                            <Hash size={13} className="text-[#F5EF1B]" />
+                            <span>Trip</span>
+                            <span className="truncate text-zinc-300">
+                              {booking.bookingId}
+                            </span>
+                          </div>
+                        </div>
+
+                        {booking.driver?.drivername && (
+                          <div className="flex max-w-[130px] shrink-0 items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/70 px-2 py-1">
+                            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F5EF1B] text-[10px] font-black text-black">
+                              {booking.driver.drivername
+                                .charAt(0)
+                                .toUpperCase()}
+                            </div>
+                            <span className="truncate text-[11px] font-semibold text-zinc-300">
+                              {booking.driver.drivername}
+                            </span>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[#F5EF1B] font-bold text-sm truncate">
-                          {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(booking.totalFare || 0)}
-                        </span>
-                        <span className="text-zinc-400 text-xs truncate">
-                          {booking.pickupDate} • {booking.pickuptime}
-                        </span>
+
+                      {/* Journey */}
+                      <div className="grid grid-cols-[minmax(0,1fr)_72px_minmax(0,1fr)] items-center gap-3 sm:grid-cols-[minmax(0,1fr)_120px_minmax(0,1fr)]">
+                        {/* Pickup */}
+                        <div className="min-w-0">
+                          <div className="text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+                            Pickup
+                          </div>
+                          <div className="mt-1 truncate text-2xl font-black leading-none text-white sm:text-3xl">
+                            {booking.pickuptime}
+                          </div>
+                          <div className="mt-2 truncate text-[10px] font-extrabold uppercase tracking-wide text-[#F5EF1B]">
+                            {booking.pickup?.address?.split(",")[0] || "---"}
+                          </div>
+                        </div>
+
+                        {/* Middle path */}
+                        <div className="flex min-w-0 flex-col items-center justify-center">
+                          <div className="mb-1 max-w-full truncate text-[10px] font-bold text-zinc-500">
+                            {booking.distance || "0 km"}
+                          </div>
+
+                          <div className="relative flex w-full items-center justify-center">
+                            <div className="h-px w-full border-t border-dashed border-zinc-700" />
+                            <div className="absolute flex h-8 w-8 items-center justify-center">
+                              <Car size={15} className="text-[#F5EF1B]" />
+                            </div>
+                          </div>
+
+                          <div className="mt-2 text-[10px] font-semibold text-zinc-500">
+                            Taxi
+                          </div>
+                        </div>
+
+                        {/* Dropoff */}
+                        <div className="min-w-0 text-right">
+                          <div className="text-[11px] font-bold uppercase tracking-wide text-zinc-500">
+                            Drop
+                          </div>
+                          <div className="mt-1 truncate text-2xl font-black leading-none text-white sm:text-3xl">
+                            {booking.dropdownTime || "0"}
+                          </div>
+                          <div className="mt-2 truncate text-[10px] font-extrabold uppercase tracking-wide text-[#F5EF1B]">
+                            {booking.dropOff?.address?.split(",")[0] || "---"}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Addresses */}
+                      <div className="grid gap-2 border-t border-zinc-800/70 pt-3 text-[11px] font-medium text-zinc-500 sm:grid-cols-2 sm:gap-4">
+                        <div className="flex min-w-0 items-center gap-2 rounded-md bg-zinc-950/40 px-2.5 py-2">
+                          <MapPin
+                            size={13}
+                            className="shrink-0 text-[#F5EF1B]"
+                          />
+                          <span className="truncate">
+                            {booking.pickup?.address || "No pickup address"}
+                          </span>
+                        </div>
+
+                        <div className="flex min-w-0 items-center gap-2 rounded-md bg-zinc-950/40 px-2.5 py-2 sm:justify-end">
+                          <MapPin
+                            size={13}
+                            className="shrink-0 text-[#F5EF1B] sm:order-2"
+                          />
+                          <span className="truncate sm:text-right">
+                            {booking.dropOff?.address || "No drop address"}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </AccordionTrigger>
+
                   <AccordionContent className="pb-4 pt-2 border-t border-zinc-800/50">
                     <div className="space-y-4 text-sm">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Driver</p>
-                          <p className="text-zinc-200">{booking.driver?.drivername || "Unassigned"}</p>
+                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">
+                            Driver
+                          </p>
+                          <p className="text-zinc-200">
+                            {booking.driver?.drivername || "Unassigned"}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Distance</p>
-                          <p className="text-zinc-200">{booking.distance || "0"}</p>
+                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">
+                            Distance
+                          </p>
+                          <p className="text-zinc-200">
+                            {booking.distance || "0"}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Wait Time</p>
-                          <p className="text-zinc-200">{booking.wating_time_formated || "00:00:00"}</p>
+                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">
+                            Wait Time
+                          </p>
+                          <p className="text-zinc-200">
+                            {booking.wating_time_formated || "00:00:00"}
+                          </p>
                         </div>
                       </div>
-                      <div>
-                        <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Pickup Address</p>
-                        <p className="text-zinc-300 text-xs leading-relaxed">{booking.pickup?.address || "N/A"}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Drop Address</p>
-                        <p className="text-zinc-300 text-xs leading-relaxed">{booking.dropOff?.address || "N/A"}</p>
+                      <div className="pt-2 border-t border-zinc-800/50">
+                        <div className="flex items-start gap-2 mb-3">
+                          <MapPin
+                            size={14}
+                            className="text-zinc-500 mt-0.5 flex-shrink-0"
+                          />
+                          <p className="text-zinc-300 text-xs leading-relaxed">
+                            {booking.pickup?.address || "N/A"}
+                          </p>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <MapPin
+                            size={14}
+                            className="text-zinc-500 mt-0.5 flex-shrink-0"
+                          />
+                          <p className="text-zinc-300 text-xs leading-relaxed">
+                            {booking.dropOff?.address || "N/A"}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </AccordionContent>
@@ -339,12 +500,18 @@ export default function DashboardPage() {
             <ChevronLeft size={16} className="mr-2" />
             Previous
           </Button>
-          
+
           <div className="flex items-center gap-2 px-4 py-1.5 bg-zinc-800/50 rounded-full border border-zinc-700/50 shadow-inner">
-            <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest">Page</span>
-            <span className="text-sm font-bold text-[#F5EF1B]">{page ?? 1}</span>
+            <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest">
+              Page
+            </span>
+            <span className="text-sm font-bold text-[#F5EF1B]">
+              {page ?? 1}
+            </span>
             <span className="text-zinc-600">/</span>
-            <span className="text-sm font-medium text-zinc-400">{totalPages ?? 0}</span>
+            <span className="text-sm font-medium text-zinc-400">
+              {totalPages ?? 0}
+            </span>
           </div>
 
           <Button
