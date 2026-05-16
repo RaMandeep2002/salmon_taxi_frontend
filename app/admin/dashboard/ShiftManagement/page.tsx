@@ -11,6 +11,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { fetchShiftsWithVehicles } from "../../slices/slice/shiftandvehicleSlice";
@@ -21,7 +27,7 @@ import {
 } from "../../slices/slice/stopShiftsDriver";
 import { useToast } from "@/hooks/use-toast";
 import { useDebounce } from "@/lib/useDebounce";
-import { Ban, Car, Clock10, List } from "lucide-react";
+import { Ban, Car, Clock10, List, User, Shield, Calendar, Activity, Zap, ChevronLeft, ChevronRight } from "lucide-react";
 import { stopAllShiftByAdmin } from "../../slices/slice/stopAllShiftSlice";
 import {
   Card,
@@ -324,114 +330,142 @@ export default function ShiftsAndVehicle() {
         </div>
 
         <div className="border border-[#F5EF1B] rounded-lg overflow-hidden">
+        {/* Table - Hidden on small screens */}
+        <div className="hidden sm:block border border-[#F5EF1B] rounded-xl overflow-auto shadow-lg">
           <Table>
-            <TableHeader>
-              <TableRow className="text-center border border-[#F5EF1B]">
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Driver Name
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Vehicle
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Start
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  End
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Shift Status
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Vehicle Status
-                </TableHead>
-                <TableHead className="text-center text-[#F5EF1B] text-xs sm:text-sm">
-                  Action
-                </TableHead>
+            <TableHeader className="bg-zinc-900/50">
+              <TableRow className="border-b border-[#F5EF1B]/30 hover:bg-transparent">
+                {[
+                  { label: "Driver", icon: <User size={14} className="text-[#F5EF1B]/60" /> },
+                  { label: "Vehicle", icon: <Car size={14} className="text-[#F5EF1B]/60" /> },
+                  { label: "Start", icon: <Calendar size={14} className="text-[#F5EF1B]/60" /> },
+                  { label: "End", icon: <Calendar size={14} className="text-[#F5EF1B]/60" /> },
+                  { label: "Shift Status", icon: <Activity size={14} className="text-[#F5EF1B]/60" /> },
+                  { label: "Vehicle Status", icon: <Shield size={14} className="text-[#F5EF1B]/60" /> },
+                  { label: "Action", icon: <Zap size={14} className="text-[#F5EF1B]/60" /> }
+                ].map((header) => (
+                  <TableHead
+                    key={header.label}
+                    className="py-4 font-semibold text-[#F5EF1B] uppercase text-[10px] tracking-wider"
+                  >
+                    <div className="flex items-center gap-2">
+                      {header.icon}
+                      {header.label}
+                    </div>
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
 
             <TableBody>
               {loading ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-white">
-                    Loading...
-                  </TableCell>
-                </TableRow>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i} className="border-b border-zinc-800 animate-pulse">
+                    {Array.from({ length: 7 }).map((_, j) => (
+                      <TableCell key={j} className="py-4">
+                        <div className="h-4 bg-zinc-800 rounded w-full"></div>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-white">
-                    {error}
+                  <TableCell
+                    colSpan={7}
+                    className="text-center py-12 text-red-400"
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-lg font-medium">Error Loading Data</span>
+                      <p className="text-sm opacity-70">{error}</p>
+                    </div>
                   </TableCell>
                 </TableRow>
               ) : paginatedShifts.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-white">
-                    No shift data available.
+                  <TableCell
+                    colSpan={7}
+                    className="text-center py-12 text-zinc-500"
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-lg font-medium">No shift data available</span>
+                    </div>
                   </TableCell>
                 </TableRow>
               ) : (
                 paginatedShifts.map((shift, index) => (
                   <TableRow
                     key={index}
-                    className="text-center text-white border border-[#F5EF1B]"
+                    className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors group"
                   >
                     <TableCell>
-                      {highlightMatch(shift.driver.drivername, debouncedSearch)}
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-[#F5EF1B] border border-[#F5EF1B]/20">
+                          {shift.driver.drivername.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="text-zinc-200 font-medium">
+                          {highlightMatch(shift.driver.drivername, debouncedSearch)}
+                        </span>
+                      </div>
                     </TableCell>
-                    <TableCell>{shift.vehicle.vehicleModel}</TableCell>
-                    <TableCell>
-                      {`${shift.startTime} - ${shift.startDate}`}
+                    <TableCell className="text-zinc-300">
+                      {shift.vehicle.vehicleModel}
                     </TableCell>
-                    <TableCell>
-                      {shift.endTime && shift.endDate
-                        ? `${shift.endTime} - ${shift.endDate}`
-                        : "Ongoing"}
+                    <TableCell className="text-zinc-400 text-xs">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-zinc-300">{shift.startTime}</span>
+                        <span>{shift.startDate}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-zinc-400 text-xs">
+                      {shift.endTime && shift.endDate ? (
+                        <div className="flex flex-col">
+                          <span className="font-bold text-zinc-300">{shift.endTime}</span>
+                          <span>{shift.endDate}</span>
+                        </div>
+                      ) : (
+                        <span className="text-green-500 font-bold italic animate-pulse">Ongoing</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                           shift.isActive
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
+                            ? "bg-green-500/10 text-green-500 border-green-500/20"
+                            : "bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
                         }`}
                       >
-                        {shift.isActive ? "Active" : "End"}
+                        {shift.isActive ? "Active" : "Completed"}
                       </span>
                     </TableCell>
                     <TableCell>
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                           shift.isActive
                             ? shift.vehicle.isAssigned
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                            : // If shift is ended, but vehicle is still assigned elsewhere, show "Should be Free"
-                            shift.vehicle.isAssigned
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
+                              ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                              : "bg-green-500/10 text-green-500 border-green-500/20"
+                            : "bg-zinc-500/10 text-zinc-500 border-zinc-500/20"
                         }`}
                       >
                         {shift.isActive
                           ? shift.vehicle.isAssigned
                             ? "Assigned"
-                            : "Free"
-                          : shift.vehicle.isAssigned
-                          ? "Free"
+                            : "Available"
                           : "Free"}
                       </span>
                     </TableCell>
                     <TableCell>
                       <Button
                         size="sm"
-                        className="bg-red-600 hover:bg-red-700"
+                        variant="destructive"
+                        className="h-8 px-4 text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg shadow-red-900/20 disabled:opacity-30"
                         disabled={
                           !shift.isActive ||
                           stoppingDriverId === shift.driver.driverId
                         }
                         onClick={handleStopShiftDriver(shift.driver.driverId)}
                       >
-                        Stop Shift
+                        {stoppingDriverId === shift.driver.driverId ? "Stopping..." : "Stop Shift"}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -441,25 +475,132 @@ export default function ShiftsAndVehicle() {
           </Table>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2 sm:gap-0">
+        {/* Accordion - Shown on small screens */}
+        <div className="block sm:hidden">
+          {loading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-16 bg-zinc-900/50 border border-zinc-800 animate-pulse rounded-lg"></div>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-12 text-red-400 border border-zinc-800 rounded-xl">
+              <p>{error}</p>
+            </div>
+          ) : paginatedShifts.length === 0 ? (
+            <div className="text-center py-12 text-zinc-500 border border-zinc-800 rounded-xl">
+              <p>No shift data available</p>
+            </div>
+          ) : (
+            <Accordion type="single" collapsible className="space-y-4">
+              {paginatedShifts.map((shift, index) => (
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  className="border border-zinc-800 bg-zinc-900/30 rounded-xl px-4 overflow-hidden"
+                >
+                  <AccordionTrigger className="hover:no-underline py-4">
+                    <div className="flex items-center gap-3 text-left w-full">
+                      <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-[#F5EF1B] border border-[#F5EF1B]/20 flex-shrink-0">
+                        {shift.driver.drivername.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span className="text-[#F5EF1B] font-bold text-sm truncate">
+                          {shift.driver.drivername}
+                        </span>
+                        <span className="text-zinc-400 text-xs truncate">
+                          {shift.isActive ? "Ongoing Shift" : "Completed Shift"}
+                        </span>
+                      </div>
+                      <span
+                        className={`w-2 h-2 rounded-full mr-2 ${
+                          shift.isActive ? "bg-green-500 animate-pulse" : "bg-zinc-600"
+                        }`}
+                      ></span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4 pt-2 border-t border-zinc-800/50">
+                    <div className="space-y-4 text-sm">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Vehicle</p>
+                          <p className="text-zinc-200">{shift.vehicle.vehicleModel}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Shift Status</p>
+                          <p className={shift.isActive ? "text-green-500 font-bold" : "text-zinc-500"}>
+                            {shift.isActive ? "Active" : "Completed"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Start Time</p>
+                          <p className="text-zinc-300">{shift.startTime} - {shift.startDate}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">End Time</p>
+                          <p className="text-zinc-300">
+                            {shift.endTime && shift.endDate ? `${shift.endTime} - ${shift.endDate}` : "Still Ongoing"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700/50">
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-zinc-500 mb-1">Vehicle Status</p>
+                          <p className={`text-xs font-bold ${shift.isActive ? "text-blue-400" : "text-zinc-500"}`}>
+                            {shift.isActive ? (shift.vehicle.isAssigned ? "Assigned" : "Available") : "Free"}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="h-8 px-4 text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg shadow-red-900/20 disabled:opacity-30"
+                          disabled={
+                            !shift.isActive ||
+                            stoppingDriverId === shift.driver.driverId
+                          }
+                          onClick={handleStopShiftDriver(shift.driver.driverId)}
+                        >
+                          {stoppingDriverId === shift.driver.driverId ? "Stopping..." : "Stop Shift"}
+                        </Button>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
+        </div>
+
+        {/* Pagination */}
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-6 p-4 bg-zinc-900/30 rounded-xl border border-zinc-800/50 gap-4 sm:gap-0">
           <Button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
+            variant="outline"
+            className="border-zinc-700 bg-transparent text-zinc-400 hover:bg-[#F5EF1B] hover:text-zinc-950 hover:border-[#F5EF1B] transition-all rounded-lg px-6"
           >
+            <ChevronLeft size={16} className="mr-2" />
             Previous
           </Button>
-          <span className="text-sm text-[#F5EF1B]">
-            Page {currentPage} of {totalPages}
-          </span>
+          
+          <div className="flex items-center gap-2 px-4 py-1.5 bg-zinc-800/50 rounded-full border border-zinc-700/50 shadow-inner">
+            <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest">Page</span>
+            <span className="text-sm font-bold text-[#F5EF1B]">{currentPage}</span>
+            <span className="text-zinc-600">/</span>
+            <span className="text-sm font-medium text-zinc-400">{totalPages}</span>
+          </div>
+
           <Button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className="text-zinc-800 bg-[#F5EF1B] hover:bg-zinc-800 hover:text-[#F5EF1B] w-full sm:w-auto"
+            className="bg-[#F5EF1B] text-zinc-950 hover:bg-[#F5EF1B]/90 transition-all rounded-lg px-8 font-bold shadow-lg shadow-[#F5EF1B]/10"
           >
             Next
+            <ChevronRight size={16} className="ml-2" />
           </Button>
         </div>
+      </div>
       </div>
     </DashboardLayout>
   );

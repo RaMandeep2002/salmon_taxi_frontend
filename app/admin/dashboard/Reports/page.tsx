@@ -2,7 +2,21 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "../../DashBoardLayout";
 import { Button } from "@/components/ui/button";
-import { Download, Calendar, Clock, User, Navigation, Timer, DollarSign, MapPin, Activity, Trash2, ChevronLeft, ChevronRight, Hash } from "lucide-react";
+import {
+  Download,
+  Calendar,
+  Clock,
+  User,
+  Navigation,
+  Timer,
+  DollarSign,
+  MapPin,
+  Activity,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  Hash,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -15,11 +29,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store/store";
 import { getBookingReport } from "../../slices/slice/getReportSlice";
 import { useDebounce } from "@/lib/useDebounce";
-import { fetchPaginatedBookingHistory, setPage } from "../../slices/slice/paginaatedBookingSlice";
+import {
+  fetchPaginatedBookingHistory,
+  setPage,
+} from "../../slices/slice/paginaatedBookingSlice";
 import { Switch } from "@/components/ui/switch";
 import { updateIsIncludeInReport } from "../../slices/slice/isIncludeInReport";
 import { useToast } from "@/hooks/use-toast";
-
 
 export default function Reports() {
   const [fromDate, setFromDate] = useState("");
@@ -31,41 +47,55 @@ export default function Reports() {
   const debouncedPickupSearch = useDebounce(pickup, 500);
 
   const dispatch = useDispatch<AppDispatch>();
-  const { bookings, loading, error, page, limit, hasMore, totalPages } = useSelector(
-    (state: RootState) => state.fetchPaginatedBookingHistory
-  );
+  const { bookings, loading, error, page, limit, hasMore, totalPages } =
+    useSelector((state: RootState) => state.fetchPaginatedBookingHistory);
   const { isDownloading, iserror } = useSelector(
-    (state: RootState) => state.getBookingReport
+    (state: RootState) => state.getBookingReport,
   );
   const { toast } = useToast();
-
 
   // Convert YYYY-MM-DD to MM/DD/YYYY for comparison and API consistency
   const convertDateFormat = (dateString: string) => {
     if (!dateString) return "";
     const [year, month, day] = dateString.split("-");
-    if(!year || !month || !day) return "";
+    if (!year || !month || !day) return "";
     return `${month}/${day}/${year}`;
   };
 
   useEffect(() => {
     const formattedFrom = convertDateFormat(fromDate);
     const formattedTo = convertDateFormat(toDate);
-    
-    dispatch(fetchPaginatedBookingHistory({ 
-      page: page ?? 1, 
-      limit: limit ?? 15,
-      fromDate: formattedFrom,
-      toDate: formattedTo,
-      pickup: debouncedPickupSearch,
-      drivername: debouncedDriverSearch
-    }));
-  }, [dispatch, page, limit, fromDate, toDate, debouncedPickupSearch, debouncedDriverSearch]);
+
+    dispatch(
+      fetchPaginatedBookingHistory({
+        page: page ?? 1,
+        limit: limit ?? 15,
+        fromDate: formattedFrom,
+        toDate: formattedTo,
+        pickup: debouncedPickupSearch,
+        drivername: debouncedDriverSearch,
+      }),
+    );
+  }, [
+    dispatch,
+    page,
+    limit,
+    fromDate,
+    toDate,
+    debouncedPickupSearch,
+    debouncedDriverSearch,
+  ]);
 
   // Reset page to 1 whenever filters change
   useEffect(() => {
     dispatch(setPage(1));
-  }, [dispatch, fromDate, toDate, debouncedPickupSearch, debouncedDriverSearch]);
+  }, [
+    dispatch,
+    fromDate,
+    toDate,
+    debouncedPickupSearch,
+    debouncedDriverSearch,
+  ]);
 
   const handleNext = () => dispatch(setPage((page ?? 1) + 1));
   const handlePrev = () => dispatch(setPage(Math.max((page ?? 1) - 1, 1)));
@@ -81,25 +111,25 @@ export default function Reports() {
     //   })
     // );
 
-    try{
+    try {
       dispatch(
-      getBookingReport({
-        fromDate: convertDateFormat(fromDate),
-        toDate: convertDateFormat(toDate),
-        pickup,
-        drivername,
-      })
-    ).unwrap();
-    toast({
-      title: "Success",
-      description: "Report downloaded successfully.",
-      variant: "default",
-    });
-    }
-    catch(err: unknown){
+        getBookingReport({
+          fromDate: convertDateFormat(fromDate),
+          toDate: convertDateFormat(toDate),
+          pickup,
+          drivername,
+        }),
+      ).unwrap();
+      toast({
+        title: "Success",
+        description: "Report downloaded successfully.",
+        variant: "default",
+      });
+    } catch (err: unknown) {
       toast({
         title: "Error",
-        description: err instanceof Error ? err.message : "Failed to download report.",
+        description:
+          err instanceof Error ? err.message : "Failed to download report.",
         variant: "destructive",
       });
     }
@@ -108,29 +138,32 @@ export default function Reports() {
   const handleTogglePTDW = async (bookingId: string, isPTDW: boolean) => {
     try {
       await dispatch(updateIsIncludeInReport({ bookingId, isPTDW })).unwrap();
-      
+
       // Refresh the data after successful update
       const formattedFrom = convertDateFormat(fromDate);
       const formattedTo = convertDateFormat(toDate);
-      
-      dispatch(fetchPaginatedBookingHistory({ 
-        page: page ?? 1, 
-        limit: limit ?? 15,
-        fromDate: formattedFrom,
-        toDate: formattedTo,
-        pickup: debouncedPickupSearch,
-        drivername: debouncedDriverSearch
-      }));
 
+      dispatch(
+        fetchPaginatedBookingHistory({
+          page: page ?? 1,
+          limit: limit ?? 15,
+          fromDate: formattedFrom,
+          toDate: formattedTo,
+          pickup: debouncedPickupSearch,
+          drivername: debouncedDriverSearch,
+        }),
+      );
     } catch (err: unknown) {
       toast({
         title: "Error",
-        description: err instanceof Error ? err.message : "Failed to update booking status.",
+        description:
+          err instanceof Error
+            ? err.message
+            : "Failed to update booking status.",
         variant: "destructive",
       });
     }
   };
-
 
   return (
     <DashboardLayout>
@@ -140,10 +173,7 @@ export default function Reports() {
         </h1>
 
         {/* Filter & Download Form */}
-        <form
-          onSubmit={handleDownload}
-          className="w-full mb-8"
-        >
+        <form onSubmit={handleDownload} className="w-full mb-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
             <div className="space-y-1.5">
               <label className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1">
@@ -221,17 +251,54 @@ export default function Reports() {
             <TableHeader className="bg-zinc-900/50">
               <TableRow className="border-b border-[#F5EF1B]/30 hover:bg-transparent">
                 {[
-                  { label: "Trip ID", icon: <Hash size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Date", icon: <Calendar size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Pickup", icon: <Clock size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Drop-Off", icon: <Clock size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Driver", icon: <User size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Dist.", icon: <Navigation size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Wait", icon: <Timer size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Fare", icon: <DollarSign size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Pickup Address", icon: <MapPin size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Drop Address", icon: <MapPin size={14} className="text-[#F5EF1B]/60" /> },
-                  { label: "Status", icon: <Activity size={14} className="text-[#F5EF1B]/60" /> }
+                  {
+                    label: "Trip ID",
+                    icon: <Hash size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Date",
+                    icon: <Calendar size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Pickup",
+                    icon: <Clock size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Drop-Off",
+                    icon: <Clock size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Driver",
+                    icon: <User size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Dist.",
+                    icon: (
+                      <Navigation size={14} className="text-[#F5EF1B]/60" />
+                    ),
+                  },
+                  {
+                    label: "Wait",
+                    icon: <Timer size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Fare",
+                    icon: (
+                      <DollarSign size={14} className="text-[#F5EF1B]/60" />
+                    ),
+                  },
+                  {
+                    label: "Pickup Address",
+                    icon: <MapPin size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "Drop Address",
+                    icon: <MapPin size={14} className="text-[#F5EF1B]/60" />,
+                  },
+                  {
+                    label: "OFF RECORD",
+                    icon: <Activity size={14} className="text-[#F5EF1B]/60" />,
+                  },
                 ].map((header) => (
                   <TableHead
                     key={header.label}
@@ -249,7 +316,10 @@ export default function Reports() {
             <TableBody>
               {loading ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i} className="border-b border-zinc-800 animate-pulse">
+                  <TableRow
+                    key={i}
+                    className="border-b border-zinc-800 animate-pulse"
+                  >
                     {Array.from({ length: 10 }).map((_, j) => (
                       <TableCell key={j} className="py-4">
                         <div className="h-4 bg-zinc-800 rounded w-full"></div>
@@ -264,7 +334,9 @@ export default function Reports() {
                     className="text-center py-12 text-red-400"
                   >
                     <div className="flex flex-col items-center gap-2">
-                      <span className="text-lg font-medium">Error Loading Data</span>
+                      <span className="text-lg font-medium">
+                        Error Loading Data
+                      </span>
                       <p className="text-sm opacity-70">{error}</p>
                     </div>
                   </TableCell>
@@ -276,7 +348,9 @@ export default function Reports() {
                     className="text-center py-12 text-zinc-500"
                   >
                     <div className="flex flex-col items-center gap-2">
-                      <span className="text-lg font-medium">No bookings found</span>
+                      <span className="text-lg font-medium">
+                        No bookings found
+                      </span>
                       <p className="text-sm">Try adjusting your filters</p>
                     </div>
                   </TableCell>
@@ -305,7 +379,9 @@ export default function Reports() {
                           <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-[#F5EF1B] border border-[#F5EF1B]/20">
                             {booking.driver.drivername.charAt(0).toUpperCase()}
                           </div>
-                          <span className="text-zinc-200">{booking.driver.drivername}</span>
+                          <span className="text-zinc-200">
+                            {booking.driver.drivername}
+                          </span>
                         </div>
                       ) : (
                         <span className="px-2 py-1 rounded bg-zinc-800 text-zinc-500 text-xs border border-zinc-700 italic">
@@ -320,20 +396,31 @@ export default function Reports() {
                       {booking.wating_time_formated || "00:00:00"}
                     </TableCell>
                     <TableCell className="text-[#F5EF1B] font-bold">
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(booking.totalFare)}
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(booking.totalFare)}
                     </TableCell>
                     <TableCell className="max-w-[150px]">
-                      <div className="text-zinc-300 truncate text-sm" title={booking.pickup?.address}>
+                      <div
+                        className="text-zinc-300 truncate text-sm"
+                        title={booking.pickup?.address}
+                      >
                         {booking.pickup?.address}
                       </div>
                     </TableCell>
                     <TableCell className="max-w-[150px]">
                       {booking.dropOff?.address ? (
-                        <div className="text-zinc-300 truncate text-sm" title={booking.dropOff.address}>
+                        <div
+                          className="text-zinc-300 truncate text-sm"
+                          title={booking.dropOff.address}
+                        >
                           {booking.dropOff.address}
                         </div>
                       ) : (
-                        <span className="text-zinc-600 italic text-xs">N/A</span>
+                        <span className="text-zinc-600 italic text-xs">
+                          N/A
+                        </span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -368,12 +455,18 @@ export default function Reports() {
             <ChevronLeft size={16} className="mr-2" />
             Previous
           </Button>
-          
+
           <div className="flex items-center gap-2 px-4 py-1.5 bg-zinc-800/50 rounded-full border border-zinc-700/50 shadow-inner">
-            <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest">Page</span>
-            <span className="text-sm font-bold text-[#F5EF1B]">{page ?? 1}</span>
+            <span className="text-[10px] uppercase font-bold text-zinc-500 tracking-widest">
+              Page
+            </span>
+            <span className="text-sm font-bold text-[#F5EF1B]">
+              {page ?? 1}
+            </span>
             <span className="text-zinc-600">/</span>
-            <span className="text-sm font-medium text-zinc-400">{totalPages ?? 0}</span>
+            <span className="text-sm font-medium text-zinc-400">
+              {totalPages ?? 0}
+            </span>
           </div>
 
           <Button
