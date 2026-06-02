@@ -16,6 +16,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Hash,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import {
   Table,
@@ -37,11 +40,28 @@ import { Switch } from "@/components/ui/switch";
 import { updateIsIncludeInReport } from "../../slices/slice/isIncludeInReport";
 import { useToast } from "@/hooks/use-toast";
 
+type SortField = 
+  | "bookingId"
+  | "pickupDate"
+  | "pickuptime"
+  | "dropdownTime"
+  | "driverName"
+  | "distance"
+  | "wating_time_formated"
+  | "totalFare"
+  | "pickupAddress"
+  | "dropOffAddress"
+  | "isPTDW";
+
+type SortOrder = "asc" | "desc";
+
 export default function Reports() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [pickup, setPickup] = useState("");
   const [drivername, setDrivername] = useState("");
+  const [sortField, setSortField] = useState<SortField>("pickupDate");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
   const debouncedDriverSearch = useDebounce(drivername, 500);
   const debouncedPickupSearch = useDebounce(pickup, 500);
@@ -61,6 +81,113 @@ export default function Reports() {
     if (!year || !month || !day) return "";
     return `${month}/${day}/${year}`;
   };
+
+  // Sort bookings locally
+  const getSortedBookings = () => {
+    if (!bookings.length) return [];
+    
+    const sorted = [...bookings];
+    
+    sorted.sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+      
+      switch (sortField) {
+        case "bookingId":
+          aValue = a.bookingId;
+          bValue = b.bookingId;
+          break;
+        case "pickupDate":
+          // Convert dates for proper sorting (MM/DD/YYYY to YYYY-MM-DD)
+          const parseDate = (dateStr: string) => {
+            if (!dateStr) return new Date(0);
+            const [month, day, year] = dateStr.split("/");
+            return new Date(`${year}-${month}-${day}`);
+          };
+          aValue = parseDate(a.pickupDate);
+          bValue = parseDate(b.pickupDate);
+          break;
+        case "pickuptime":
+          aValue = a.pickuptime || "";
+          bValue = b.pickuptime || "";
+          break;
+        case "dropdownTime":
+          aValue = a.dropdownTime || "";
+          bValue = b.dropdownTime || "";
+          break;
+        case "driverName":
+          aValue = a.driver?.drivername || "";
+          bValue = b.driver?.drivername || "";
+          break;
+        case "distance":
+          aValue = Number(a.distance) || 0;
+          bValue = Number(b.distance) || 0;
+          break;
+        case "wating_time_formated":
+          // Convert time format HH:MM:SS to seconds for comparison
+          const timeToSeconds = (timeStr: string) => {
+            if (!timeStr) return 0;
+            const parts = timeStr.split(":");
+            if (parts.length === 3) {
+              return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+            }
+            return 0;
+          };
+          aValue = timeToSeconds(a.wating_time_formated);
+          bValue = timeToSeconds(b.wating_time_formated);
+          break;
+        case "totalFare":
+          aValue = a.totalFare || 0;
+          bValue = b.totalFare || 0;
+          break;
+        case "pickupAddress":
+          aValue = a.pickup?.address || "";
+          bValue = b.pickup?.address || "";
+          break;
+        case "dropOffAddress":
+          aValue = a.dropOff?.address || "";
+          bValue = b.dropOff?.address || "";
+          break;
+        case "isPTDW":
+          aValue = a.isPTDW ? 1 : 0;
+          bValue = b.isPTDW ? 1 : 0;
+          break;
+        default:
+          return 0;
+      }
+      
+      // Compare values
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+    
+    return sorted;
+  };
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      // Toggle order if same field
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // New field, default to ascending
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) {
+      return <ArrowUpDown size={12} className="opacity-50" />;
+    }
+    return sortOrder === "asc" ? (
+      <ArrowUp size={12} />
+    ) : (
+      <ArrowDown size={12} />
+    );
+  };
+
+  const sortedBookings = getSortedBookings();
 
   useEffect(() => {
     const formattedFrom = convertDateFormat(fromDate);
@@ -102,15 +229,6 @@ export default function Reports() {
 
   const handleDownload = (e: React.FormEvent) => {
     e.preventDefault();
-    // dispatch(
-    //   getBookingReport({
-    //     fromDate: convertDateFormat(fromDate),
-    //     toDate: convertDateFormat(toDate),
-    //     pickup,
-    //     drivername,
-    //   })
-    // );
-
     try {
       dispatch(
         getBookingReport({
@@ -176,47 +294,47 @@ export default function Reports() {
         <form onSubmit={handleDownload} className="w-full mb-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1">
+              <label className="text-[12px] uppercase font-bold text-[#F5EF1B] flex items-center gap-1">
                 <Calendar size={10} /> From Date
               </label>
               <input
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="w-full px-3 py-2 text-white border border-zinc-800 bg-zinc-900/50 hover:border-[#F5EF1B]/50 focus:border-[#F5EF1B] outline-none rounded-lg transition-all appearance-none [&::-webkit-calendar-picker-indicator]:invert placeholder:text-zinc-400"
+                className="w-full px-3 py-2 text-white border border-[#F5EF1B] bg-zinc-900/50 hover:border-[#F5EF1B]/50 focus:border-[#F5EF1B] outline-none rounded-lg transition-all appearance-none [&::-webkit-calendar-picker-indicator]:invert placeholder:text-zinc-400"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1">
+              <label className="text-[12px] uppercase font-bold text-[#F5EF1B] flex items-center gap-1">
                 <Calendar size={10} /> To Date
               </label>
               <input
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="w-full px-3 py-2 text-white border border-zinc-800 bg-zinc-900/50 hover:border-[#F5EF1B]/50 focus:border-[#F5EF1B] outline-none rounded-lg transition-all appearance-none [&::-webkit-calendar-picker-indicator]:invert placeholder:text-zinc-400"
+                className="w-full px-3 py-2 text-white border border-[#F5EF1B] bg-zinc-900/50 hover:border-[#F5EF1B]/50 focus:border-[#F5EF1B] outline-none rounded-lg transition-all appearance-none [&::-webkit-calendar-picker-indicator]:invert placeholder:text-zinc-400"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1">
+              <label className="text-[12px] uppercase font-bold text-[#F5EF1B] flex items-center gap-1">
                 <MapPin size={10} /> Pickup
               </label>
               <input
                 value={pickup}
                 onChange={(e) => setPickup(e.target.value)}
                 placeholder="Search pickup..."
-                className="w-full px-3 py-2 text-white border border-zinc-800 bg-zinc-900/50 hover:border-[#F5EF1B]/50 focus:border-[#F5EF1B] outline-none rounded-lg transition-all"
+                className="w-full px-3 py-2 text-white border border-[#F5EF1B] bg-zinc-900/50 hover:border-[#F5EF1B]/50 focus:border-[#F5EF1B] outline-none rounded-lg transition-all"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1">
+              <label className="text-[12px] uppercase font-bold text-[#F5EF1B] flex items-center gap-1">
                 <User size={10} /> Driver
               </label>
               <input
                 value={drivername}
                 onChange={(e) => setDrivername(e.target.value)}
                 placeholder="Search driver..."
-                className="w-full px-3 py-2 text-white border border-zinc-800 bg-zinc-900/50 hover:border-[#F5EF1B]/50 focus:border-[#F5EF1B] outline-none rounded-lg transition-all"
+                className="w-full px-3 py-2 text-white border border-[#F5EF1B] bg-zinc-900/50 hover:border-[#F5EF1B]/50 focus:border-[#F5EF1B] outline-none rounded-lg transition-all"
               />
             </div>
             <button
@@ -229,7 +347,7 @@ export default function Reports() {
             </button>
             <button
               type="button"
-              className="h-[42px] px-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium flex items-center justify-center gap-2 rounded-lg transition-all active:scale-[0.98]"
+              className="h-[42px] px-4 border border-[#F5EF1B] bg-zinc-800 hover:bg-zinc-700 text-[#F5EF1B] font-medium flex items-center justify-center gap-2 rounded-lg transition-all active:scale-[0.98]"
               onClick={() => {
                 setFromDate("");
                 setToDate("");
@@ -248,65 +366,76 @@ export default function Reports() {
         {/* Table */}
         <div className="border border-[#F5EF1B] rounded-xl overflow-auto shadow-lg">
           <Table>
-            <TableHeader className="bg-zinc-900/50">
+            <TableHeader className="bg-zinc-900/50 sticky top-0">
               <TableRow className="border-b border-[#F5EF1B]/30 hover:bg-transparent">
                 {[
                   {
                     label: "Trip ID",
+                    field: "bookingId" as SortField,
                     icon: <Hash size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Date",
+                    field: "pickupDate" as SortField,
                     icon: <Calendar size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Pickup",
+                    field: "pickuptime" as SortField,
                     icon: <Clock size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Drop-Off",
+                    field: "dropdownTime" as SortField,
                     icon: <Clock size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Driver",
+                    field: "driverName" as SortField,
                     icon: <User size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Dist.",
-                    icon: (
-                      <Navigation size={14} className="text-[#F5EF1B]/60" />
-                    ),
+                    field: "distance" as SortField,
+                    icon: <Navigation size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Wait",
+                    field: "wating_time_formated" as SortField,
                     icon: <Timer size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Fare",
-                    icon: (
-                      <DollarSign size={14} className="text-[#F5EF1B]/60" />
-                    ),
+                    field: "totalFare" as SortField,
+                    icon: <DollarSign size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Pickup Address",
+                    field: "pickupAddress" as SortField,
                     icon: <MapPin size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "Drop Address",
+                    field: "dropOffAddress" as SortField,
                     icon: <MapPin size={14} className="text-[#F5EF1B]/60" />,
                   },
                   {
                     label: "OFF RECORD",
+                    field: "isPTDW" as SortField,
                     icon: <Activity size={14} className="text-[#F5EF1B]/60" />,
                   },
                 ].map((header) => (
                   <TableHead
                     key={header.label}
-                    className="py-4 font-semibold text-[#F5EF1B] uppercase text-[10px] tracking-wider"
+                    className="py-4 font-semibold text-[#F5EF1B] uppercase text-[10px] tracking-wider cursor-pointer hover:bg-zinc-800/50 transition-colors group"
+                    onClick={() => handleSort(header.field)}
                   >
                     <div className="flex items-center gap-2">
                       {header.icon}
                       {header.label}
+                      <span className="text-[#F5EF1B]/70 group-hover:opacity-100 transition-opacity">
+                        {getSortIcon(header.field)}
+                      </span>
                     </div>
                   </TableHead>
                 ))}
@@ -320,7 +449,7 @@ export default function Reports() {
                     key={i}
                     className="border-b border-zinc-800 animate-pulse"
                   >
-                    {Array.from({ length: 10 }).map((_, j) => (
+                    {Array.from({ length: 11 }).map((_, j) => (
                       <TableCell key={j} className="py-4">
                         <div className="h-4 bg-zinc-800 rounded w-full"></div>
                       </TableCell>
@@ -330,7 +459,7 @@ export default function Reports() {
               ) : error ? (
                 <TableRow>
                   <TableCell
-                    colSpan={10}
+                    colSpan={11}
                     className="text-center py-12 text-red-400"
                   >
                     <div className="flex flex-col items-center gap-2">
@@ -341,10 +470,10 @@ export default function Reports() {
                     </div>
                   </TableCell>
                 </TableRow>
-              ) : bookings.length === 0 ? (
+              ) : sortedBookings.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={10}
+                    colSpan={11}
                     className="text-center py-12 text-zinc-500"
                   >
                     <div className="flex flex-col items-center gap-2">
@@ -356,7 +485,7 @@ export default function Reports() {
                   </TableCell>
                 </TableRow>
               ) : (
-                bookings.map((booking) => (
+                sortedBookings.map((booking) => (
                   <TableRow
                     key={booking.bookingId}
                     className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors group"
@@ -478,6 +607,15 @@ export default function Reports() {
             <ChevronRight size={16} className="ml-2" />
           </Button>
         </div>
+
+        {/* Sorting Indicator */}
+        {!loading && sortedBookings.length > 0 && (
+          <div className="mt-4 text-right">
+            <span className="text-[10px] text-zinc-500">
+              Sorting by {sortField} ({sortOrder === "asc" ? "Ascending" : "Descending"})
+            </span>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
