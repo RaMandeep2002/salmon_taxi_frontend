@@ -89,8 +89,8 @@ export default function Reports() {
     const sorted = [...bookings];
     
     sorted.sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
+      let aValue: string | number | Date;
+      let bValue: string | number | Date;
       
       switch (sortField) {
         case "bookingId":
