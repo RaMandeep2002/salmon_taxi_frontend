@@ -95,10 +95,10 @@ export default function Footer(){
                     <Mail className="h-4 w-4 text-yellow-500" />
                     <span className="text-muted-foreground">
                     <a
-                    href="mailto:salmonarmtaxi@yahoo.ca"
+                    href="mailto:salmonarmtaxi@hotmail.com"
                     className="ml-1 hover:underline hover:text-yellow-500"
                   >
-                    salmonarmtaxi@yahoo.ca
+                    salmonarmtaxi@hotmail.com
                   </a>
                     </span>
                   </li>

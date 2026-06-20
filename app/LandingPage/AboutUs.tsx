@@ -40,10 +40,10 @@ export default function AboutUs() {
                  className="gap-3">
                   <strong>Email:</strong>
                   <a
-                    href="mailto:salmonarmtaxi@yahoo.ca"
+                    href="mailto:salmonarmtaxi@hotmail.com"
                     className="ml-1 text-yellow-600 hover:underline"
                   >
-                    salmonarmtaxi@yahoo.ca
+                    salmonarmtaxi@hotmail.com
                   </a>
                 </motion.p>
                 <motion.p
