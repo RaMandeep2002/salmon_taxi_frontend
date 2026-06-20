@@ -40,8 +40,10 @@ export default function AboutUs() {
                  className="gap-3">
                   <strong>Email:</strong>
                   <a
-                    href="mailto:salmonarmtaxi@hotmail.com"
-                    className="ml-1 text-yellow-600 hover:underline"
+                   	href="https://mail.google.com/mail/?view=cm&fs=1&to=salmonarmtaxi@hotmail.com"
+			target="_blank"
+  			rel="noopener noreferrer"
+                    	className="ml-1 text-yellow-600 hover:underline"
                   >
                     salmonarmtaxi@hotmail.com
                   </a>
