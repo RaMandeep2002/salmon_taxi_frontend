@@ -93,6 +93,7 @@ export default function Footer(){
                   </li>
                   <li className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-yellow-500" />
+                    <span className="text-muted-foreground">
 <a
   href="https://mail.google.com/mail/?view=cm&fs=1&to=salmonarmtaxi@hotmail.com"
   target="_blank"
@@ -101,13 +102,6 @@ export default function Footer(){
 >
   salmonarmtaxi@hotmail.com
 </a>
-                    <span className="text-muted-foreground">
-                    <a
-                    href="mailto:salmonarmtaxi@hotmail.com"
-                    className="ml-1 hover:underline hover:text-yellow-500"
-                  >
-                    salmonarmtaxi@hotmail.com
-                  </a>
                     </span>
                   </li>
                   {/* <li className="flex items-start gap-2">
